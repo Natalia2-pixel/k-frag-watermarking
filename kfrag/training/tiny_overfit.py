@@ -53,6 +53,16 @@ def load_fixed_coco_images(image_directory: str | Path, num_images: int, seed: i
     return torch.stack([dataset[index]["image"] for index in indices])
 
 
+def _fixed_coco_selection(image_directory: str | Path, num_images: int, seed: int) -> tuple[torch.Tensor, list[str]]:
+    """Load the fixed images and retain stable paths for evaluation replay."""
+    dataset = CocoImageDataset(image_directory)
+    if num_images != 8 or len(dataset) < num_images:
+        raise ValueError("the tiny-overfit experiment requires exactly 8 available images")
+    indices = sorted(random.Random(seed).sample(range(len(dataset)), num_images))
+    samples = [dataset[index] for index in indices]
+    return torch.stack([sample["image"] for sample in samples]), [sample["relative_path"] for sample in samples]
+
+
 def _experiment_key(seed: int) -> bytes:
     # Kept only in memory. It is deliberately absent from configs, logs and checkpoints.
     return hashlib.sha256(f"kfrag-tiny-overfit-v1:{seed}".encode()).digest()
@@ -108,7 +118,9 @@ def run_tiny_overfit(config: Mapping[str, Any], images: torch.Tensor | None = No
     if int(cfg.get("num_images", 8)) != 8 or int(cfg.get("image_size", 256)) != 256:
         raise ValueError("this experiment requires num_images=8 and image_size=256")
     if images is None:
-        images = load_fixed_coco_images(cfg["coco_directory"], 8, seed)
+        images, image_identifiers = _fixed_coco_selection(cfg["coco_directory"], 8, seed)
+    else:
+        image_identifiers = list(range(8))
     if payloads is None:
         payloads = build_fixed_payloads(8, seed)
     if tuple(images.shape) != (8, 3, 256, 256):
@@ -149,8 +161,13 @@ def run_tiny_overfit(config: Mapping[str, Any], images: torch.Tensor | None = No
             last_metrics = _metrics(losses, result, images, payloads)
         row: dict[str, float | int] = {"step": step, **last_metrics}
         history.append(row)
+        evaluation_bundle = {
+            "image_identifiers": image_identifiers,
+            "payloads": payloads.detach().cpu(),
+        }
         checkpoint = {"model_state": model.state_dict(), "optimizer_state": optimizer.state_dict(),
-                      "step": step, "metrics": last_metrics, "configuration": cfg}
+                      "step": step, "metrics": last_metrics, "configuration": cfg,
+                      "evaluation_bundle": evaluation_bundle}
         if last_metrics["bit_accuracy"] > best_bits:
             best_bits = last_metrics["bit_accuracy"]
             torch.save(checkpoint, out / "best.pt")

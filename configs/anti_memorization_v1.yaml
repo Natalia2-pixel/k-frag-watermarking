@@ -1,0 +1,3 @@
+coco_directory: data/raw/coco_val2017_100
+output_directory: outputs/anti_memorization
+device: auto

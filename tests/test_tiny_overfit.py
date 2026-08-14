@@ -45,7 +45,9 @@ def test_short_synthetic_cpu_run_writes_safe_artifacts(tmp_path) -> None:
         "best.pt", "last.pt", "history.csv", "summary.json"
     }
     checkpoint = torch.load(tmp_path / "last.pt", map_location="cpu", weights_only=False)
-    assert set(checkpoint) == {"model_state", "optimizer_state", "step", "metrics", "configuration"}
+    assert set(checkpoint) == {"model_state", "optimizer_state", "step", "metrics", "configuration",
+                               "evaluation_bundle"}
+    assert tuple(checkpoint["evaluation_bundle"]["payloads"].shape) == (8, 44, 4, 4)
     assert "secret" not in repr(checkpoint).lower()
     with (tmp_path / "history.csv").open(newline="", encoding="utf-8") as handle:
         assert len(list(csv.DictReader(handle))) == 1
