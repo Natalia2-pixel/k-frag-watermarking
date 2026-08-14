@@ -1,0 +1,14 @@
+protocol:
+  grid_size: 4
+  num_regions: 16
+  recovery_threshold: 12
+  region_index_bits: 4
+  coded_symbol_bits: 8
+  authentication_tag_bits: 32
+  packet_bits: 44
+
+image:
+  height: 256
+  width: 256
+  region_height: 64
+  region_width: 64
