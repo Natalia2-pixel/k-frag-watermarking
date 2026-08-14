@@ -1,0 +1,53 @@
+protocol_version: 1
+status: future_plan_only
+run_baselines: false
+missing_value: unavailable
+equivalence:
+  datasets: required_where_technically_possible
+  image_resolutions: required_where_technically_possible
+  payload_sizes: required_where_technically_possible
+  attack_parameters: required_where_technically_possible
+  sample_counts: required_where_technically_possible
+result_namespaces:
+  original_paper_reported: null
+  reproduced_under_kfrag_protocol: null
+baselines:
+  - id: baseline_1
+    exact_title: unavailable
+  - id: baseline_2
+    exact_title: unavailable
+  - id: baseline_3
+    exact_title: unavailable
+  - id: baseline_4
+    exact_title: unavailable
+  - id: baseline_5
+    exact_title: unavailable
+  - id: baseline_6
+    exact_title: unavailable
+kfrag_metrics:
+  - PSNR
+  - SSIM
+  - LPIPS
+  - overall_bit_accuracy
+  - non_index_bit_accuracy
+  - coded_symbol_accuracy
+  - authentication_tag_accuracy
+  - exact_regional_packet_accuracy
+  - exact_full_payload_accuracy
+  - provenance_token_recovery_rate
+  - false_acceptance_rate
+  - false_rejection_rate
+  - tamper_localization_IoU
+  - tamper_localization_F1
+  - minimum_surviving_image_area
+  - surviving_authenticated_fragments
+  - inference_time
+  - parameter_count
+ablations:
+  - without_RS_coding
+  - without_HMAC_authentication
+  - without_content_binding
+  - without_synchronization
+  - global_payload_instead_of_regional_packets
+  - different_k_of_n_thresholds
+  - different_HMAC_tag_lengths
