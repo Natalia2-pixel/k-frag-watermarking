@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "K-FRAG non-neural provenance protocol"
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = ["reedsolo>=1.7,<2"]
+dependencies = ["reedsolo>=1.7,<2", "PyYAML>=6,<7"]
 
 [project.optional-dependencies]
 test = ["pytest>=8,<9"]

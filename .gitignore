@@ -29,3 +29,6 @@ checkpoints/
 outputs/
 runs/
 wandb/
+*.pt
+*.pth
+*.ckpt

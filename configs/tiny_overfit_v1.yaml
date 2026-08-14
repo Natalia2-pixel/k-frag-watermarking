@@ -1,0 +1,17 @@
+coco_directory: data/raw/coco_val2017_100
+output_directory: outputs/tiny_overfit
+num_images: 8
+image_size: 256
+steps: 2000
+learning_rate: 0.0002
+weight_decay: 0.0001
+log_every: 25
+seed: 2026
+num_workers: 0
+device: auto
+base_channels: 32
+message_channels: 32
+residual_alpha: 0.02
+lambda_payload: 1.0
+lambda_image: 1.0
+lambda_residual: 0.1
