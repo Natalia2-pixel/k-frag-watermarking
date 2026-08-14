@@ -1,0 +1,6 @@
+data:
+  root: data/raw/coco_val2017_100
+  image_size: 256
+  batch_size: 4
+  num_workers: 0
+  expected_images: 100
