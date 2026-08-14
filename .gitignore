@@ -1,34 +1,35 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-
-# Testing and coverage
+# Python 
+__pycache__/ 
+*.py[cod] 
+*.egg-info/ 
+ 
+# Testing and coverage 
 .pytest_cache/
-.coverage
-htmlcov/
-
-# Jupyter
-.ipynb_checkpoints/
-
-# Virtual environments
-.venv/
-venv/
-
-# Environment variables and secrets
-.env
-.env.*
-!.env.example
-*.key
-*.pem
-secrets/
-
-# Datasets and experiment outputs
-/data/
-checkpoints/
-outputs/
-runs/
-wandb/
-*.pt
-*.pth
+.pytest_tmp/
+.coverage 
+htmlcov/ 
+ 
+# Jupyter 
+.ipynb_checkpoints/ 
+ 
+# Virtual environments 
+.venv/ 
+venv/ 
+ 
+# Environment variables and secrets 
+.env 
+.env.* 
+!.env.example 
+*.key 
+*.pem 
+secrets/ 
+ 
+# Datasets and experiment outputs 
+/data/ 
+checkpoints/ 
+outputs/ 
+runs/ 
+wandb/ 
+*.pt 
+*.pth 
 *.ckpt
