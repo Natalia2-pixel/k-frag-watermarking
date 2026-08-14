@@ -1,0 +1,20 @@
+data:
+  root: data/raw/coco_val2017_100
+  image_size: 256
+  batch_size: 4
+  num_workers: 0
+
+payload:
+  channels: 44
+  grid_size: 4
+  num_regions: 16
+
+model:
+  base_channels: 32
+  message_channels: 32
+  residual_alpha: 0.02
+
+loss:
+  lambda_payload: 1.0
+  lambda_image: 1.0
+  lambda_residual: 0.1
