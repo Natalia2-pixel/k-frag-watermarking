@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kfrag"
+version = "0.1.0"
+description = "K-FRAG non-neural provenance protocol"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["reedsolo>=1.7,<2"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<9"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.setuptools.packages.find]
+include = ["kfrag*"]

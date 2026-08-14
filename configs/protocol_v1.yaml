@@ -1,0 +1,21 @@
+protocol:
+  name: K-FRAG
+  version: 1
+token:
+  size_bytes: 12
+  byte_order: big
+  issuer_id_bits: 24
+  asset_id_bits: 64
+  version_bits: 8
+reed_solomon:
+  data_symbols: 12
+  parity_symbols: 4
+  coded_symbols: 16
+  symbol_size_bytes: 1
+authentication:
+  algorithm: HMAC-SHA256
+  tag_size_bytes: 4
+  message_fields:
+    - token_bytes
+    - region_index
+    - coded_symbol
