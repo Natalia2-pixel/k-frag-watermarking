@@ -14,6 +14,10 @@ payloads:
   packet_bits: 44
 
 training:
+  # Stage-A generalization diagnostic: do not reuse the finite authenticated bank.
+  on_the_fly_random_active_bits: true
+  fixed_training_evaluation_payloads: 64
+  fresh_evaluation_payloads: 64
   batch_size: 8
   learning_rate: 0.0002
   weight_decay: 0.0001

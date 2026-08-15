@@ -103,7 +103,7 @@ def _correct(logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
 
 
 def recovery_metrics(logits: torch.Tensor, targets: torch.Tensor,
-                     active_mask: torch.Tensor) -> dict[str, float | int]:
+                     active_mask: torch.Tensor) -> dict[str, Any]:
     correct = _correct(logits, targets)
     active = torch.broadcast_to(active_mask.to(correct.device), correct.shape)
     exact_active = (correct | ~active).all(dim=1)
@@ -115,15 +115,83 @@ def recovery_metrics(logits: torch.Tensor, targets: torch.Tensor,
         "coded_symbol_accuracy": correct[:, 4:12].float().mean().item(),
         "authentication_tag_accuracy": correct[:, 12:44].float().mean().item(),
         "active_authentication_tag_accuracy": (
-            correct[:, 12:44][active_tag].float().mean().item() if bool(active_tag.any()) else 1.0
+            correct[:, 12:44][active_tag].float().mean().item() if bool(active_tag.any()) else None
         ),
+        "inactive_authentication_tag_accuracy": "not applicable",
         "active_field_accuracy": correct[active].float().mean().item(),
+        "active_bit_accuracy": correct[active].float().mean().item(),
+        "active_bce_loss": F.binary_cross_entropy_with_logits(logits[active], targets.float()[active]).item(),
+        "mean_confidence": torch.sigmoid(logits[active]).sub(.5).abs().mul(2).mean().item(),
         "non_index_accuracy": correct[:, 4:44].float().mean().item(),
         "exact_active_region_accuracy": exact_active.float().mean().item(),
         "exact_regional_packet_accuracy": exact_packet.float().mean().item(),
         "exact_image_payload_accuracy": correct.flatten(1).all(1).float().mean().item(),
         "number_exact_regional_packets": int(exact_packet.sum().item()),
     }
+
+
+def active_patterns(payloads: torch.Tensor, mask: torch.Tensor) -> list[bytes]:
+    """Serialize only curriculum-active bits, one pattern per sample."""
+    selected = torch.broadcast_to(mask.cpu().bool(), payloads.cpu().shape)
+    return [bytes(row.to(torch.uint8).tolist()) for row in payloads.cpu()[selected].reshape(len(payloads), -1)]
+
+
+def fresh_random_payloads(count: int, mask: torch.Tensor, stored: Sequence[torch.Tensor],
+                          generator: torch.Generator) -> torch.Tensor:
+    """Generate uniform active bits that do not duplicate any stored active pattern."""
+    if count < 2:
+        raise ValueError("fresh evaluation requires at least two payloads")
+    forbidden = {pattern for bank in stored for pattern in active_patterns(bank, mask)}
+    rows, seen = [], set(forbidden)
+    while len(rows) < count:
+        candidate = torch.zeros(1, 44, 4, 4)
+        selected = torch.broadcast_to(mask.cpu().bool(), candidate.shape)
+        candidate[selected] = torch.randint(0, 2, (int(selected.sum()),), generator=generator).float()
+        pattern = active_patterns(candidate, mask)[0]
+        if pattern not in seen:
+            seen.add(pattern); rows.append(candidate[0])
+    return torch.stack(rows)
+
+
+def payload_diversity(groups: Mapping[str, torch.Tensor], mask: torch.Tensor) -> dict[str, Any]:
+    """Describe active-target balance, duplicates, variation and cross-group overlap."""
+    report: dict[str, Any] = {"groups": {}, "overlap": {}}
+    pattern_sets = {}
+    selected_mask = mask.cpu().bool().flatten()
+    for name, payloads in groups.items():
+        bits = payloads.cpu().flatten(2)[:, :, :].reshape(len(payloads), -1)[:, selected_mask]
+        patterns = active_patterns(payloads, mask); pattern_sets[name] = set(patterns)
+        ones = bits.float().mean(0)
+        report["groups"][name] = {
+            "count": len(payloads), "unique_active_payload_patterns": len(set(patterns)),
+            "duplicate_count": len(patterns) - len(set(patterns)),
+            "per_bit_zero_proportion": (1 - ones).tolist(), "per_bit_one_proportion": ones.tolist(),
+            "target_active_bits_vary": bool(((ones > 0) & (ones < 1)).any()),
+            "every_target_active_bit_varies": bool(((ones > 0) & (ones < 1)).all()),
+        }
+    names = list(groups)
+    for i, left in enumerate(names):
+        for right in names[i + 1:]:
+            report["overlap"][f"{left}__{right}"] = len(pattern_sets[left] & pattern_sets[right])
+    return report
+
+
+def per_bit_diagnostics(logits: torch.Tensor, targets: torch.Tensor,
+                        mask: torch.Tensor) -> list[dict[str, Any]]:
+    selected = torch.broadcast_to(mask.cpu().bool(), targets.shape)
+    logits_active = logits.cpu()[selected].reshape(len(targets), -1)
+    targets_active = targets.cpu()[selected].reshape(len(targets), -1).float()
+    predictions = (logits_active >= 0).float()
+    def entropy(probability: torch.Tensor) -> torch.Tensor:
+        p = probability.clamp(1e-7, 1 - 1e-7)
+        return -(p * torch.log2(p) + (1 - p) * torch.log2(1 - p))
+    target_p, prediction_p = targets_active.mean(0), predictions.mean(0)
+    return [{"active_bit_index": index,
+             "predicted_one_frequency": float(prediction_p[index]),
+             "per_bit_accuracy": float(predictions[:, index].eq(targets_active[:, index]).float().mean()),
+             "target_entropy": float(entropy(target_p[index])),
+             "prediction_entropy": float(entropy(prediction_p[index]))}
+            for index in range(logits_active.shape[1])]
 
 
 def image_metrics(original: torch.Tensor, watermarked: torch.Tensor,
@@ -146,8 +214,10 @@ def payload_sensitivity(model: nn.Module, carrier: torch.Tensor, first: torch.Te
     return {
         "payload_tensor_difference": float((first - second).abs().mean().item()),
         "residual_payload_sensitivity": float((a["residual"] - b["residual"]).abs().mean().item()),
+        "encoder_residual_pairwise_distance": float((a["residual"] - b["residual"]).flatten(1).norm(dim=1).mean().item()),
         "watermarked_image_sensitivity": float((a["watermarked_image"] - b["watermarked_image"]).abs().mean().item()),
         "logit_payload_sensitivity": float((a["payload_logits"] - b["payload_logits"]).abs().mean().item()),
+        "decoder_logit_pairwise_distance": float((a["payload_logits"] - b["payload_logits"]).flatten(1).norm(dim=1).mean().item()),
         "predicted_bit_change_fraction": float(pred_a.ne(pred_b).float().mean().item()),
     }
 
@@ -287,7 +357,17 @@ def _evaluate(model: nn.Module, images: torch.Tensor, payloads: torch.Tensor,
         ])
     original = recovery_metrics(original_logits, all_targets, mask)
     shuffled = recovery_metrics(all_logits, circular_payload_shuffle(all_targets), mask)
-    return metrics, {"original_unwatermarked": original, "payload_shuffle": shuffled}
+    return metrics, {"original_unwatermarked": original, "payload_shuffle": shuffled,
+                     "per_bit": per_bit_diagnostics(all_logits, all_targets, mask),
+                     "original_per_bit": per_bit_diagnostics(original_logits, all_targets, mask),
+                     "permutation_test": {
+                         "correct_target_bce": metrics["active_bce_loss"],
+                         "shuffled_target_bce": shuffled["active_bce_loss"],
+                         "correct_target_accuracy": metrics["active_bit_accuracy"],
+                         "shuffled_target_accuracy": shuffled["active_bit_accuracy"],
+                         "bce_degradation": shuffled["active_bce_loss"] - metrics["active_bce_loss"],
+                         "accuracy_degradation": metrics["active_bit_accuracy"] - shuffled["active_bit_accuracy"],
+                     }}
 
 
 def _stage_images(stage: str, natural: torch.Tensor, batch: int) -> torch.Tensor:
@@ -317,6 +397,13 @@ def _write_records(directory: Path, history: list[dict[str, Any]], summary: Mapp
         with (directory / "history.csv").open("w", newline="", encoding="utf-8") as handle:
             writer = csv.DictWriter(handle, fieldnames=keys); writer.writeheader(); writer.writerows(history)
     (directory / "summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+
+
+def _write_per_bit(directory: Path, rows: list[dict[str, Any]]) -> None:
+    fields = ["stage", "capacity_level", "step", "payload_group", "active_bit_index",
+              "predicted_one_frequency", "per_bit_accuracy", "target_entropy", "prediction_entropy"]
+    with (directory / "per_bit_metrics.csv").open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields); writer.writeheader(); writer.writerows(rows)
 
 
 def _plot(rows: list[dict[str, Any]], path: Path) -> None:
@@ -359,6 +446,9 @@ def run_channel_sanity(config: Mapping[str, Any], images: torch.Tensor | None = 
     alpha = float(cfg["training"].get("alpha", .05)); threshold = cfg["thresholds"]
     batch_size = int(cfg["training"]["batch_size"]); budget = int(cfg["training"]["steps_per_capacity_level"])
     evaluate_every = int(cfg["training"]["evaluate_every"]); log_every = int(cfg["training"].get("log_every", 50))
+    on_the_fly = bool(cfg["training"].get("on_the_fly_random_active_bits", True))
+    eval_train_count = min(len(training), int(cfg["training"].get("fixed_training_evaluation_payloads", 64)))
+    fresh_count = max(2, int(cfg["training"].get("fresh_evaluation_payloads", held_count)))
     factory = model_factory or (lambda: CleanWatermarkSystem(residual_alpha=alpha))
     results: dict[str, Any] = {}; comparison: list[dict[str, Any]] = []
     stage_c_state: dict[str, torch.Tensor] | None = None
@@ -377,16 +467,40 @@ def run_channel_sanity(config: Mapping[str, Any], images: torch.Tensor | None = 
         stage_result: dict[str, Any] = {"passed": True, "initialization_seed": init_seed, "levels": {}}
         for level in range(1, 5):
             mask = capacity_mask(level).to(device); history: list[dict[str, Any]] = []
+            per_bit_rows: list[dict[str, Any]] = []
             best_score = -1.0; passed = False; last_bundle: dict[str, Any] = {}
             level_dir = out / f"stage_{stage}" / f"level_{level}"
             generator = torch.Generator().manual_seed(init_seed + level)
+            fixed_training = training[:eval_train_count]
+            fresh_generator = torch.Generator().manual_seed(init_seed + level + 100_000)
+            fresh = fresh_random_payloads(fresh_count, mask.cpu(), (training, heldout), fresh_generator)
+            diversity = payload_diversity({"fixed_training": fixed_training, "heldout": heldout,
+                                           "fresh": fresh}, mask.cpu())
+            if not diversity["groups"]["heldout"]["target_active_bits_vary"] or not diversity["groups"]["fresh"]["target_active_bits_vary"]:
+                raise ValueError("held-out and fresh target active bits must vary")
+            training_pattern_counts: dict[bytes, int] = {}
+            training_active_ones = torch.zeros(int(mask.sum()))
+            training_samples = 0
             for step in range(1, budget + 1):
                 payload_ids = torch.randint(len(training), (batch_size,), generator=generator)
                 if stage in ("A", "B"):
                     image_ids = torch.zeros(batch_size, dtype=torch.long)
                 else:
                     image_ids = torch.randint(len(carriers), (batch_size,), generator=generator)
-                batch_payload = training[payload_ids].to(device); batch_images = carriers[image_ids.to(device)]
+                if on_the_fly:
+                    batch_payload = torch.zeros(batch_size, 44, 4, 4)
+                    selected = torch.broadcast_to(mask.cpu(), batch_payload.shape)
+                    batch_payload[selected] = torch.randint(0, 2, (int(selected.sum()),), generator=generator).float()
+                    batch_payload = batch_payload.to(device)
+                else:
+                    batch_payload = training[payload_ids].to(device)
+                batch_patterns = active_patterns(batch_payload.detach().cpu(), mask.cpu())
+                for pattern in batch_patterns:
+                    training_pattern_counts[pattern] = training_pattern_counts.get(pattern, 0) + 1
+                batch_selected = torch.broadcast_to(mask.cpu(), batch_payload.detach().cpu().shape)
+                training_active_ones += batch_payload.detach().cpu()[batch_selected].reshape(batch_size, -1).sum(0)
+                training_samples += batch_size
+                batch_images = carriers[image_ids.to(device)]
                 model.train(); optimizer.zero_grad(set_to_none=True)
                 result = model(batch_images, batch_payload)
                 payload_loss = masked_bce_with_logits(result["payload_logits"], batch_payload, mask)
@@ -398,20 +512,56 @@ def run_channel_sanity(config: Mapping[str, Any], images: torch.Tensor | None = 
                 total_loss = payload_loss + fidelity_weight * fidelity_loss
                 total_loss.backward(); gradients = gradient_diagnostics(model); optimizer.step()
                 if step % evaluate_every == 0 or step == budget:
-                    held_metrics, controls = _evaluate(model, carriers, heldout, mask, batch_size, alpha)
+                    evaluation_payloads = {"current_training_batch": batch_payload.detach().cpu(),
+                                           "fixed_training": fixed_training, "heldout": heldout, "fresh": fresh}
+                    group_metrics, group_controls = {}, {}
+                    for group_name, group_payloads in evaluation_payloads.items():
+                        group_metrics[group_name], group_controls[group_name] = _evaluate(
+                            model, carriers, group_payloads, mask, batch_size, alpha)
+                        for bit_row in group_controls[group_name]["per_bit"]:
+                            per_bit_rows.append({"stage": stage, "capacity_level": level, "step": step,
+                                                 "payload_group": group_name, **bit_row})
+                    for bit_row in group_controls["heldout"]["original_per_bit"]:
+                        per_bit_rows.append({"stage": stage, "capacity_level": level, "step": step,
+                                             "payload_group": "original_unwatermarked", **bit_row})
+                    held_metrics, controls = group_metrics["heldout"], group_controls["heldout"]
+                    original_metrics = controls["original_unwatermarked"]
+                    group_metrics["original_unwatermarked"] = original_metrics
+                    stream_patterns = set(training_pattern_counts)
+                    stream_ones = training_active_ones / training_samples
+                    diversity["groups"]["training_stream"] = {
+                        "count": training_samples,
+                        "unique_active_payload_patterns": len(stream_patterns),
+                        "duplicate_count": training_samples - len(stream_patterns),
+                        "per_bit_zero_proportion": (1 - stream_ones).tolist(),
+                        "per_bit_one_proportion": stream_ones.tolist(),
+                        "target_active_bits_vary": bool(((stream_ones > 0) & (stream_ones < 1)).any()),
+                        "every_target_active_bit_varies": bool(((stream_ones > 0) & (stream_ones < 1)).all()),
+                    }
+                    for name, bank in (("fixed_training", fixed_training), ("heldout", heldout), ("fresh", fresh)):
+                        diversity["overlap"][f"training_stream__{name}"] = len(stream_patterns & set(active_patterns(bank, mask.cpu())))
                     first, second = heldout[0:1].to(device), heldout[1:2].to(device)
                     sensitivity = payload_sensitivity(model, carriers[:1], first, second)
                     failures = sensitivity_checks(sensitivity, threshold) + gradient_checks(gradients, float(threshold["minimum_gradient_norm"]))
                     if controls["original_unwatermarked"]["exact_regional_packet_accuracy"] > float(threshold["maximum_original_packet_accuracy"]):
                         failures.append("original images recover significant exact packets")
                     diagnostics_ok = not failures
-                    passed = should_advance_capacity(held_metrics, controls["original_unwatermarked"], level, threshold, diagnostics_ok)
-                    last_bundle = {"heldout": held_metrics, **controls, "sensitivity": sensitivity,
+                    passed = should_advance_capacity(held_metrics, original_metrics, level, threshold, diagnostics_ok)
+                    last_bundle = {"payload_groups": group_metrics, "heldout": held_metrics, **controls,
+                                   "permutation_tests": {name: value["permutation_test"] for name, value in group_controls.items()},
+                                   "payload_diversity": diversity, "sensitivity": sensitivity,
+                                   "causality": {"encoder": sensitivity["encoder_residual_pairwise_distance"],
+                                                 "decoder": sensitivity["decoder_logit_pairwise_distance"]},
+                                   "inactive_bit_metrics": {"authentication_tag_accuracy": "not applicable" if level == 1 else "active"},
+                                   "training_payload_mode": "on_the_fly_uniform_active_bits" if on_the_fly else "finite_bank",
                                    "gradients": gradients, "failures": failures}
                     row = {"stage": stage, "capacity_level": level, "step": step,
                            "total_loss": float(total_loss.item()), "fidelity_weight": fidelity_weight,
                            **held_metrics, **sensitivity, **gradients,
                            "original_exact_packet_accuracy": controls["original_unwatermarked"]["exact_regional_packet_accuracy"]}
+                    for group_name, values in group_metrics.items():
+                        for metric_name in ("active_bit_accuracy", "exact_active_region_accuracy", "active_bce_loss", "mean_confidence"):
+                            row[f"{group_name}_{metric_name}"] = values[metric_name]
                     history.append(row)
                     checkpoint = _safe_checkpoint(model, optimizer, step, stage, mask, cfg, last_bundle,
                                                   training, heldout, identifiers)
@@ -420,8 +570,8 @@ def run_channel_sanity(config: Mapping[str, Any], images: torch.Tensor | None = 
                         torch.save(checkpoint, level_dir / "best.pt")
                     level_dir.mkdir(parents=True, exist_ok=True); torch.save(checkpoint, level_dir / "last.pt")
                     print(f"stage={stage} level={level} step={step} total_loss={total_loss.item():.6f} "
-                          f"active={held_metrics['active_field_accuracy']:.6f} tag={held_metrics['authentication_tag_accuracy']:.6f} "
-                          f"active_tag={held_metrics['active_authentication_tag_accuracy']:.6f} "
+                          f"active={held_metrics['active_field_accuracy']:.6f} tag={'N/A' if level == 1 else held_metrics['active_authentication_tag_accuracy']} "
+                          f"active_tag={'N/A' if level == 1 else held_metrics['active_authentication_tag_accuracy']} "
                           f"exact_active={held_metrics['exact_active_region_accuracy']:.6f} "
                           f"original_exact={controls['original_unwatermarked']['exact_regional_packet_accuracy']:.6f} "
                           f"psnr={held_metrics['psnr']:.3f} payload_sensitivity={sensitivity['residual_payload_sensitivity']:.3e} "
@@ -432,6 +582,7 @@ def run_channel_sanity(config: Mapping[str, Any], images: torch.Tensor | None = 
                     print(f"stage={stage} level={level} step={step} total_loss={total_loss.item():.6f}")
             level_summary = {"passed": passed, "steps_completed": step, "final_evaluation": last_bundle}
             _write_records(level_dir, history, level_summary)
+            _write_per_bit(level_dir, per_bit_rows)
             stage_result["levels"][str(level)] = level_summary
             if history: comparison.append(history[-1])
             if not passed:

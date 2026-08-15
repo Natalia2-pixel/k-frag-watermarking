@@ -12,10 +12,13 @@ from kfrag.diagnostics.channel_sanity import (
     capacity_mask,
     circular_payload_shuffle,
     generate_payload_bank,
+    fresh_random_payloads,
     gradient_checks,
     masked_bce_with_logits,
     next_stage,
     payload_sensitivity,
+    payload_diversity,
+    recovery_metrics,
     payload_splits_are_disjoint,
     sensitivity_checks,
     should_advance_capacity,
@@ -170,3 +173,37 @@ def test_malformed_configuration_has_clear_error():
     bad = configuration(); bad["payloads"]["packet_bits"] = 43
     with pytest.raises(ValueError, match="malformed configuration.*packet_bits"):
         validate_config(bad)
+
+
+def test_fresh_payloads_do_not_overlap_stored_active_patterns_and_vary():
+    training, heldout = generate_payload_bank(12, 6, seed=91)
+    mask = capacity_mask(1)
+    fresh = fresh_random_payloads(16, mask, (training, heldout), torch.Generator().manual_seed(7))
+    diversity = payload_diversity({"training": training, "heldout": heldout, "fresh": fresh}, mask)
+    assert diversity["overlap"]["training__fresh"] == 0
+    assert diversity["overlap"]["heldout__fresh"] == 0
+    assert diversity["groups"]["fresh"]["every_target_active_bit_varies"]
+    assert diversity["groups"]["heldout"]["target_active_bits_vary"]
+
+
+def test_shuffled_targets_score_substantially_worse_synthetically():
+    mask = capacity_mask(1)
+    targets = torch.zeros(4, 44, 4, 4)
+    targets[1, 4:12] = 1
+    targets[2, 4:12, :, ::2] = 1
+    targets[3, 4:12, :, 1::2] = 1
+    logits = (targets * 2 - 1) * 10
+    correct = recovery_metrics(logits, targets, mask)
+    shuffled = recovery_metrics(logits, circular_payload_shuffle(targets), mask)
+    assert correct["active_bit_accuracy"] - shuffled["active_bit_accuracy"] > .4
+    assert shuffled["active_bce_loss"] - correct["active_bce_loss"] > 4
+
+
+def test_payload_change_changes_encoder_residual_and_inactive_tag_is_na():
+    carrier = torch.zeros(1, 3, 256, 256)
+    values = payload_sensitivity(TinyChannel(True), carrier, torch.zeros(1, 44, 4, 4),
+                                 torch.ones(1, 44, 4, 4))
+    assert values["encoder_residual_pairwise_distance"] > 0
+    metrics = recovery_metrics(torch.zeros(2, 44, 4, 4), torch.zeros(2, 44, 4, 4), capacity_mask(1))
+    assert metrics["active_authentication_tag_accuracy"] is None
+    assert metrics["inactive_authentication_tag_accuracy"] == "not applicable"
