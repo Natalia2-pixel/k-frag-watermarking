@@ -1,0 +1,11 @@
+seed: 2026
+output_directory: outputs/channel_repair
+projector_steps: 250
+evaluation_payloads: 64
+alpha: 0.05
+thresholds:
+  fresh_active_bit_accuracy: 0.995
+  fresh_exact_8bit_regional_accuracy: 0.96
+  shuffled_accuracy_margin: 0.45
+  maximum_original_exact_active_false_positive_rate: 0.01
+stage_b_automatic_progression: false
