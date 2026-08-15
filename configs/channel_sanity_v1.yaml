@@ -1,0 +1,32 @@
+experiment:
+  seed: 2026
+  device: auto
+
+data:
+  coco_directory: data/raw/coco_val2017_100
+  image_size: 256
+  num_natural_images: 8
+
+payloads:
+  train_payloads: 256
+  heldout_payloads: 64
+  grid_size: 4
+  packet_bits: 44
+
+training:
+  batch_size: 8
+  learning_rate: 0.0002
+  weight_decay: 0.0001
+  steps_per_capacity_level: 1500
+  log_every: 50
+  evaluate_every: 100
+  alpha: 0.05
+
+thresholds:
+  active_field_accuracy: 0.95
+  tag_accuracy: 0.95
+  exact_active_region_accuracy: 0.80
+  maximum_original_packet_accuracy: 0.01
+  minimum_payload_sensitivity: 1.0e-6
+  minimum_logit_sensitivity: 1.0e-6
+  minimum_gradient_norm: 1.0e-10
