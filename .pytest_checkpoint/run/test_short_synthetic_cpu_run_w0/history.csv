@@ -1,2 +1,0 @@
-step,total_loss,payload_bce_loss,image_fidelity_loss,bit_accuracy,regional_packet_accuracy,image_payload_accuracy,psnr,max_absolute_residual
-1,0.705488920211792,0.7007272243499756,0.004327560309320688,0.5040838122367859,0.0,0.0,45.36649703979492,0.01999995857477188
