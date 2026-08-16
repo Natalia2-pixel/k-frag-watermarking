@@ -1,0 +1,17 @@
+seed: 2026
+data_root: data/raw/coco_val2017_100
+image_index: 0
+output_directory: outputs/stage_b_natural
+alpha: 0.05
+steps: 500
+batch_size: 8
+carrier_learning_rate: 0.001
+decoder_learning_rate: 0.001
+evaluate_every: 50
+fixed_training_payloads: 32
+heldout_payloads: 64
+fresh_payloads: 64
+original_control_targets: 256
+effectively_zero_threshold: 1.0e-12
+visualization_amplification: 10
+stage_c_automatic_progression: false
