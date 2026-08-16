@@ -14,10 +14,11 @@ with args.config.open(encoding="utf-8") as handle:
     result = run_channel_repair(yaml.safe_load(handle))
 if result.get("first_failure"):
     raise SystemExit("FAIL: " + result["first_failure"])
-print("PASS: fixed and learnable structured Stage-A channels meet all gates")
+print("PASS: fixed analytical channel and genuinely learned Stage-A carrier meet their gates")
 fresh = result["learnable_carrier"]["evaluations"]["fresh_on_the_fly_payloads"]
 display = lambda value: "N/A" if value is None else value
 print(f"exact active 8-bit regional-symbol accuracy: {fresh['exact_active_region_accuracy']:.6f}")
 print(f"authentication tag accuracy: {display(fresh['authentication_tag_accuracy'])}")
 print(f"exact 44-bit regional-packet accuracy: {display(fresh['exact_regional_packet_accuracy'])}")
 print(f"exact image-payload accuracy: {display(fresh['exact_image_payload_accuracy'])}")
+print(f"carrier training status: {result['learnable_carrier']['training_status']}")

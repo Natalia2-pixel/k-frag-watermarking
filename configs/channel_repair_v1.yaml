@@ -3,6 +3,9 @@ output_directory: outputs/channel_repair
 projector_steps: 250
 evaluation_payloads: 64
 alpha: 0.05
+carrier_learning_rate: 0.001
+carrier_optimizer_steps: 4
+carrier_training_batch_size: 16
 thresholds:
   fresh_active_bit_accuracy: 0.995
   fresh_exact_8bit_regional_accuracy: 0.96

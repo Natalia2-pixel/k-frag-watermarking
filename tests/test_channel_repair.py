@@ -3,7 +3,8 @@ import inspect
 import torch
 
 from kfrag.diagnostics.channel_repair import (decoder_reconstruction_test,
-    carrier_change_metrics, single_bit_residual_causality, stage_a_recovery_metrics)
+    carrier_change_metrics, optimize_learnable_carrier, optimizer_contains_parameter,
+    single_bit_residual_causality, stage_a_recovery_metrics)
 from kfrag.diagnostics.channel_sanity import capacity_mask
 from kfrag.models import RegionalCarrierBank, StructuredChannelSystem, StructuredRegionalDecoder
 
@@ -75,6 +76,23 @@ def test_known_carrier_change_metrics():
     assert metrics["maximum_absolute_change_from_initialization"] == 3.0
     assert metrics["number_of_changed_parameters"] == 1
     assert metrics["total_number_of_carrier_parameters"] == 2
+
+
+def test_learnable_carrier_is_an_optimizer_member():
+    model = StructuredChannelSystem(mode="learnable")
+    optimizer = torch.optim.Adam([model.carrier_bank.carriers], lr=1e-3)
+    assert model.carrier_bank.carriers.requires_grad
+    assert optimizer_contains_parameter(optimizer, model.carrier_bank.carriers)
+
+
+def test_first_optimizer_step_changes_learnable_carrier():
+    torch.manual_seed(9)
+    model = StructuredChannelSystem(mode="learnable")
+    diagnostics = optimize_learnable_carrier(model, steps=1, learning_rate=1e-3, batch_size=2)
+    assert diagnostics["number_of_optimizer_steps"] == 1
+    assert diagnostics["gradient_norm_before_each_optimizer_step"][0] > 0
+    assert diagnostics["first_step_parameter_update_norm"] > 0
+    assert diagnostics["change_from_initialization"]["number_of_changed_parameters"] > 0
 
 
 def test_stage_a_inactive_packet_fields_are_unavailable_but_active_metric_is_numeric():

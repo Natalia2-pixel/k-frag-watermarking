@@ -1,6 +1,6 @@
 {
   "schema_version": "2.0",
-  "correction_note": "Corrected Stage-A reporting: 100% exact accuracy refers only to the active 8-bit regional symbol, not a complete 44-bit packet. Raw experiment procedure, thresholds, and failed channel-sanity evidence are unchanged.",
+  "correction_note": "Corrected Stage-A reporting: 100% exact accuracy refers only to the active 8-bit regional symbol, not a complete 44-bit packet. The learnable carrier now has an explicit audited optimization phase; thresholds and failed channel-sanity evidence are unchanged.",
   "active_channels": [
     4,
     5,
@@ -22,6 +22,9 @@
     "projector_steps": 250,
     "evaluation_payloads": 64,
     "alpha": 0.05,
+    "carrier_learning_rate": 0.001,
+    "carrier_optimizer_steps": 4,
+    "carrier_training_batch_size": 16,
     "thresholds": {
       "fresh_active_bit_accuracy": 0.995,
       "fresh_exact_8bit_regional_accuracy": 0.96,
@@ -4239,6 +4242,12 @@
       "relative_l2_epsilon": 1e-12,
       "changed_parameter_tolerance": 1e-10
     },
+    "training_status": "fixed_analytical_carrier",
+    "optimization_diagnostics": "N/A (fixed analytical carriers)",
+    "communication_gate_passed": true,
+    "carrier_optimization_performed": false,
+    "carrier_parameters_changed": false,
+    "learned_carrier_gate_passed": false,
     "passed": true
   },
   "learnable_carrier": {
@@ -4252,7 +4261,7 @@
         "inactive_authentication_tag_accuracy": "not applicable",
         "active_field_accuracy": 1.0,
         "active_bit_accuracy": 1.0,
-        "active_bce_loss": 0.0008505810401402414,
+        "active_bce_loss": 0.0008505514706484973,
         "mean_confidence": 0.9982995986938477,
         "non_index_accuracy": 1.0,
         "exact_active_region_accuracy": 1.0,
@@ -4272,20 +4281,20 @@
         "shuffled_target_accuracy": 0.499267578125,
         "original_exact_active_false_positive_rate": 0.00390625,
         "payload_tensor_difference": 0.10227272659540176,
-        "residual_payload_sensitivity": 0.0009146102238446474,
-        "encoder_residual_pairwise_distance": 0.5194534063339233,
-        "watermarked_image_sensitivity": 0.0009146110969595611,
-        "logit_payload_sensitivity": 1.4459915161132812,
-        "decoder_logit_pairwise_distance": 119.96317291259766,
+        "residual_payload_sensitivity": 0.000916515477001667,
+        "encoder_residual_pairwise_distance": 0.5194590091705322,
+        "watermarked_image_sensitivity": 0.0009165162337012589,
+        "logit_payload_sensitivity": 1.4459939002990723,
+        "decoder_logit_pairwise_distance": 119.96372985839844,
         "predicted_bit_change_fraction": 0.10227272659540176,
-        "psnr": 62.14653778076172,
-        "maximum_absolute_residual": 0.0034076396841555834,
-        "mean_absolute_residual": 0.0006134802242740989,
+        "psnr": 62.1464958190918,
+        "maximum_absolute_residual": 0.003386931261047721,
+        "mean_absolute_residual": 0.0006143071805126965,
         "residual_saturation_fraction": 0.0,
-        "mean_residual": -8.828256875537122e-11,
+        "mean_residual": -4.95153536228532e-11,
         "projector_gradient_norm": "N/A (structured path has no projector)",
-        "carrier_bank_gradient_norm": 1.738256889429095e-06,
-        "decoder_gradient_norm": 0.006011872751249745,
+        "carrier_bank_gradient_norm": 1.6781080590991433e-06,
+        "decoder_gradient_norm": 0.006011718766579747,
         "inactive_tag_metrics": "N/A",
         "per_bit": [
           {
@@ -5196,951 +5205,7 @@
         "inactive_authentication_tag_accuracy": "not applicable",
         "active_field_accuracy": 1.0,
         "active_bit_accuracy": 1.0,
-        "active_bce_loss": 0.0008505528676323593,
-        "mean_confidence": 0.9982995986938477,
-        "non_index_accuracy": 1.0,
-        "exact_active_region_accuracy": 1.0,
-        "exact_regional_packet_accuracy": null,
-        "exact_image_payload_accuracy": null,
-        "number_exact_regional_packets": null,
-        "metric_availability": {
-          "active_bit_accuracy": "available_for_channels_4_through_11",
-          "exact_active_region_accuracy": "available_for_exact_active_8_bit_regional_symbol",
-          "authentication_tag_accuracy": "not_available_authentication_tag_bits_inactive",
-          "active_authentication_tag_accuracy": "not_available_authentication_tag_bits_inactive",
-          "exact_regional_packet_accuracy": "not_available_complete_44_bit_packets_inactive",
-          "number_exact_regional_packets": "not_available_complete_44_bit_packets_inactive",
-          "exact_image_payload_accuracy": "not_available_complete_image_payload_evaluation_invalid",
-          "rs_reconstruction_and_identity_recovery": "not_available_complete_regional_packets_inactive"
-        },
-        "shuffled_target_accuracy": 0.5009765625,
-        "original_exact_active_false_positive_rate": 0.00390625,
-        "payload_tensor_difference": 0.07954545319080353,
-        "residual_payload_sensitivity": 0.000804308510851115,
-        "encoder_residual_pairwise_distance": 0.45813804864883423,
-        "watermarked_image_sensitivity": 0.0008043087436817586,
-        "logit_payload_sensitivity": 1.1247363090515137,
-        "decoder_logit_pairwise_distance": 105.80225372314453,
-        "predicted_bit_change_fraction": 0.07954545319080353,
-        "psnr": 62.14649200439453,
-        "maximum_absolute_residual": 0.0034076396841555834,
-        "mean_absolute_residual": 0.0006158079486340284,
-        "residual_saturation_fraction": 0.0,
-        "mean_residual": 7.820902259147999e-10,
-        "projector_gradient_norm": "N/A (structured path has no projector)",
-        "carrier_bank_gradient_norm": 1.1155489330294781e-06,
-        "decoder_gradient_norm": 0.006011062091571672,
-        "inactive_tag_metrics": "N/A",
-        "per_bit": [
-          {
-            "active_bit_index": 0,
-            "predicted_one_frequency": 0.40625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 1,
-            "predicted_one_frequency": 0.59375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 2,
-            "predicted_one_frequency": 0.390625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9652016758918762,
-            "prediction_entropy": 0.9652016758918762
-          },
-          {
-            "active_bit_index": 3,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 4,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 5,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 6,
-            "predicted_one_frequency": 0.515625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 7,
-            "predicted_one_frequency": 0.484375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 8,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 9,
-            "predicted_one_frequency": 0.453125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 10,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 11,
-            "predicted_one_frequency": 0.484375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 12,
-            "predicted_one_frequency": 0.484375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 13,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 14,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 15,
-            "predicted_one_frequency": 0.546875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 16,
-            "predicted_one_frequency": 0.515625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 17,
-            "predicted_one_frequency": 0.484375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 18,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 19,
-            "predicted_one_frequency": 0.515625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 20,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 21,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 22,
-            "predicted_one_frequency": 0.421875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 23,
-            "predicted_one_frequency": 0.375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9544340372085571,
-            "prediction_entropy": 0.9544340372085571
-          },
-          {
-            "active_bit_index": 24,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 25,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 26,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 27,
-            "predicted_one_frequency": 0.40625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 28,
-            "predicted_one_frequency": 0.375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9544340372085571,
-            "prediction_entropy": 0.9544340372085571
-          },
-          {
-            "active_bit_index": 29,
-            "predicted_one_frequency": 0.59375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 30,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 31,
-            "predicted_one_frequency": 0.546875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 32,
-            "predicted_one_frequency": 0.5625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 33,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 34,
-            "predicted_one_frequency": 0.390625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9652016758918762,
-            "prediction_entropy": 0.9652016758918762
-          },
-          {
-            "active_bit_index": 35,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 36,
-            "predicted_one_frequency": 0.4375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 37,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 38,
-            "predicted_one_frequency": 0.59375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 39,
-            "predicted_one_frequency": 0.515625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 40,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 41,
-            "predicted_one_frequency": 0.515625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 42,
-            "predicted_one_frequency": 0.5625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 43,
-            "predicted_one_frequency": 0.40625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 44,
-            "predicted_one_frequency": 0.453125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 45,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 46,
-            "predicted_one_frequency": 0.5625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 47,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 48,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 49,
-            "predicted_one_frequency": 0.515625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 50,
-            "predicted_one_frequency": 0.375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9544340372085571,
-            "prediction_entropy": 0.9544340372085571
-          },
-          {
-            "active_bit_index": 51,
-            "predicted_one_frequency": 0.4375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 52,
-            "predicted_one_frequency": 0.484375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 53,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 54,
-            "predicted_one_frequency": 0.484375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 55,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 56,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 57,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 58,
-            "predicted_one_frequency": 0.546875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 59,
-            "predicted_one_frequency": 0.5625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 60,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 61,
-            "predicted_one_frequency": 0.625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9544340372085571,
-            "prediction_entropy": 0.9544340372085571
-          },
-          {
-            "active_bit_index": 62,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 63,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 64,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 65,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 66,
-            "predicted_one_frequency": 0.453125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 67,
-            "predicted_one_frequency": 0.546875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 68,
-            "predicted_one_frequency": 0.640625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9421632289886475,
-            "prediction_entropy": 0.9421632289886475
-          },
-          {
-            "active_bit_index": 69,
-            "predicted_one_frequency": 0.5625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 70,
-            "predicted_one_frequency": 0.546875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 71,
-            "predicted_one_frequency": 0.515625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 72,
-            "predicted_one_frequency": 0.40625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 73,
-            "predicted_one_frequency": 0.59375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 74,
-            "predicted_one_frequency": 0.546875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 75,
-            "predicted_one_frequency": 0.453125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 76,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 77,
-            "predicted_one_frequency": 0.59375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 78,
-            "predicted_one_frequency": 0.4375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 79,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 80,
-            "predicted_one_frequency": 0.671875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9129992127418518,
-            "prediction_entropy": 0.9129992127418518
-          },
-          {
-            "active_bit_index": 81,
-            "predicted_one_frequency": 0.640625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9421632289886475,
-            "prediction_entropy": 0.9421632289886475
-          },
-          {
-            "active_bit_index": 82,
-            "predicted_one_frequency": 0.5625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 83,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 84,
-            "predicted_one_frequency": 0.4375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 85,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 86,
-            "predicted_one_frequency": 0.5625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 87,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 88,
-            "predicted_one_frequency": 0.515625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 89,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 90,
-            "predicted_one_frequency": 0.40625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 91,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 92,
-            "predicted_one_frequency": 0.40625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9744894504547119,
-            "prediction_entropy": 0.9744894504547119
-          },
-          {
-            "active_bit_index": 93,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 94,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 95,
-            "predicted_one_frequency": 0.375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9544340372085571,
-            "prediction_entropy": 0.9544340372085571
-          },
-          {
-            "active_bit_index": 96,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 97,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 98,
-            "predicted_one_frequency": 0.5,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 1.0,
-            "prediction_entropy": 1.0
-          },
-          {
-            "active_bit_index": 99,
-            "predicted_one_frequency": 0.515625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 100,
-            "predicted_one_frequency": 0.390625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9652016758918762,
-            "prediction_entropy": 0.9652016758918762
-          },
-          {
-            "active_bit_index": 101,
-            "predicted_one_frequency": 0.390625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9652016758918762,
-            "prediction_entropy": 0.9652016758918762
-          },
-          {
-            "active_bit_index": 102,
-            "predicted_one_frequency": 0.453125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 103,
-            "predicted_one_frequency": 0.5625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 104,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 105,
-            "predicted_one_frequency": 0.515625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 106,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 107,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 108,
-            "predicted_one_frequency": 0.546875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 109,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 110,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 111,
-            "predicted_one_frequency": 0.375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9544340372085571,
-            "prediction_entropy": 0.9544340372085571
-          },
-          {
-            "active_bit_index": 112,
-            "predicted_one_frequency": 0.609375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9652016758918762,
-            "prediction_entropy": 0.9652016758918762
-          },
-          {
-            "active_bit_index": 113,
-            "predicted_one_frequency": 0.5625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 114,
-            "predicted_one_frequency": 0.453125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 115,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 116,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 117,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 118,
-            "predicted_one_frequency": 0.546875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9936507344245911,
-            "prediction_entropy": 0.9936507344245911
-          },
-          {
-            "active_bit_index": 119,
-            "predicted_one_frequency": 0.5625,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9886994361877441,
-            "prediction_entropy": 0.9886994361877441
-          },
-          {
-            "active_bit_index": 120,
-            "predicted_one_frequency": 0.578125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 121,
-            "predicted_one_frequency": 0.359375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9421632289886475,
-            "prediction_entropy": 0.9421632289886475
-          },
-          {
-            "active_bit_index": 122,
-            "predicted_one_frequency": 0.53125,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 123,
-            "predicted_one_frequency": 0.46875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9971804022789001,
-            "prediction_entropy": 0.9971804022789001
-          },
-          {
-            "active_bit_index": 124,
-            "predicted_one_frequency": 0.484375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          },
-          {
-            "active_bit_index": 125,
-            "predicted_one_frequency": 0.421875,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9823166131973267,
-            "prediction_entropy": 0.9823166131973267
-          },
-          {
-            "active_bit_index": 126,
-            "predicted_one_frequency": 0.359375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9421632289886475,
-            "prediction_entropy": 0.9421632289886475
-          },
-          {
-            "active_bit_index": 127,
-            "predicted_one_frequency": 0.484375,
-            "per_bit_accuracy": 1.0,
-            "target_entropy": 0.9992954730987549,
-            "prediction_entropy": 0.9992954730987549
-          }
-        ],
-        "passed": true
-      },
-      "fixed_heldout_payloads": {
-        "overall_bit_accuracy": 1.0,
-        "region_index_accuracy": 1.0,
-        "coded_symbol_accuracy": 1.0,
-        "authentication_tag_accuracy": null,
-        "active_authentication_tag_accuracy": null,
-        "inactive_authentication_tag_accuracy": "not applicable",
-        "active_field_accuracy": 1.0,
-        "active_bit_accuracy": 1.0,
-        "active_bce_loss": 0.0008505636942572892,
+        "active_bce_loss": 0.0008505347068421543,
         "mean_confidence": 0.9982995986938477,
         "non_index_accuracy": 1.0,
         "exact_active_region_accuracy": 1.0,
@@ -6160,20 +5225,20 @@
         "shuffled_target_accuracy": 0.502685546875,
         "original_exact_active_false_positive_rate": 0.0029296875,
         "payload_tensor_difference": 0.10653409361839294,
-        "residual_payload_sensitivity": 0.0009387616883032024,
-        "encoder_residual_pairwise_distance": 0.5301943421363831,
-        "watermarked_image_sensitivity": 0.0009387618047185242,
-        "logit_payload_sensitivity": 1.5062813758850098,
-        "decoder_logit_pairwise_distance": 122.44290161132812,
+        "residual_payload_sensitivity": 0.000940625264775008,
+        "encoder_residual_pairwise_distance": 0.5301921367645264,
+        "watermarked_image_sensitivity": 0.0009406260214745998,
+        "logit_payload_sensitivity": 1.5062880516052246,
+        "decoder_logit_pairwise_distance": 122.44359588623047,
         "predicted_bit_change_fraction": 0.10653409361839294,
-        "psnr": 62.14651870727539,
-        "maximum_absolute_residual": 0.0034076396841555834,
-        "mean_absolute_residual": 0.0006153674330562353,
+        "psnr": 62.14646911621094,
+        "maximum_absolute_residual": 0.003386931261047721,
+        "mean_absolute_residual": 0.0006163284415379167,
         "residual_saturation_fraction": 0.0,
-        "mean_residual": -1.8987595939989887e-09,
+        "mean_residual": -1.8588934835861437e-09,
         "projector_gradient_norm": "N/A (structured path has no projector)",
-        "carrier_bank_gradient_norm": 1.0738932258350352e-06,
-        "decoder_gradient_norm": 0.006010437686763551,
+        "carrier_bank_gradient_norm": 1.020854075208071e-06,
+        "decoder_gradient_norm": 0.006010207341406073,
         "inactive_tag_metrics": "N/A",
         "per_bit": [
           {
@@ -7075,7 +6140,7 @@
         ],
         "passed": true
       },
-      "fresh_on_the_fly_payloads": {
+      "fixed_heldout_payloads": {
         "overall_bit_accuracy": 1.0,
         "region_index_accuracy": 1.0,
         "coded_symbol_accuracy": 1.0,
@@ -7084,7 +6149,7 @@
         "inactive_authentication_tag_accuracy": "not applicable",
         "active_field_accuracy": 1.0,
         "active_bit_accuracy": 1.0,
-        "active_bce_loss": 0.0008505596197210252,
+        "active_bce_loss": 0.0008505292353220284,
         "mean_confidence": 0.9982995986938477,
         "non_index_accuracy": 1.0,
         "exact_active_region_accuracy": 1.0,
@@ -7104,20 +6169,20 @@
         "shuffled_target_accuracy": 0.4990234375,
         "original_exact_active_false_positive_rate": 0.005859375,
         "payload_tensor_difference": 0.09232954680919647,
-        "residual_payload_sensitivity": 0.0008428253349848092,
-        "encoder_residual_pairwise_distance": 0.49357882142066956,
-        "watermarked_image_sensitivity": 0.0008428267319686711,
-        "logit_payload_sensitivity": 1.305439829826355,
-        "decoder_logit_pairwise_distance": 113.98709106445312,
+        "residual_payload_sensitivity": 0.0008452120237052441,
+        "encoder_residual_pairwise_distance": 0.49358275532722473,
+        "watermarked_image_sensitivity": 0.0008452117326669395,
+        "logit_payload_sensitivity": 1.305443525314331,
+        "decoder_logit_pairwise_distance": 113.9876480102539,
         "predicted_bit_change_fraction": 0.09232954680919647,
-        "psnr": 62.14650344848633,
-        "maximum_absolute_residual": 0.0034076396841555834,
-        "mean_absolute_residual": 0.0006149797118268907,
+        "psnr": 62.14645767211914,
+        "maximum_absolute_residual": 0.003386931261047721,
+        "mean_absolute_residual": 0.0006160435150377452,
         "residual_saturation_fraction": 0.0,
-        "mean_residual": -7.958516623496337e-10,
+        "mean_residual": -8.280050534104078e-10,
         "projector_gradient_norm": "N/A (structured path has no projector)",
-        "carrier_bank_gradient_norm": 1.0370218843480873e-06,
-        "decoder_gradient_norm": 0.006010178713405265,
+        "carrier_bank_gradient_norm": 9.952721083913863e-07,
+        "decoder_gradient_norm": 0.006010030067838464,
         "inactive_tag_metrics": "N/A",
         "per_bit": [
           {
@@ -8018,27 +7083,1007 @@
           }
         ],
         "passed": true
+      },
+      "fresh_on_the_fly_payloads": {
+        "overall_bit_accuracy": 1.0,
+        "region_index_accuracy": 1.0,
+        "coded_symbol_accuracy": 1.0,
+        "authentication_tag_accuracy": null,
+        "active_authentication_tag_accuracy": null,
+        "inactive_authentication_tag_accuracy": "not applicable",
+        "active_field_accuracy": 1.0,
+        "active_bit_accuracy": 1.0,
+        "active_bce_loss": 0.0008505549631081522,
+        "mean_confidence": 0.9982995986938477,
+        "non_index_accuracy": 1.0,
+        "exact_active_region_accuracy": 1.0,
+        "exact_regional_packet_accuracy": null,
+        "exact_image_payload_accuracy": null,
+        "number_exact_regional_packets": null,
+        "metric_availability": {
+          "active_bit_accuracy": "available_for_channels_4_through_11",
+          "exact_active_region_accuracy": "available_for_exact_active_8_bit_regional_symbol",
+          "authentication_tag_accuracy": "not_available_authentication_tag_bits_inactive",
+          "active_authentication_tag_accuracy": "not_available_authentication_tag_bits_inactive",
+          "exact_regional_packet_accuracy": "not_available_complete_44_bit_packets_inactive",
+          "number_exact_regional_packets": "not_available_complete_44_bit_packets_inactive",
+          "exact_image_payload_accuracy": "not_available_complete_image_payload_evaluation_invalid",
+          "rs_reconstruction_and_identity_recovery": "not_available_complete_regional_packets_inactive"
+        },
+        "shuffled_target_accuracy": 0.498779296875,
+        "original_exact_active_false_positive_rate": 0.001953125,
+        "payload_tensor_difference": 0.08664772659540176,
+        "residual_payload_sensitivity": 0.0008468161686323583,
+        "encoder_residual_pairwise_distance": 0.47815319895744324,
+        "watermarked_image_sensitivity": 0.0008468147716484964,
+        "logit_payload_sensitivity": 1.2251204252243042,
+        "decoder_logit_pairwise_distance": 110.42472076416016,
+        "predicted_bit_change_fraction": 0.08664772659540176,
+        "psnr": 62.146507263183594,
+        "maximum_absolute_residual": 0.003386931261047721,
+        "mean_absolute_residual": 0.0006145494407974184,
+        "residual_saturation_fraction": 0.0,
+        "mean_residual": -8.647003113537721e-10,
+        "projector_gradient_norm": "N/A (structured path has no projector)",
+        "carrier_bank_gradient_norm": 9.996496309009156e-07,
+        "decoder_gradient_norm": 0.006009871450019071,
+        "inactive_tag_metrics": "N/A",
+        "per_bit": [
+          {
+            "active_bit_index": 0,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 1,
+            "predicted_one_frequency": 0.390625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9652016758918762,
+            "prediction_entropy": 0.9652016758918762
+          },
+          {
+            "active_bit_index": 2,
+            "predicted_one_frequency": 0.546875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 3,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 4,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 5,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 6,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 7,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 8,
+            "predicted_one_frequency": 0.5625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 9,
+            "predicted_one_frequency": 0.4375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 10,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 11,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 12,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 13,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 14,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 15,
+            "predicted_one_frequency": 0.4375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 16,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 17,
+            "predicted_one_frequency": 0.296875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.8774372339248657,
+            "prediction_entropy": 0.8774372339248657
+          },
+          {
+            "active_bit_index": 18,
+            "predicted_one_frequency": 0.421875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 19,
+            "predicted_one_frequency": 0.4375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 20,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 21,
+            "predicted_one_frequency": 0.375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9544340372085571,
+            "prediction_entropy": 0.9544340372085571
+          },
+          {
+            "active_bit_index": 22,
+            "predicted_one_frequency": 0.546875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 23,
+            "predicted_one_frequency": 0.296875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.8774372339248657,
+            "prediction_entropy": 0.8774372339248657
+          },
+          {
+            "active_bit_index": 24,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 25,
+            "predicted_one_frequency": 0.4375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 26,
+            "predicted_one_frequency": 0.578125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 27,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 28,
+            "predicted_one_frequency": 0.421875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 29,
+            "predicted_one_frequency": 0.453125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 30,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 31,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 32,
+            "predicted_one_frequency": 0.546875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 33,
+            "predicted_one_frequency": 0.578125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 34,
+            "predicted_one_frequency": 0.5625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 35,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 36,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 37,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 38,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 39,
+            "predicted_one_frequency": 0.578125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 40,
+            "predicted_one_frequency": 0.5625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 41,
+            "predicted_one_frequency": 0.546875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 42,
+            "predicted_one_frequency": 0.40625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9744894504547119,
+            "prediction_entropy": 0.9744894504547119
+          },
+          {
+            "active_bit_index": 43,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 44,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 45,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 46,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 47,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 48,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 49,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 50,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 51,
+            "predicted_one_frequency": 0.5625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 52,
+            "predicted_one_frequency": 0.546875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 53,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 54,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 55,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 56,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 57,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 58,
+            "predicted_one_frequency": 0.453125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 59,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 60,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 61,
+            "predicted_one_frequency": 0.546875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 62,
+            "predicted_one_frequency": 0.453125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 63,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 64,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 65,
+            "predicted_one_frequency": 0.5625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 66,
+            "predicted_one_frequency": 0.453125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 67,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 68,
+            "predicted_one_frequency": 0.609375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9652016758918762,
+            "prediction_entropy": 0.9652016758918762
+          },
+          {
+            "active_bit_index": 69,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 70,
+            "predicted_one_frequency": 0.421875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 71,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 72,
+            "predicted_one_frequency": 0.578125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 73,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 74,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 75,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 76,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 77,
+            "predicted_one_frequency": 0.625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9544340372085571,
+            "prediction_entropy": 0.9544340372085571
+          },
+          {
+            "active_bit_index": 78,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 79,
+            "predicted_one_frequency": 0.453125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 80,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 81,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 82,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 83,
+            "predicted_one_frequency": 0.5625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 84,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 85,
+            "predicted_one_frequency": 0.453125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 86,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 87,
+            "predicted_one_frequency": 0.4375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 88,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 89,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 90,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 91,
+            "predicted_one_frequency": 0.5625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 92,
+            "predicted_one_frequency": 0.578125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 93,
+            "predicted_one_frequency": 0.421875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 94,
+            "predicted_one_frequency": 0.546875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 95,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 96,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 97,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 98,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 99,
+            "predicted_one_frequency": 0.578125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 100,
+            "predicted_one_frequency": 0.5625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 101,
+            "predicted_one_frequency": 0.546875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 102,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 103,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 104,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 105,
+            "predicted_one_frequency": 0.4375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 106,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 107,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 108,
+            "predicted_one_frequency": 0.5,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 1.0,
+            "prediction_entropy": 1.0
+          },
+          {
+            "active_bit_index": 109,
+            "predicted_one_frequency": 0.390625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9652016758918762,
+            "prediction_entropy": 0.9652016758918762
+          },
+          {
+            "active_bit_index": 110,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 111,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 112,
+            "predicted_one_frequency": 0.515625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 113,
+            "predicted_one_frequency": 0.5625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 114,
+            "predicted_one_frequency": 0.59375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9744894504547119,
+            "prediction_entropy": 0.9744894504547119
+          },
+          {
+            "active_bit_index": 115,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 116,
+            "predicted_one_frequency": 0.484375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9992954730987549,
+            "prediction_entropy": 0.9992954730987549
+          },
+          {
+            "active_bit_index": 117,
+            "predicted_one_frequency": 0.421875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9823166131973267,
+            "prediction_entropy": 0.9823166131973267
+          },
+          {
+            "active_bit_index": 118,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 119,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 120,
+            "predicted_one_frequency": 0.53125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 121,
+            "predicted_one_frequency": 0.46875,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9971804022789001,
+            "prediction_entropy": 0.9971804022789001
+          },
+          {
+            "active_bit_index": 122,
+            "predicted_one_frequency": 0.59375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9744894504547119,
+            "prediction_entropy": 0.9744894504547119
+          },
+          {
+            "active_bit_index": 123,
+            "predicted_one_frequency": 0.5625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          },
+          {
+            "active_bit_index": 124,
+            "predicted_one_frequency": 0.453125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 125,
+            "predicted_one_frequency": 0.453125,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9936507344245911,
+            "prediction_entropy": 0.9936507344245911
+          },
+          {
+            "active_bit_index": 126,
+            "predicted_one_frequency": 0.40625,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9744894504547119,
+            "prediction_entropy": 0.9744894504547119
+          },
+          {
+            "active_bit_index": 127,
+            "predicted_one_frequency": 0.4375,
+            "per_bit_accuracy": 1.0,
+            "target_entropy": 0.9886994361877441,
+            "prediction_entropy": 0.9886994361877441
+          }
+        ],
+        "passed": true
       }
     },
     "causality": {
-      "inside_change": 0.0005523036816157401,
+      "inside_change": 0.0005520411068573594,
       "outside_max_change": 0.0,
       "passed": true
     },
-    "original_grey_carrier": 0.005859375,
+    "original_grey_carrier": 0.001953125,
     "change_from_initialization": {
       "status": "available",
-      "mean_absolute_change_from_initialization": 0.0,
-      "l1_change_from_initialization": 0.0,
-      "l2_change_from_initialization": 0.0,
-      "relative_l2_change_from_initialization": 0.0,
-      "cosine_similarity_with_initialization": 0.999999999999997,
-      "maximum_absolute_change_from_initialization": 0.0,
-      "number_of_changed_parameters": 0,
+      "mean_absolute_change_from_initialization": 0.0004258428171493023,
+      "l1_change_from_initialization": 13.954017432348337,
+      "l2_change_from_initialization": 0.08700461806140633,
+      "relative_l2_change_from_initialization": 0.03076078020816679,
+      "cosine_similarity_with_initialization": 0.9995381482687634,
+      "maximum_absolute_change_from_initialization": 0.0014124829322099686,
+      "number_of_changed_parameters": 32768,
       "total_number_of_carrier_parameters": 32768,
       "relative_l2_epsilon": 1e-12,
       "changed_parameter_tolerance": 1e-10
     },
+    "training_status": "genuinely_learned_carrier",
+    "optimization_diagnostics": {
+      "requires_grad": true,
+      "included_in_optimizer": true,
+      "carrier_learning_rate": 0.001,
+      "number_of_optimizer_steps": 4,
+      "gradient_norm_before_each_optimizer_step": [
+        8.995853590931802e-07,
+        0.00015693434397689998,
+        0.0011897735530510545,
+        0.00023002736270427704
+      ],
+      "first_step_parameter_update_norm": 0.048409152776002884,
+      "received_finite_nonzero_gradients": true,
+      "optimizer_step_performed": true,
+      "fresh_random_payloads_each_step": true,
+      "normalization_preserved_by_forward_parameterization": true,
+      "region_locality_preserved_by_architecture": true,
+      "change_from_initialization": {
+        "status": "available",
+        "mean_absolute_change_from_initialization": 0.0004258428171493023,
+        "l1_change_from_initialization": 13.954017432348337,
+        "l2_change_from_initialization": 0.08700461806140633,
+        "relative_l2_change_from_initialization": 0.03076078020816679,
+        "cosine_similarity_with_initialization": 0.9995381482687634,
+        "maximum_absolute_change_from_initialization": 0.0014124829322099686,
+        "number_of_changed_parameters": 32768,
+        "total_number_of_carrier_parameters": 32768,
+        "relative_l2_epsilon": 1e-12,
+        "changed_parameter_tolerance": 1e-10
+      }
+    },
+    "communication_gate_passed": true,
+    "carrier_optimization_performed": true,
+    "carrier_parameters_changed": true,
+    "learned_carrier_gate_passed": true,
     "passed": true
   }
 }
