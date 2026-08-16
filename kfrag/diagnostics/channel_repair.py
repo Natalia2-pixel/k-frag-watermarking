@@ -17,13 +17,84 @@ from kfrag.diagnostics.channel_sanity import (capacity_mask, circular_payload_sh
 from kfrag.models import CleanWatermarkSystem, MessageProjector, StructuredChannelSystem
 
 
+SCHEMA_VERSION = "2.0"
+ACTIVE_CHANNELS = list(range(4, 12))
+INACTIVE_FIELDS = ["region_index", "authentication_tag"]
+CARRIER_CHANGE_EPSILON = 1e-12
+CARRIER_CHANGED_TOLERANCE = 1e-10
+
+
+def carrier_change_metrics(initial: torch.Tensor, learned: torch.Tensor,
+                           epsilon: float = CARRIER_CHANGE_EPSILON,
+                           changed_tolerance: float = CARRIER_CHANGED_TOLERANCE) -> dict[str, Any]:
+    """Measure a carrier against a detached, non-aliased initialization snapshot."""
+    if initial.shape != learned.shape:
+        raise ValueError("initial and learned carriers must have the same shape")
+    initial_flat = initial.detach().flatten().to(dtype=torch.float64)
+    learned_flat = learned.detach().flatten().to(dtype=torch.float64)
+    difference = learned_flat - initial_flat
+    l2 = difference.norm()
+    initial_l2 = initial_flat.norm()
+    cosine = F.cosine_similarity(learned_flat.unsqueeze(0), initial_flat.unsqueeze(0),
+                                 dim=1, eps=epsilon).squeeze(0)
+    return {
+        "status": "available",
+        "mean_absolute_change_from_initialization": difference.abs().mean().detach().item(),
+        "l1_change_from_initialization": difference.abs().sum().detach().item(),
+        "l2_change_from_initialization": l2.detach().item(),
+        "relative_l2_change_from_initialization": (
+            l2 / initial_l2.clamp_min(epsilon)).detach().item(),
+        "cosine_similarity_with_initialization": cosine.detach().item(),
+        "maximum_absolute_change_from_initialization": difference.abs().max().detach().item(),
+        "number_of_changed_parameters": int(
+            difference.abs().gt(changed_tolerance).sum().detach().item()),
+        "total_number_of_carrier_parameters": initial_flat.numel(),
+        "relative_l2_epsilon": epsilon,
+        "changed_parameter_tolerance": changed_tolerance,
+    }
+
+
+def unavailable_carrier_change_metrics() -> dict[str, Any]:
+    names = ("mean_absolute_change_from_initialization", "l1_change_from_initialization",
+             "l2_change_from_initialization", "relative_l2_change_from_initialization",
+             "cosine_similarity_with_initialization",
+             "maximum_absolute_change_from_initialization", "number_of_changed_parameters",
+             "total_number_of_carrier_parameters")
+    result = {name: None for name in names}
+    result.update({"status": "not_available_fixed_analytical_carrier_is_not_trained",
+                   "relative_l2_epsilon": CARRIER_CHANGE_EPSILON,
+                   "changed_parameter_tolerance": CARRIER_CHANGED_TOLERANCE})
+    return result
+
+
+def stage_a_recovery_metrics(logits: torch.Tensor, targets: torch.Tensor,
+                             active_mask: torch.Tensor) -> dict[str, Any]:
+    """Report active symbols without pretending inactive fields were evaluated."""
+    metrics = recovery_metrics(logits, targets, active_mask)
+    for name in ("authentication_tag_accuracy", "active_authentication_tag_accuracy",
+                 "exact_regional_packet_accuracy", "number_exact_regional_packets",
+                 "exact_image_payload_accuracy"):
+        metrics[name] = None
+    metrics["metric_availability"] = {
+        "active_bit_accuracy": "available_for_channels_4_through_11",
+        "exact_active_region_accuracy": "available_for_exact_active_8_bit_regional_symbol",
+        "authentication_tag_accuracy": "not_available_authentication_tag_bits_inactive",
+        "active_authentication_tag_accuracy": "not_available_authentication_tag_bits_inactive",
+        "exact_regional_packet_accuracy": "not_available_complete_44_bit_packets_inactive",
+        "number_exact_regional_packets": "not_available_complete_44_bit_packets_inactive",
+        "exact_image_payload_accuracy": "not_available_complete_image_payload_evaluation_invalid",
+        "rs_reconstruction_and_identity_recovery": "not_available_complete_regional_packets_inactive",
+    }
+    return metrics
+
+
 def _tensor_stats(value: torch.Tensor) -> dict[str, Any]:
     detached = value.detach()
     return {"shape": list(value.shape), "requires_grad": value.requires_grad,
             "grad_fn": None if value.grad_fn is None else type(value.grad_fn).__name__,
-            "mean": float(detached.mean()), "std": float(detached.std()),
-            "zero_fraction": float(detached.eq(0).float().mean()),
-            "saturation_fraction": float(detached.abs().ge(.999).float().mean())}
+            "mean": detached.mean().item(), "std": detached.std().item(),
+            "zero_fraction": detached.eq(0).float().mean().item(),
+            "saturation_fraction": detached.abs().ge(.999).float().mean().item()}
 
 
 def audit_existing_path(model: CleanWatermarkSystem | None = None,
@@ -74,7 +145,8 @@ def single_bit_residual_causality(model: nn.Module, bit: int = 0,
     h = image.shape[-1] // 4
     mask = torch.zeros_like(delta, dtype=torch.bool)
     mask[:, region[0]*h:(region[0]+1)*h, region[1]*h:(region[1]+1)*h] = True
-    inside, outside = float(delta[mask].mean()), float(delta[~mask].max())
+    inside = delta[mask].mean().detach().item()
+    outside = delta[~mask].max().detach().item()
     return {"inside_change": inside, "outside_max_change": outside,
             "passed": inside > 0 and outside == 0}
 
@@ -92,7 +164,8 @@ def projector_reconstruction_test(steps: int = 250, device: str = "cpu") -> dict
     with torch.no_grad():
         bits = torch.randint(0, 2, (128, 8, 4, 4), device=device).float()
         payload = torch.zeros(128, 44, 4, 4, device=device); payload[:, 4:12] = bits
-        logits = probe(projector(payload)[4]); accuracy = float((logits >= 0).eq(bits.bool()).float().mean())
+        logits = probe(projector(payload)[4])
+        accuracy = (logits >= 0).eq(bits.bool()).float().mean().detach().item()
     return {"heldout_bit_accuracy": accuracy, "passed": accuracy >= .99}
 
 
@@ -105,7 +178,7 @@ def decoder_reconstruction_test(mode: str = "fixed", count: int = 64) -> dict[st
     with torch.no_grad():
         questioned = grey + model.carrier_bank(payloads)
         logits = model.decoder(questioned)
-    accuracy = float((logits[:, 4:12] >= 0).eq(payloads[:, 4:12].bool()).float().mean())
+    accuracy = (logits[:, 4:12] >= 0).eq(payloads[:, 4:12].bool()).float().mean().detach().item()
     return {"heldout_bit_accuracy": accuracy, "passed": accuracy >= .99}
 
 
@@ -121,16 +194,16 @@ def evaluate_structured(model: StructuredChannelSystem, images: torch.Tensor,
     decoder_gradient = gradient_norm(model.decoder.parameters())
     with torch.no_grad():
         result = model(images, payloads); logits = result["payload_logits"]
-        correct = recovery_metrics(logits, payloads, mask)
-        shuffled = recovery_metrics(logits, circular_payload_shuffle(payloads), mask)
+        correct = stage_a_recovery_metrics(logits, payloads, mask)
+        shuffled = stage_a_recovery_metrics(logits, circular_payload_shuffle(payloads), mask)
         original_logits = model.decoder(images)
-        original = recovery_metrics(original_logits, payloads, mask)
+        original = stage_a_recovery_metrics(original_logits, payloads, mask)
         sensitivity = payload_sensitivity(model, images[:1], payloads[:1], payloads[1:2])
     metrics = {**correct,
         "shuffled_target_accuracy": shuffled["active_bit_accuracy"],
         "original_exact_active_false_positive_rate": original["exact_active_region_accuracy"],
         **sensitivity, **image_metrics(images, result["watermarked_image"], result["residual"], model.carrier_bank.alpha),
-        "mean_residual": float(result["residual"].mean()),
+        "mean_residual": result["residual"].mean().detach().item(),
         "projector_gradient_norm": "N/A (structured path has no projector)",
         "carrier_bank_gradient_norm": carrier_gradient,
         "decoder_gradient_norm": decoder_gradient,
@@ -151,7 +224,15 @@ def run_channel_repair(config: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError("repair artifacts must use a dedicated channel_repair directory")
     output.mkdir(parents=True, exist_ok=True)
     torch.manual_seed(int(config.get("seed", 2026)))
-    report: dict[str, Any] = {"configuration": dict(config), "root_cause_audit": audit_existing_path()}
+    report: dict[str, Any] = {
+        "schema_version": SCHEMA_VERSION,
+        "correction_note": ("Corrected Stage-A reporting: 100% exact accuracy refers only to "
+                            "the active 8-bit regional symbol, not a complete 44-bit packet. "
+                            "Raw experiment procedure, thresholds, and failed channel-sanity evidence are unchanged."),
+        "active_channels": ACTIVE_CHANNELS,
+        "inactive_fields": INACTIVE_FIELDS,
+        "stage_b_automatic_progression": False,
+        "configuration": dict(config), "root_cause_audit": audit_existing_path()}
     component = projector_reconstruction_test(int(config.get("projector_steps", 250)))
     report["projector_reconstruction"] = component
     if not component["passed"]:
@@ -168,6 +249,8 @@ def run_channel_repair(config: Mapping[str, Any]) -> dict[str, Any]:
             "reason": "complete analytical channel decodes the fixed batch exactly"}
         for mode in ("fixed", "learnable"):
             model = StructuredChannelSystem(mode=mode, alpha=float(config.get("alpha", .05)))
+            # This must precede every backward/optimizer opportunity and must not alias the parameter.
+            initial_carriers = model.carrier_bank.carriers.detach().clone()
             evaluations = {}
             # Explicitly name every required Stage-A population. All are uniform,
             # disjoint draws; only the current batch is reused by construction.
@@ -177,9 +260,12 @@ def run_channel_repair(config: Mapping[str, Any]) -> dict[str, Any]:
                 if group != "current_training_batch":
                     group_payloads[:, 4:12] = torch.randint(0, 2, (count, 8, 4, 4)).float()
                 evaluations[group] = evaluate_structured(model, images, group_payloads)
+            change = (unavailable_carrier_change_metrics() if mode == "fixed" else
+                      carrier_change_metrics(initial_carriers, model.carrier_bank.carriers))
             report[mode + "_carrier"] = {"evaluations": evaluations,
                 "causality": single_bit_residual_causality(model),
                 "original_grey_carrier": evaluations["fresh_on_the_fly_payloads"]["original_exact_active_false_positive_rate"],
+                "change_from_initialization": change,
                 "passed": all(value["passed"] for value in evaluations.values())}
             if not report[mode + "_carrier"]["passed"]:
                 report["first_failure"] = mode + " structured carrier"
