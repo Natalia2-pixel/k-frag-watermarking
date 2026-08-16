@@ -1,0 +1,5 @@
+condition,overall_bit_accuracy,index_bit_accuracy,coded_symbol_accuracy,authentication_tag_accuracy,non_index_accuracy,regional_packet_accuracy,image_payload_accuracy,mean_decoder_confidence,exact_regional_packets
+correct_watermarked,0.5,1.0,0.5,0.5,0.5,0.0,0.0,0.2,0
+original_unwatermarked,0.5,1.0,0.5,0.5,0.5,0.0,0.0,0.2,0
+shuffled_targets,0.5,1.0,0.5,0.5,0.5,0.0,0.0,0.2,0
+unseen_payloads,0.5,1.0,0.5,0.5,0.5,0.0,0.0,0.2,0

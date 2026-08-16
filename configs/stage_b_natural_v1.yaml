@@ -1,7 +1,15 @@
 seed: 2026
 data_root: data/raw/coco_val2017_100
 image_index: 0
-output_directory: outputs/stage_b_natural
+output_directory: outputs/stage_b_natural/checkpoint_transfer
+image_identifier: 000000000139.jpg
+initialization:
+  mode: stage_a_checkpoint
+  checkpoint: outputs/channel_repair/best.pt
+  require_checkpoint: true
+  load_carrier: true
+  load_decoder: true
+  strict: true
 alpha: 0.05
 steps: 500
 batch_size: 8

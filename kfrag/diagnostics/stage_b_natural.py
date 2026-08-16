@@ -20,6 +20,8 @@ from torch.nn import functional as F
 
 from kfrag.data import CocoImageDataset
 from kfrag.diagnostics.channel_repair import carrier_change_metrics
+from kfrag.diagnostics.checkpoint_transfer import (load_stage_a_checkpoint,
+    relative_checkpoint_path, sha256_file, state_dict_equal)
 from kfrag.diagnostics.channel_sanity import capacity_mask, circular_payload_shuffle
 from kfrag.models import StructuredChannelSystem, StructuredRegionalDecoder
 from kfrag.models.losses import psnr
@@ -32,6 +34,24 @@ INACTIVE_METRICS = {
     "number_of_exact_complete_packets": None,
     "exact_image_payload_accuracy": None,
     "rs_identity_reconstruction_accuracy": None,
+}
+
+HISTORICAL_ANALYTICAL_BASELINE = {
+    "held_out_active_bit_accuracy": 0.5675048828125,
+    "held_out_exact_8bit_regional_symbol_accuracy": 0.0107421875,
+    "fresh_active_bit_accuracy": 0.567138671875,
+    "fresh_exact_8bit_regional_symbol_accuracy": 0.0166015625,
+    "correct_minus_shuffled_active_bit_accuracy": 0.066162109375,
+    "original_random_target_exact_match_rate": 0.004638671875,
+    "residual_payload_sensitivity": 0.000891521864105016,
+    "decoder_logit_payload_sensitivity": 0.8186919689178467,
+    "predicted_bit_change_fraction": 0.078125,
+    "psnr": 62.145877838134766,
+    "maximum_absolute_residual": 0.002268260344862938,
+    "mean_absolute_residual": 0.000645197054836899,
+    "residual_saturation_fraction": 0.0,
+    "carrier_change_during_stage_b": 1.4528127271368791,
+    "final_passed": False,
 }
 
 
@@ -151,6 +171,12 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer = csv.DictWriter(handle, fieldnames=keys); writer.writeheader(); writer.writerows(rows)
 
 
+def _module_change(initial: Mapping[str, torch.Tensor], current: Mapping[str, torch.Tensor]) -> dict[str, Any]:
+    before = torch.cat([value.detach().double().flatten() for value in initial.values()])
+    after = torch.cat([current[name].detach().double().flatten() for name in initial])
+    return carrier_change_metrics(before, after)
+
+
 def _visualize(path: Path, image: torch.Tensor, outputs: list[dict[str, torch.Tensor]],
                payloads: torch.Tensor, metrics: Mapping[str, Any], amplification: float) -> None:
     import matplotlib.pyplot as plt
@@ -178,19 +204,43 @@ def run_stage_b(config: Mapping[str, Any]) -> dict[str, Any]:
     """Train and evaluate Stage B. Fresh evaluation is generated after training."""
     seed = int(config.get("seed", 2026)); random.seed(seed); torch.manual_seed(seed)
     output = Path(config.get("output_directory", "outputs/stage_b_natural"))
-    if output.as_posix().rstrip("/").split("/")[-1] != "stage_b_natural":
-        raise ValueError("Stage-B artifacts must be isolated in outputs/stage_b_natural")
+    if output.as_posix().rstrip("/").split("/")[-2:] != ["stage_b_natural", "checkpoint_transfer"]:
+        raise ValueError("checkpoint-transfer artifacts must use outputs/stage_b_natural/checkpoint_transfer")
     output.mkdir(parents=True, exist_ok=True)
     dataset_root = Path(config.get("data_root", "data/raw/coco_val2017_100"))
     dataset = CocoImageDataset(dataset_root)
     index = int(config.get("image_index", 0)); sample = dataset[index]
     image = sample["image"].unsqueeze(0)
     relative_identifier = sample["relative_path"]
+    expected_identifier = str(config.get("image_identifier", "000000000139.jpg"))
+    if relative_identifier != expected_identifier:
+        raise ValueError(f"Stage B requires image {expected_identifier}, found {relative_identifier}")
     alpha = float(config.get("alpha", .05)); model = StructuredChannelSystem(mode="learnable", alpha=alpha)
+    initialization = config.get("initialization")
+    required = {"mode": "stage_a_checkpoint", "require_checkpoint": True,
+                "load_carrier": True, "load_decoder": True, "strict": True}
+    if not isinstance(initialization, Mapping):
+        raise ValueError("Stage B requires an initialization mapping")
+    for name, expected in required.items():
+        if initialization.get(name) != expected:
+            raise ValueError(f"Stage B initialization.{name} must be {expected!r}")
+    checkpoint_path = Path(str(initialization.get("checkpoint", "")))
+    checkpoint, compatibility = load_stage_a_checkpoint(checkpoint_path, model, expected_alpha=alpha)
+    carrier_loaded = state_dict_equal(checkpoint["carrier_state_dict"], model.carrier_bank.state_dict())
+    decoder_loaded = state_dict_equal(checkpoint["regional_decoder_state_dict"], model.decoder.state_dict())
+    if not carrier_loaded or not decoder_loaded:
+        raise RuntimeError("strict Stage-A checkpoint restoration did not produce exact parameter equality")
+    initial_carrier_state = {k: v.detach().clone() for k, v in model.carrier_bank.state_dict().items()}
+    initial_decoder_state = {k: v.detach().clone() for k, v in model.decoder.state_dict().items()}
     initial = model.carrier_bank.carriers.detach().clone()
-    # No Stage-A checkpoint exists in this repository; this constructor is the
-    # exact deterministic successful analytical initialization.
-    decoder_initialization = {"checkpoint": None, "method": "deterministic_successful_stage_a_analytical_initialization"}
+    checkpoint_relative = relative_checkpoint_path(checkpoint_path)
+    checkpoint_sha256 = sha256_file(checkpoint_path)
+    decoder_initialization = {"mode": "stage_a_checkpoint", "checkpoint": checkpoint_relative,
+        "checkpoint_sha256": checkpoint_sha256, "carrier_load_status": carrier_loaded,
+        "decoder_load_status": decoder_loaded, "strict_loading_status": True,
+        "compatibility_check_results": compatibility,
+        "carrier_parameter_equality_immediately_after_loading": carrier_loaded,
+        "decoder_parameter_equality_immediately_after_loading": decoder_loaded}
     optimizer = torch.optim.Adam([
         {"params": [model.carrier_bank.carriers], "lr": float(config.get("carrier_learning_rate", 1e-3))},
         {"params": model.decoder.parameters(), "lr": float(config.get("decoder_learning_rate", 1e-3))},
@@ -261,10 +311,21 @@ def run_stage_b(config: Mapping[str, Any]) -> dict[str, Any]:
         "image": {"relative_identifier": relative_identifier, "deterministic_dataset_index": index,
                   "transform": "CocoImageDataset deterministic RGB resize to 256x256"},
         "alpha": alpha, "active_channels": list(range(4,12)), "decoder_input": "questioned_image_only",
+        "initialization_mode": "stage_a_checkpoint",
+        "stage_a_checkpoint": {
+            **decoder_initialization,
+            "checkpoint_schema_version": checkpoint["checkpoint_schema_version"],
+            "loaded_stage_a_configuration": checkpoint["stage_a_configuration"],
+            "loaded_stage_a_training_step": checkpoint["completed_training_step"],
+            "stage_a_pass_status": checkpoint["stage_a_passed"],
+        },
         "decoder_initialization": decoder_initialization, "warm_up": None,
         "optimization": {"joint_carrier_and_decoder": True, "fidelity_curriculum": False, **last_gradients},
         "evaluations": evaluations, "original_random_target_exact_match_rate": original_rate,
-        "sensitivity": sensitivity, "carrier_change_from_initialization": carrier_change_metrics(initial, model.carrier_bank.carriers),
+        "sensitivity": sensitivity,
+        "carrier_change_from_initialization": carrier_change_metrics(initial, model.carrier_bank.carriers),
+        "carrier_change_during_stage_b": _module_change(initial_carrier_state, model.carrier_bank.state_dict()),
+        "decoder_change_during_stage_b": _module_change(initial_decoder_state, model.decoder.state_dict()),
         "anti_memorization": {"distinct_fresh_training_payload_tensors": len(stream_keys),
              "same_image_received_many_payloads": len(stream_keys) >= 100,
              "fresh_evaluation_generated_after_training": True,
@@ -277,6 +338,29 @@ def run_stage_b(config: Mapping[str, Any]) -> dict[str, Any]:
     per_rows = [{"evaluation": name, **row} for name,m in evaluations.items() for row in m["per_bit"]]
     _write_csv(output / "per_bit_metrics.csv", per_rows)
     (output / "summary.json").write_text(json.dumps(summary, indent=2)+"\n", encoding="utf-8")
+    transfer = {
+        "held_out_active_bit_accuracy": evaluations["fixed_heldout_payloads"]["active_bit_accuracy"],
+        "held_out_exact_8bit_regional_symbol_accuracy": evaluations["fixed_heldout_payloads"]["exact_8bit_regional_symbol_accuracy"],
+        "fresh_active_bit_accuracy": evaluations["fresh_on_the_fly_payloads"]["active_bit_accuracy"],
+        "fresh_exact_8bit_regional_symbol_accuracy": evaluations["fresh_on_the_fly_payloads"]["exact_8bit_regional_symbol_accuracy"],
+        "correct_minus_shuffled_active_bit_accuracy": evaluations["fresh_on_the_fly_payloads"]["correct_minus_shuffled_active_bit_accuracy"],
+        "original_random_target_exact_match_rate": original_rate,
+        "residual_payload_sensitivity": sensitivity["residual_payload_sensitivity"],
+        "decoder_logit_payload_sensitivity": sensitivity["decoder_logit_payload_sensitivity"],
+        "predicted_bit_change_fraction": sensitivity["predicted_bit_change_fraction"],
+        "psnr": evaluations["fresh_on_the_fly_payloads"]["psnr"],
+        "maximum_absolute_residual": evaluations["fresh_on_the_fly_payloads"]["maximum_absolute_residual"],
+        "mean_absolute_residual": evaluations["fresh_on_the_fly_payloads"]["mean_absolute_residual"],
+        "residual_saturation_fraction": evaluations["fresh_on_the_fly_payloads"]["residual_saturation_fraction"],
+        "carrier_change_during_stage_b": summary["carrier_change_during_stage_b"]["relative_l2_change_from_initialization"],
+        "final_passed": passed,
+    }
+    comparison = {"analytical_initialization_historical_baseline": HISTORICAL_ANALYTICAL_BASELINE,
+                  "stage_a_checkpoint_transfer_generated_run": transfer,
+                  "improvement_claimed": False,
+                  "note": "Historical values are immutable and were not regenerated by this execution."}
+    (output / "checkpoint_transfer_comparison.json").write_text(
+        json.dumps(comparison, indent=2) + "\n", encoding="utf-8")
     vis_payloads = fresh[:2]; vis_outputs = [model(image, vis_payloads[i:i+1]) for i in range(2)]
     _visualize(output / "stage_b_visualization.png", image, vis_outputs, vis_payloads,
                evaluations["fresh_on_the_fly_payloads"], float(config.get("visualization_amplification", 10)))

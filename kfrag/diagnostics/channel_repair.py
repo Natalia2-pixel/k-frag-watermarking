@@ -15,6 +15,8 @@ from kfrag.diagnostics.channel_sanity import (capacity_mask, circular_payload_sh
     gradient_norm, image_metrics, masked_bce_with_logits, payload_sensitivity,
     per_bit_diagnostics, recovery_metrics)
 from kfrag.models import CleanWatermarkSystem, MessageProjector, StructuredChannelSystem
+from kfrag.diagnostics.checkpoint_transfer import (make_stage_a_checkpoint,
+    relative_checkpoint_path, save_stage_a_checkpoints, sha256_file)
 
 
 SCHEMA_VERSION = "2.0"
@@ -75,7 +77,8 @@ def optimizer_contains_parameter(optimizer: torch.optim.Optimizer,
 
 
 def optimize_learnable_carrier(model: StructuredChannelSystem, *, steps: int,
-                               learning_rate: float, batch_size: int = 16) -> dict[str, Any]:
+                               learning_rate: float, batch_size: int = 16,
+                               optimizer_state_sink: dict[str, Any] | None = None) -> dict[str, Any]:
     """Genuinely optimize a learnable Stage-A carrier on fresh random symbols."""
     if model.carrier_bank.mode != "learnable":
         raise ValueError("carrier optimization requires a learnable carrier bank")
@@ -120,6 +123,8 @@ def optimize_learnable_carrier(model: StructuredChannelSystem, *, steps: int,
     if change["number_of_changed_parameters"] <= 0:
         raise AssertionError("a carrier with zero changed parameters cannot be labelled learned")
     model.sync_decoder_carriers()
+    if optimizer_state_sink is not None:
+        optimizer_state_sink.update(optimizer.state_dict())
     return {
         "requires_grad": parameter.requires_grad,
         "included_in_optimizer": membership,
@@ -322,11 +327,13 @@ def run_channel_repair(config: Mapping[str, Any]) -> dict[str, Any]:
             # This must precede every backward/optimizer opportunity and must not alias the parameter.
             initial_carriers = model.carrier_bank.carriers.detach().clone()
             optimization = None
+            optimizer_state: dict[str, Any] = {}
             if mode == "learnable":
                 optimization = optimize_learnable_carrier(
                     model, steps=int(config.get("carrier_optimizer_steps", 4)),
                     learning_rate=float(config.get("carrier_learning_rate", 1e-3)),
-                    batch_size=int(config.get("carrier_training_batch_size", 16)))
+                    batch_size=int(config.get("carrier_training_batch_size", 16)),
+                    optimizer_state_sink=optimizer_state)
             evaluations = {}
             # Explicitly name every required Stage-A population. All are uniform,
             # disjoint draws; only the current batch is reused by construction.
@@ -359,6 +366,28 @@ def run_channel_repair(config: Mapping[str, Any]) -> dict[str, Any]:
                 "carrier_parameters_changed": parameters_changed,
                 "learned_carrier_gate_passed": learned_gate,
                 "passed": communication_passed if mode == "fixed" else learned_gate}
+            if mode == "learnable":
+                checkpoint = make_stage_a_checkpoint(
+                    model, optimizer_state_dict=optimizer_state,
+                    completed_training_step=int(config.get("carrier_optimizer_steps", 4)),
+                    config=config, seed=int(config.get("seed", 2026)),
+                    gate_results=report[mode + "_carrier"], passed=learned_gate)
+                saved = save_stage_a_checkpoints(output, checkpoint)
+                report["checkpoint"] = {
+                    **saved, "relative_path": relative_checkpoint_path(output / "best.pt")
+                    if saved["best_saved"] else None,
+                    "sha256": sha256_file(output / "best.pt") if saved["best_saved"] else None,
+                    "checkpoint_schema_version": checkpoint["checkpoint_schema_version"],
+                    "stage_a_configuration": checkpoint["stage_a_configuration"],
+                    "initialization_seed": checkpoint["initialization_seed"],
+                    "completed_training_step": checkpoint["completed_training_step"],
+                    "stage_a_passed": checkpoint["stage_a_passed"],
+                    "active_channels": checkpoint["active_channels"],
+                    "grid_size": checkpoint["grid_size"],
+                    "residual_alpha": checkpoint["residual_alpha"],
+                    "carrier_architecture_identifier": checkpoint["carrier_architecture_identifier"],
+                    "decoder_architecture_identifier": checkpoint["decoder_architecture_identifier"],
+                }
             if not report[mode + "_carrier"]["passed"]:
                 report["first_failure"] = mode + " structured carrier"
                 break

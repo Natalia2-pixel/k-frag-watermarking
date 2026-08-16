@@ -8085,5 +8085,49 @@
     "carrier_parameters_changed": true,
     "learned_carrier_gate_passed": true,
     "passed": true
+  },
+  "checkpoint": {
+    "last_saved": true,
+    "best_saved": true,
+    "relative_path": "outputs/channel_repair/best.pt",
+    "sha256": "92a4ed8ba8452fc7ab039e2e2bdff7e9c64e9b541eaa644eba24e0910c81d1d8",
+    "checkpoint_schema_version": "1.0",
+    "stage_a_configuration": {
+      "seed": 2026,
+      "output_directory": "outputs/channel_repair",
+      "projector_steps": 250,
+      "evaluation_payloads": 64,
+      "alpha": 0.05,
+      "carrier_learning_rate": 0.001,
+      "carrier_optimizer_steps": 4,
+      "carrier_training_batch_size": 16,
+      "thresholds": {
+        "fresh_active_bit_accuracy": 0.995,
+        "fresh_exact_8bit_regional_accuracy": 0.96,
+        "shuffled_accuracy_margin": 0.45,
+        "maximum_original_exact_active_false_positive_rate": 0.01
+      },
+      "stage_b_automatic_progression": false
+    },
+    "initialization_seed": 2026,
+    "completed_training_step": 4,
+    "stage_a_passed": true,
+    "active_channels": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "grid_size": [
+      4,
+      4
+    ],
+    "residual_alpha": 0.05,
+    "carrier_architecture_identifier": "RegionalCarrierBank.v1",
+    "decoder_architecture_identifier": "StructuredRegionalDecoder.v1"
   }
 }
