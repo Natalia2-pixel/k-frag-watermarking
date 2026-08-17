@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import json
 from pathlib import Path
 
 import pytest
@@ -10,7 +11,8 @@ from kfrag.diagnostics.checkpoint_transfer import (ACTIVE_CHANNELS,
     CHECKPOINT_SCHEMA_VERSION, CheckpointCompatibilityError, load_stage_a_checkpoint,
     make_stage_a_checkpoint, relative_checkpoint_path, save_stage_a_checkpoints,
     sha256_file, state_dict_equal)
-from kfrag.diagnostics.stage_b_natural import decoder_accepts_only_questioned_image, run_stage_b
+from kfrag.diagnostics.stage_b_natural import (HISTORICAL_ANALYTICAL_BASELINE,
+    decoder_accepts_only_questioned_image, run_stage_b)
 from kfrag.models import StructuredChannelSystem
 
 
@@ -111,8 +113,17 @@ def test_hash_and_report_path_are_portable(tmp_path):
 
 
 def test_checkpoint_transfer_directory_is_separate_and_decoder_remains_blind(tmp_path):
+    baseline_directory = tmp_path / "stage_b_natural" / "analytical_baseline"
+    baseline_directory.mkdir(parents=True)
+    baseline = baseline_directory / "summary.json"
+    baseline.write_text(
+        json.dumps(HISTORICAL_ANALYTICAL_BASELINE, indent=2) + "\n", encoding="utf-8")
+    original_baseline = baseline.read_bytes()
+    transfer_directory = tmp_path / "stage_b_natural" / "checkpoint_transfer"
+
+    assert transfer_directory != baseline_directory
     with pytest.raises(ValueError, match="checkpoint_transfer"):
-        run_stage_b({"output_directory": str(tmp_path / "stage_b_natural")})
+        run_stage_b({"output_directory": str(baseline_directory)})
+    assert baseline.read_bytes() == original_baseline
+    assert json.loads(baseline.read_text(encoding="utf-8")) == HISTORICAL_ANALYTICAL_BASELINE
     assert decoder_accepts_only_questioned_image()
-    baseline = Path("outputs/stage_b_natural/analytical_baseline/summary.json")
-    assert baseline.is_file()
