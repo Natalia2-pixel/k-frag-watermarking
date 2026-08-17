@@ -1,0 +1,6 @@
+schema_version: '1.0'
+experiment_name: full_packet_v1
+phase: full_packets
+prerequisite: clean_natural_v1
+tag_bits: 32
+manual_override: false

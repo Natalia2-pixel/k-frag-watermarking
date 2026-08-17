@@ -1,0 +1,5 @@
+schema_version: '1.0'
+experiment_name: end_to_end_v1
+phases: [natural_image_communication, full_packets, benign_robustness, partial_evidence, geometric_synchronization, manipulation_splicing]
+manual_override: false
+tag_bits: 32

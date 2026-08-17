@@ -1,0 +1,5 @@
+schema_version: '1.0'
+experiment_name: synchronization_v1
+phase: geometric_synchronization
+max_rotation_degrees: 15
+manual_override: false

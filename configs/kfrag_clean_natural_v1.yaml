@@ -1,0 +1,15 @@
+schema_version: '1.0'
+experiment_name: clean_natural_v1
+phase: natural_image_communication
+data_root: data/raw/coco_val2017_100
+output_root: outputs/kfrag
+seed: 2026
+image_size: 256
+max_images: 8
+steps: 4
+batch_size: 2
+width: 16
+learning_rate: 0.001
+residual_alpha: 0.05
+preprocessing: rgb_plus_high_pass
+gates: {active_bit_accuracy: 0.995, exact_symbol_accuracy: 0.96, shuffled_margin: 0.45}

@@ -100,20 +100,20 @@ def symbol_metrics(logits: torch.Tensor, targets: torch.Tensor) -> dict[str, Any
         per_bit.append({
             "active_bit_index": bit,
             "channel": bit + 4,
-            "accuracy": float(correct[:, bit].float().mean()),
-            "target_entropy": float(_entropy(target_p[bit])),
-            "prediction_entropy": float(_entropy(prediction_p[bit])),
-            "predicted_one_frequency": float(prediction_p[bit]),
+            "accuracy": float(correct[:, bit].float().mean().detach()),
+            "target_entropy": float(_entropy(target_p[bit]).detach()),
+            "prediction_entropy": float(_entropy(prediction_p[bit]).detach()),
+            "predicted_one_frequency": float(prediction_p[bit].detach()),
         })
     return {
-        "active_bit_accuracy": float(correct.float().mean()),
-        "exact_8bit_regional_symbol_accuracy": float(correct.all(1).float().mean()),
-        "active_bce_loss": float(F.binary_cross_entropy_with_logits(active_logits, active_targets)),
-        "mean_decoder_confidence": float(torch.sigmoid(active_logits).sub(.5).abs().mul(2).mean()),
+        "active_bit_accuracy": float(correct.float().mean().detach()),
+        "exact_8bit_regional_symbol_accuracy": float(correct.all(1).float().mean().detach()),
+        "active_bce_loss": float(F.binary_cross_entropy_with_logits(active_logits, active_targets).detach()),
+        "mean_decoder_confidence": float(torch.sigmoid(active_logits).sub(.5).abs().mul(2).mean().detach()),
         "per_bit_accuracy": [x["accuracy"] for x in per_bit],
-        "target_entropy": float(_entropy(target_p).mean()),
-        "prediction_entropy": float(_entropy(prediction_p).mean()),
-        "predicted_one_frequency": float(prediction_p.mean()),
+        "target_entropy": float(_entropy(target_p).mean().detach()),
+        "prediction_entropy": float(_entropy(prediction_p).mean().detach()),
+        "predicted_one_frequency": float(prediction_p.mean().detach()),
         "per_bit": per_bit,
         **INACTIVE_METRICS,
     }
@@ -125,7 +125,7 @@ def _ssim(x: torch.Tensor, y: torch.Tensor) -> float:
     mx, my = x.mean(dims), y.mean(dims)
     vx, vy = x.var(dims, unbiased=False), y.var(dims, unbiased=False)
     cov = ((x - mx[:, None, None, None]) * (y - my[:, None, None, None])).mean(dims)
-    return float((((2*mx*my+c1)*(2*cov+c2))/((mx.square()+my.square()+c1)*(vx+vy+c2))).mean())
+    return float((((2*mx*my+c1)*(2*cov+c2))/((mx.square()+my.square()+c1)*(vx+vy+c2))).mean().detach())
 
 
 def evaluate(model: StructuredChannelSystem, image: torch.Tensor,
@@ -140,12 +140,12 @@ def evaluate(model: StructuredChannelSystem, image: torch.Tensor,
     metrics.update({
         "shuffled_target_active_bit_accuracy": shuffled["active_bit_accuracy"],
         "correct_minus_shuffled_active_bit_accuracy": metrics["active_bit_accuracy"] - shuffled["active_bit_accuracy"],
-        "psnr": float(psnr(images, out["watermarked_image"])),
+        "psnr": float(psnr(images, out["watermarked_image"]).detach()),
         "ssim": _ssim(images, out["watermarked_image"]),
         "ssim_variant": "global_channel_aggregated",
-        "maximum_absolute_residual": float(residual.abs().max()),
-        "mean_absolute_residual": float(residual.abs().mean()),
-        "residual_saturation_fraction": float(residual.abs().ge(alpha * .999).float().mean()),
+        "maximum_absolute_residual": float(residual.abs().max().detach()),
+        "mean_absolute_residual": float(residual.abs().mean().detach()),
+        "residual_saturation_fraction": float(residual.abs().ge(alpha * .999).float().mean().detach()),
     })
     return metrics, out
 
@@ -158,10 +158,10 @@ def _sensitivity(model: nn.Module, image: torch.Tensor, a: torch.Tensor,
                  b: torch.Tensor) -> dict[str, float]:
     with torch.no_grad(): oa, ob = model(image, a), model(image, b)
     return {
-        "residual_payload_sensitivity": float((oa["residual"]-ob["residual"]).abs().mean()),
-        "watermarked_image_payload_sensitivity": float((oa["watermarked_image"]-ob["watermarked_image"]).abs().mean()),
-        "decoder_logit_payload_sensitivity": float((oa["payload_logits"]-ob["payload_logits"]).abs().mean()),
-        "predicted_bit_change_fraction": float(oa["payload_logits"][:, ACTIVE].ge(0).ne(ob["payload_logits"][:, ACTIVE].ge(0)).float().mean()),
+        "residual_payload_sensitivity": float((oa["residual"]-ob["residual"]).abs().mean().detach()),
+        "watermarked_image_payload_sensitivity": float((oa["watermarked_image"]-ob["watermarked_image"]).abs().mean().detach()),
+        "decoder_logit_payload_sensitivity": float((oa["payload_logits"]-ob["payload_logits"]).abs().mean().detach()),
+        "predicted_bit_change_fraction": float(oa["payload_logits"][:, ACTIVE].ge(0).ne(ob["payload_logits"][:, ACTIVE].ge(0)).float().mean().detach()),
     }
 
 
@@ -263,7 +263,7 @@ def run_stage_b(config: Mapping[str, Any]) -> dict[str, Any]:
         optimizer.step(); model.sync_decoder_carriers()
         if step % evaluate_every == 0 or step == steps:
             current, _ = evaluate(model, image, heldout, alpha)
-            row = {"step": step, "training_loss": float(loss), **last_gradients,
+            row = {"step": step, "training_loss": float(loss.detach()), **last_gradients,
                    **{k:v for k,v in current.items() if isinstance(v,(int,float))}}
             row.update({key: "N/A" for key in INACTIVE_METRICS})
             history.append(row)
@@ -292,7 +292,7 @@ def run_stage_b(config: Mapping[str, Any]) -> dict[str, Any]:
     with torch.no_grad(): original_logits = model.decoder(image)
     original_targets = fresh_disjoint_payloads(int(config.get("original_control_targets", 256)), gen, [fixed_training, heldout, fresh])
     original_predictions = original_logits[:, ACTIVE].ge(0).expand(len(original_targets),-1,-1,-1)
-    original_rate = float(original_predictions.eq(original_targets[:, ACTIVE].bool()).all(1).float().mean())
+    original_rate = float(original_predictions.eq(original_targets[:, ACTIVE].bool()).all(1).float().mean().detach())
     sensitivity = _sensitivity(model, image, fresh[:1], fresh[1:2])
     threshold = float(config.get("effectively_zero_threshold", 1e-12))
     gate_groups = [evaluations["fixed_heldout_payloads"], evaluations["fresh_on_the_fly_payloads"]]
