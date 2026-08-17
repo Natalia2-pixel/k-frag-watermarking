@@ -35,3 +35,4 @@ wandb/
 *.pt 
 *.pth 
 *.ckpt
+/outputs/kfrag/
