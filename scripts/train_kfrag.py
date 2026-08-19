@@ -97,9 +97,12 @@ def write_artifacts(output,cfg,manifests,model,summary,stage,seed,args,plan):
     (output/"environment.json").write_text(json.dumps({"python":sys.version,"platform":platform.platform(),"torch":torch.__version__},indent=2)+"\n",encoding="utf-8")
     write_history(output/"history.csv",summary.pop("history")); combined_hash=manifest_hash({"splits":manifests})
     meta=dict(config=safe_cfg,manifest_hash=combined_hash,architecture="KFragSystem-v1",protocol_version=1,phase=stage,step=int(cfg["steps"]),seeds={"global":seed},residual_alpha=cfg.get("residual_alpha",.05),models={"kfrag":model},gates=summary["gates"],status=summary["scientific_status"])
-    save_checkpoint(output/"best.pt",**meta); save_checkpoint(output/"last.pt",**meta); summary["checkpoint_sha256"]={name:sha256_file(output/name) for name in ("best.pt","last.pt")}
+    save_checkpoint(output/"last.pt",**meta)
+    if summary["gates"]["passed"]: save_checkpoint(output/"best.pt",**meta)
+    names=["last.pt"]+(["best.pt"] if summary["gates"]["passed"] else [])
+    summary["checkpoint_sha256"]={name:sha256_file(output/name) for name in names}
     (output/"summary.json").write_text(json.dumps(summary,indent=2)+"\n",encoding="utf-8")
-    values=summary["metrics"]["per_bit_accuracy"]; (output/"per_bit_metrics.csv").write_text("bit,accuracy\n"+"".join(f"{i},{v}\n" for i,v in enumerate(values)),encoding="utf-8")
+    values=summary["metrics"]["per_active_bit_accuracy"]; (output/"per_bit_metrics.csv").write_text("bit,accuracy\n"+"".join(f"{i+4},{v}\n" for i,v in enumerate(values)),encoding="utf-8")
     for name,header in (("per_region_metrics.csv","region,accuracy\n"),("attack_metrics.csv","attack,severity,reconstruction_success\n"),("reconstruction_by_survivors.csv","survivors,recovery_rate\n")): (output/name).write_text(header,encoding="utf-8")
     (output/"failure_cases.json").write_text("[]\n",encoding="utf-8"); (output/"evidence_maps").mkdir()
     note="Smoke execution succeeded; this is an integration check, not scientific gate success." if args.smoke else "Training execution completed; inspect scientific_status and gates."
