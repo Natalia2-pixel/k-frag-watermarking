@@ -3,7 +3,12 @@ from pathlib import Path
 from torch.utils.data import Dataset
 from .manifests import stable_identifiers
 class ImageFolderAdapter(Dataset):
-    def __init__(self,root,identifiers=None,image_size=256): self.root=Path(root); self.identifiers=list(identifiers or stable_identifiers(root)); self.image_size=image_size
+    def __init__(self,root,identifiers=None,image_size=256):
+        self.root=Path(root); self.identifiers=list(identifiers if identifiers is not None else stable_identifiers(root)); self.image_size=image_size
+        if not self.root.is_dir(): raise FileNotFoundError(f"dataset root does not exist: {self.root}")
+        if not self.identifiers: raise RuntimeError(f"no images selected under dataset root: {self.root}")
+        missing=[item for item in self.identifiers if not (self.root/item).is_file()]
+        if missing: raise FileNotFoundError(f"manifest image does not exist under dataset root: {missing[0]}")
     def __len__(self): return len(self.identifiers)
     def __getitem__(self,index):
         from PIL import Image
