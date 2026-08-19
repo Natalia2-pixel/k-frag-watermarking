@@ -28,7 +28,7 @@ secrets/
  
 # Datasets and experiment outputs 
 /data/ 
-checkpoints/ 
+/checkpoints/
 outputs/ 
 runs/ 
 wandb/ 
