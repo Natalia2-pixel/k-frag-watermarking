@@ -1,0 +1,47 @@
+seed: 2026
+data_root: data/raw/coco_val2017_100
+output_directory: outputs/stage_b_natural_v2/local_prerequisite
+stage_a_checkpoint: outputs/channel_repair/best.pt
+train_images: 32
+validation_images: 16
+image_size: 64
+width: 16
+activation: silu
+mask_floor: 0.25
+batch_size: 4
+total_steps: 30
+phase1_steps: 10
+phase2_steps: 10
+initial_amplitude: 0.002
+target_amplitude: 0.02
+amplitude_warmup_steps: 20
+encoder_learning_rate: 0.0003
+decoder_learning_rate: 0.0001
+weight_decay: 0.0001
+losses:
+  communication_weight: 1.0
+  fidelity_weight: 1.0
+  energy_weight: 0.1
+  saturation_weight: 0.1
+  balance_weight: 0.05
+  mask_collapse_weight: 0.1
+  original_confidence_weight: 0.01
+  carrier_correlation_weight: 0.0
+  l1_weight: 1.0
+  structural_weight: 0.25
+  saturation_start: 0.95
+  mask_mean_min: 0.30
+preprocessing:
+  numeric_range: [0.0, 1.0]
+  dtype: float32
+  channel_order: RGB
+  source_resize: [256, 256]
+  source_interpolation: torchvision_default_bilinear
+  source_antialias: true
+  model_resize: [64, 64]
+  model_interpolation: bilinear
+  model_antialias: true
+  crop: none
+  normalization: none
+  imagenet_normalization: false
+  precision: float32

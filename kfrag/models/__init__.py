@@ -6,6 +6,7 @@ from .message_projector import MessageProjector
 from .regional_decoder import RegionalDecoder
 from .regional_carrier import RegionalCarrierBank, StructuredChannelSystem, StructuredRegionalDecoder
 from .learned_channel_v3 import SpatialSymbolProjector, ImageConditionedResidualEncoder, BlindSymbolDecoder, ResidualSymbolSystem
+from .natural_channel_v2 import NaturalChannelV2, EightBitCarrier, ContentConditionedResidualEncoder, BlindMultiScaleDecoder
 
 __all__ = [
     "MessageProjector",
@@ -16,6 +17,7 @@ __all__ = [
     "StructuredRegionalDecoder",
     "StructuredChannelSystem",
     "SpatialSymbolProjector", "ImageConditionedResidualEncoder", "BlindSymbolDecoder", "ResidualSymbolSystem",
+    "NaturalChannelV2", "EightBitCarrier", "ContentConditionedResidualEncoder", "BlindMultiScaleDecoder",
 ]
 from .content_adaptive_encoder import ContentAdaptiveEncoder
 from .blind_packet_decoder import BlindPacketDecoder
