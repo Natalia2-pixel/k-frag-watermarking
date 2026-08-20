@@ -82,7 +82,9 @@ def regional_losses(model,image,bits,out,active_mask,config):
     residual=out["residual"];energy=residual.square().mean();sat=F.relu(residual.abs()/float(config["amplitude"])-float(config.get("saturation_start",.95))).square().mean()
     bit_losses=F.binary_cross_entropy_with_logits(out["regional_logits"],bits,reduction="none");bit_balance=bit_losses.mean((0,1,2)).var(unbiased=False);region_balance=bit_losses.mean((0,3)).var(unbiased=False)
     strength=out["strength_mask"];global_mask=F.relu(torch.tensor(float(config.get("mask_min",.3)))-strength.mean()).square();cells=strength.unfold(2,strength.shape[2]//4,strength.shape[2]//4).unfold(3,strength.shape[3]//4,strength.shape[3]//4);regional_mask=F.relu(torch.tensor(float(config.get("mask_min",.3)))-cells.mean((-1,-2))).square().mean()
-    original=model.decoder(image);original_conf=original.square().mean();values={"communication":comm,"fidelity":fidelity,"energy":energy,"saturation":sat,"bit_balance":bit_balance,"region_balance":region_balance,"mask_collapse":global_mask+regional_mask,"original_confidence":original_conf}
+    mask_max=float(config.get("mask_anti_saturation_start",.95));mask_high=F.relu(strength-mask_max).square().mean()+F.relu(cells.mean((-1,-2))-mask_max).square().mean()
+    raw=out.get("raw_residual");preactivation=F.relu(raw.abs()-float(config.get("preactivation_start",2.0))).square().mean() if raw is not None else residual.new_zeros(())
+    original=model.decoder(image);original_conf=original.square().mean();values={"communication":comm,"fidelity":fidelity,"energy":energy,"saturation":sat,"bit_balance":bit_balance,"region_balance":region_balance,"mask_collapse":global_mask+regional_mask,"mask_anti_saturation":mask_high,"preactivation":preactivation,"original_confidence":original_conf}
     total=sum(float(config.get(k+"_weight",1 if k=="communication" else 0))*v for k,v in values.items());values["total"]=total;return values
 
 def stage_c_gates(metrics):

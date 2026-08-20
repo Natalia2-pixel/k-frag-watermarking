@@ -86,12 +86,13 @@ class ContentConditionedResidualEncoder(nn.Module):
         low = self.fuse2(torch.cat((self.down_image(skip), self.down_payload(xp)), 1))
         low = self.bottleneck(torch.cat((low, low_carrier), 1))
         features = self.decode(torch.cat((self.up(low), skip), 1))
-        bounded = torch.tanh(self.residual_head(features) + self.carrier_skip(carrier))
+        raw_residual = self.residual_head(features) + self.carrier_skip(carrier)
+        bounded = torch.tanh(raw_residual)
         mask = self.mask_floor + (1.0 - self.mask_floor) * torch.sigmoid(self.mask_head(features))
         residual = float(amplitude) * mask * bounded
         watermarked = (image + residual).clamp(0, 1)
         return {"watermarked_image": watermarked, "residual": watermarked-image,
-                "preclamp_residual": residual, "bounded_residual": bounded,
+                "preclamp_residual": residual, "raw_residual": raw_residual, "bounded_residual": bounded,
                 "strength_mask": mask, "carrier_features": carrier}
 
 

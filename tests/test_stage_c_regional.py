@@ -31,6 +31,18 @@ def test_stage_c_gate_policy_and_best_checkpoint(tmp_path):
       "analytical_contribution":0,"no_authentication_secret":True,"no_expected_payload":True}
     assert all(stage_c_gates(metrics).values())
 
+@pytest.mark.parametrize("psnr,saturation,expected",[(35.0,.001,True),(34.999,.001,False),(35.0,.001001,False),(50.0,.5,False)])
+def test_fidelity_and_saturation_gates_cannot_be_bypassed(psnr,saturation,expected):
+    metrics={"regional_active_bit_accuracy":1.,"exact_regional_symbol_accuracy":1.,"per_region_bit_accuracy":[[1.]*4 for _ in range(4)],"per_bit_accuracy":[1.]*8,
+      "correct_minus_shuffled_margin":.5,"correct_minus_spatially_permuted_margin":.5,"original_image_bit_accuracy":.5,"original_exact_symbol_false_positive":0.,
+      "cross_region_leakage":0.,"cross_region_leakage_threshold":.1,"psnr":psnr,"ssim":1.,"residual_saturation_fraction":saturation,"disjoint_images":True,"blind_decoder":True,
+      "analytical_contribution":0.,"no_authentication_secret":True,"no_expected_payload":True}
+    gates=stage_c_gates(metrics);assert (all(gates.values())) is expected;assert gates["psnr"] is (psnr>=35);assert gates["saturation"] is (saturation<=.001)
+
+def test_encoder_exposes_raw_tanh_preactivation_for_saturation_diagnostics():
+    model=RegionalChannelV1(NaturalChannelV2(16,4),16);out=model.encoder(torch.rand(2,3,16,16),fresh_regional_bits(2,torch.Generator().manual_seed(7)),.02)
+    assert out["raw_residual"].shape==(2,3,16,16) and torch.equal(torch.tanh(out["raw_residual"]),out["bounded_residual"])
+
 def test_failed_checkpoint_policy_always_last_never_best(tmp_path):
     parent=NaturalChannelV2(16,4);m=RegionalChannelV1(parent,16);opt=torch.optim.AdamW(m.parameters());sch=torch.optim.lr_scheduler.StepLR(opt,1);cfg={"preprocessing":{}}
     split={"seed":1,"train":["a"],"validation":["b"]};save_stage_c(tmp_path,m,opt,sch,cfg,split,1,{"scientific_status":"blocked_by_single_region_routing"},"abc",False)
