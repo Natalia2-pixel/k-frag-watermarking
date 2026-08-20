@@ -3,9 +3,10 @@ stage_b_checkpoint: artifacts/stage_b_v2_kaggle_evidence/transition_repair_kaggl
 stage_b_report: artifacts/stage_b_v2_kaggle_evidence/transition_repair_kaggle/report.json
 stage_b_sha256: DB75B18D96E4398F28D7748003AD4FDF1B4849CDDAF574F0044D0888D2C61773
 data_root: /kaggle/input/configure-this-path
-output_directory: outputs/stage_c_regional/kaggle_pilot
+output_directory: outputs/stage_c_regional/kaggle_pilot_v2
 train_images: 128
 validation_images: 64
+final_evaluation_samples: 256
 image_size: 64
 width: 16
 batch_size: 16

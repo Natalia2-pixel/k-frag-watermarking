@@ -45,6 +45,24 @@ def validate_model_batch(image:torch.Tensor,bits:torch.Tensor,image_size:int=64)
     if bits.ndim!=4 or tuple(bits.shape[1:])!=(4,4,8):raise ValueError("Stage-C bits must have shape [B,4,4,8]")
     if len(image)!=len(bits):raise ValueError("Stage-C image and payload batch sizes must match")
 
+def build_evaluation_population(validation:torch.Tensor,sample_count:int)->tuple[torch.Tensor,dict[str,Any]]:
+    """Deterministically cycle validation images, then slice to exactly sample_count."""
+    if validation.ndim!=4 or len(validation)<1:raise ValueError("validation population must be a non-empty BCHW tensor")
+    if sample_count<1:raise ValueError("final evaluation sample count must be positive")
+    indices=torch.arange(sample_count)%len(validation);images=validation.index_select(0,indices)
+    return images,{"configured_evaluation_sample_count":int(sample_count),"actual_evaluation_image_count":len(images),
+      "number_of_unique_validation_images_used":min(len(validation),sample_count),"repetition_policy":"deterministic_cycle_then_slice"}
+
+def build_final_control_pairs(images:torch.Tensor,bits:torch.Tensor,generator:torch.Generator,control_count:int=16):
+    validate_model_batch(images,bits,images.shape[-1]);count=min(int(control_count),len(images));same_image=images[:1].expand(count,-1,-1,-1).clone();same_image_bits=fresh_regional_bits(count,generator)
+    same_payload_images=images[:count];same_payload_bits=bits[:1].expand(count,-1,-1,-1).clone()
+    pairs={"fresh_watermarked":(images,bits),"shuffled_targets":(images,torch.roll(bits,1,0)),"spatially_permuted_targets":(images,torch.roll(bits,1,1)),
+      "original_random_targets":(images,fresh_regional_bits(len(images),generator)),"multiple_payloads_same_image":(same_image,same_image_bits),
+      "same_payload_multiple_images":(same_payload_images,same_payload_bits),"leakage_and_sensitivity":(images,bits)}
+    for name,(control_images,control_bits) in pairs.items():
+        if len(control_images)!=len(control_bits):raise RuntimeError(f"Stage-C control batch mismatch: {name}")
+    return pairs
+
 def fresh_regional_bits(count,generator):return torch.randint(0,2,(count,4,4,8),generator=generator).float()
 def active_region_mask(batch,count,generator):
     mask=torch.zeros(batch,16,dtype=torch.bool)

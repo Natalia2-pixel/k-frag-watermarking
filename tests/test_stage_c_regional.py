@@ -1,8 +1,9 @@
-import json,torch
+import json,torch,pytest
 from kfrag.models.natural_channel_v2 import NaturalChannelV2
 from kfrag.models.regional_channel_v1 import RegionalChannelV1
 from kfrag.training.regional_channel_v1 import (BIT_MAPPING,active_region_mask,fresh_regional_bits,regional_metrics,stage_c_gates,save_stage_c,
  preprocess_stage_c_image,load_stage_c_population,validate_model_batch)
+from kfrag.training.regional_channel_v1 import build_evaluation_population,build_final_control_pairs
 from kfrag.diagnostics.stage_c_regional import verify_parent,evaluate_final
 
 SPEC={"numeric_range":[0.0,1.0],"dtype":"float32","channel_order":"RGB","resize":[64,64],"interpolation":"bilinear","antialias":True,"normalization":"none"}
@@ -60,3 +61,16 @@ def test_fail_fast_model_batch_checks_spatial_and_batch_mismatch():
         try:validate_model_batch(image,bad_bits,64)
         except ValueError:pass
         else:raise AssertionError("invalid Stage-C model batch must fail")
+
+@pytest.mark.parametrize("validation_count",[16,32,64,17])
+def test_final_population_cycles_and_slices_exactly_for_any_validation_size(validation_count):
+    validation=torch.rand(validation_count,3,64,64);images,metadata=build_evaluation_population(validation,70)
+    assert images.shape==(70,3,64,64);assert torch.equal(images[0],images[validation_count]);assert metadata=={
+      "configured_evaluation_sample_count":70,"actual_evaluation_image_count":70,
+      "number_of_unique_validation_images_used":validation_count,"repetition_policy":"deterministic_cycle_then_slice"}
+
+def test_every_final_control_has_matching_image_and_payload_batches():
+    images=torch.rand(70,3,64,64);bits=fresh_regional_bits(70,torch.Generator().manual_seed(8));pairs=build_final_control_pairs(images,bits,torch.Generator().manual_seed(9))
+    assert set(pairs)=={"fresh_watermarked","shuffled_targets","spatially_permuted_targets","original_random_targets","multiple_payloads_same_image","same_payload_multiple_images","leakage_and_sensitivity"}
+    assert all(len(control_images)==len(control_bits) for control_images,control_bits in pairs.values())
+    assert len(pairs["multiple_payloads_same_image"][0])==16 and len(pairs["same_payload_multiple_images"][0])==16
