@@ -3,6 +3,8 @@ import torch
 from kfrag.models.natural_channel_v2 import NaturalChannelV2
 from kfrag.training.natural_channel_v2 import (SCHEMA_VERSION, clip_gradients, deterministic_split,
  fresh_bits, gate_results, make_checkpoint, save_attempt, transition_weights)
+from kfrag.diagnostics.stage_b_phase1_repair import balanced_bits
+from kfrag.diagnostics.stage_b_transition_repair import WEIGHTS, carrier_distillation_losses, normalized_distance
 
 CFG={"preprocessing":{"numeric_range":[0,1],"normalization":"none"}}
 
@@ -15,6 +17,9 @@ def test_disjoint_seeded_split_and_variable_pairing():
 def test_payload_generation_is_not_identifier_derived():
     gen1=torch.Generator().manual_seed(5); gen2=torch.Generator().manual_seed(5)
     assert torch.equal(fresh_bits(4,gen1),fresh_bits(4,gen2))
+
+def test_phase1_payload_batches_are_exactly_balanced_per_bit():
+    bits=balanced_bits(16,torch.Generator().manual_seed(7)); assert torch.equal(bits.sum(0),torch.full((8,),8.))
 
 def test_transition_reaches_zero_analytical_contribution():
     assert transition_weights(0,10)==(1,0) and transition_weights(10,10)==(0,1) and transition_weights(99,10)==(0,1)
@@ -47,3 +52,15 @@ def test_controls_and_per_bit_gate_reporting():
 def test_preprocessing_explicitly_excludes_imagenet_normalization():
     spec={"numeric_range":[0,1],"dtype":"float32","channel_order":"RGB","normalization":"none","imagenet_normalization":False}
     assert spec["numeric_range"]==[0,1] and spec["normalization"]=="none" and not spec["imagenet_normalization"]
+
+def test_transition_grid_includes_strict_learned_only_endpoint():
+    assert WEIGHTS==(1.0,.9,.75,.5,.25,.1,0.0) and WEIGHTS[-1]==0
+
+def test_carrier_distillation_losses_are_finite_and_differentiable():
+    m=NaturalChannelV2(16,4);image=torch.rand(2,3,16,16);bits=torch.randint(0,2,(2,8)).float();learned=m.encoder(image,bits,.02)["residual"]
+    from kfrag.models.natural_channel_v2 import analytical_residual
+    losses=carrier_distillation_losses(m,image,bits,learned,analytical_residual(bits,(16,16),.02));sum(losses.values()).backward()
+    assert all(torch.isfinite(x) for x in losses.values()) and m.encoder.carrier.bases.grad.abs().sum()>0
+
+def test_normalized_distillation_ignores_global_scale_but_not_structure():
+    x=torch.randn(2,3,8,8);assert normalized_distance(x,2*x)<1e-10 and normalized_distance(x,torch.roll(x,1,-1))>0

@@ -62,7 +62,11 @@ class ContentConditionedResidualEncoder(nn.Module):
         self.up = nn.ConvTranspose2d(width * 2, width, 2, 2)
         self.decode = ConvBlock(width * 2, width, activation)
         self.residual_head = nn.Conv2d(width, 3, 1)
+        self.carrier_skip = nn.Conv2d(8, 3, 1, bias=False)
         self.mask_head = nn.Conv2d(width, 1, 1)
+        nn.init.zeros_(self.residual_head.weight); nn.init.zeros_(self.residual_head.bias)
+        nn.init.constant_(self.carrier_skip.weight, 1 / math.sqrt(8))
+        nn.init.zeros_(self.mask_head.weight); nn.init.constant_(self.mask_head.bias, 3.0)
 
     def forward(self, image: torch.Tensor, bits: torch.Tensor, amplitude: float) -> dict[str, torch.Tensor]:
         if image.ndim != 4 or image.shape[1] != 3:
@@ -76,7 +80,7 @@ class ContentConditionedResidualEncoder(nn.Module):
         low = self.fuse2(torch.cat((self.down_image(skip), self.down_payload(xp)), 1))
         low = self.bottleneck(torch.cat((low, low_carrier), 1))
         features = self.decode(torch.cat((self.up(low), skip), 1))
-        bounded = torch.tanh(self.residual_head(features))
+        bounded = torch.tanh(self.residual_head(features) + self.carrier_skip(carrier))
         mask = self.mask_floor + (1.0 - self.mask_floor) * torch.sigmoid(self.mask_head(features))
         residual = float(amplitude) * mask * bounded
         watermarked = (image + residual).clamp(0, 1)
@@ -101,38 +105,69 @@ class FixedHighPass(nn.Module):
 
 
 class BlindMultiScaleDecoder(nn.Module):
-    def __init__(self, width: int = 16, activation: str = "silu") -> None:
+    def __init__(self, width: int = 16, activation: str = "silu", image_size: int = 64) -> None:
         super().__init__(); self.highpass = FixedHighPass()
+        self.register_buffer("analytical_bases", analytical_carrier_bases(image_size))
+        with torch.no_grad():
+            basis_rgb = self.analytical_bases[:, None].expand(-1, 3, -1, -1)
+            hp_bases = self.highpass(basis_rgb)
+            hp_bases = hp_bases / hp_bases.square().mean((-2,-1), keepdim=True).sqrt().clamp_min(1e-6)
+        self.register_buffer("analytical_hp_bases", hp_bases)
         self.rgb_stem = nn.Sequential(nn.Conv2d(3, width, 5, padding=2), nn.SiLU())
         self.hp_stem = nn.Sequential(nn.Conv2d(4, width, 3, padding=1), nn.SiLU())
         self.fuse = ConvBlock(width * 2, width * 2, activation)
         self.scale1 = ConvBlock(width * 2, width * 4, activation)
         self.scale2 = ConvBlock(width * 4, width * 4, activation)
-        self.output = nn.Linear(width * 4, 8)
+        # Fixed payload-independent matched responses make the analytical
+        # prerequisite observable; learned RGB/high-pass features remain intact.
+        self.output = nn.Linear(width * 4 + 8, 8)
 
     def forward(self, questioned_image: torch.Tensor) -> torch.Tensor:
         if questioned_image.ndim != 4 or questioned_image.shape[1] != 3:
             raise ValueError("decoder accepts only questioned RGB image [B,3,H,W]")
         x = self.fuse(torch.cat((self.rgb_stem(questioned_image), self.hp_stem(self.highpass(questioned_image))), 1))
         x = self.scale1(F.avg_pool2d(x, 2)); x = self.scale2(F.avg_pool2d(x, 2))
-        return self.output(x.mean((-2, -1)))
+        matched = self.analytical_matched_features(questioned_image)
+        return self.output(torch.cat((x.mean((-2, -1)), matched), 1))
+
+    def analytical_matched_features(self, questioned_image: torch.Tensor) -> torch.Tensor:
+        """Payload-independent high-pass matched responses for Phase-1 observability."""
+        hp_bases = self.analytical_hp_bases
+        if hp_bases.shape[-2:] != questioned_image.shape[-2:]:
+            hp_bases = F.interpolate(hp_bases, questioned_image.shape[-2:], mode="bilinear", align_corners=False)
+            hp_bases = hp_bases / hp_bases.square().mean((-2,-1),keepdim=True).sqrt().clamp_min(1e-6)
+        hp = self.highpass(questioned_image)
+        return 25.0 * torch.einsum("bchw,kchw->bk", hp, hp_bases) / (hp.shape[1]*hp.shape[2]*hp.shape[3])
+
+    def forward_analytical(self, questioned_image: torch.Tensor) -> torch.Tensor:
+        """Same blind output head with learned branch held at zero during Phase 1."""
+        zeros = questioned_image.new_zeros((len(questioned_image), self.output.in_features-8))
+        return self.output(torch.cat((zeros, self.analytical_matched_features(questioned_image)), 1))
 
 
 class NaturalChannelV2(nn.Module):
     architecture_version = "natural_channel_v2.0"
     def __init__(self, image_size: int = 64, width: int = 16, activation: str = "silu", mask_floor: float = .25) -> None:
         super().__init__(); self.encoder = ContentConditionedResidualEncoder(image_size, width, activation, mask_floor)
-        self.decoder = BlindMultiScaleDecoder(width, activation)
+        self.decoder = BlindMultiScaleDecoder(width, activation, image_size)
 
     def forward(self, image: torch.Tensor, bits: torch.Tensor, amplitude: float) -> dict[str, torch.Tensor]:
         out = self.encoder(image, bits, amplitude); out["logits"] = self.decoder(out["watermarked_image"]); return out
 
 
+def analytical_carrier_bases(size: int | tuple[int, int], *, device=None, dtype=torch.float32) -> torch.Tensor:
+    """Eight deterministic, zero-mean, RMS-one, mutually orthogonal DCT bases."""
+    h, w = (size, size) if isinstance(size, int) else size
+    y = (torch.arange(h, device=device, dtype=dtype) + .5)[:, None]
+    x = (torch.arange(w, device=device, dtype=dtype) + .5)[None, :]
+    pairs = ((25,31),(31,25),(27,29),(29,27),(23,31),(31,23),(25,29),(29,25))
+    bases = torch.stack([torch.cos(math.pi*k*x/w)*torch.cos(math.pi*l*y/h) for k,l in pairs])
+    bases -= bases.mean((-2,-1),keepdim=True)
+    return bases / bases.square().mean((-2,-1),keepdim=True).sqrt().clamp_min(1e-6)
+
+
 def analytical_residual(bits: torch.Tensor, size: tuple[int, int], amplitude: float) -> torch.Tensor:
     """Deterministic, eight-band orthogonal warm-up signal independent of image identity."""
-    h, w = size; y = torch.arange(h, device=bits.device, dtype=torch.float32)[:, None]
-    x = torch.arange(w, device=bits.device, dtype=torch.float32)[None, :]
-    bases = [torch.cos(2*math.pi*((i+1)*x/w + (i%3+1)*y/h)) for i in range(8)]
-    carrier = torch.stack(bases); signed = bits.float().mul(2).sub(1)
+    carrier = analytical_carrier_bases(size, device=bits.device, dtype=torch.float32); signed = bits.float().mul(2).sub(1)
     signal = torch.einsum("bk,khw->bhw", signed, carrier).div(math.sqrt(8))
     return float(amplitude) * signal[:, None].expand(-1, 3, -1, -1).tanh()
