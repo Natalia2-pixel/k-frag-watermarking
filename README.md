@@ -7,9 +7,15 @@ content-adaptive residual encoder, questioned-image-only decoding and
 synchronization, attacks, evidence maps, controlled curriculum gates, dataset
 manifests, evaluation, and immutable run artifacts.
 
-The current COCO development result does **not** pass the predefined natural
-image communication gate. Later phases are implemented but scientifically
-unvalidated and must not be described as successful.
+Development is split into two independently validated tracks. Track 1 validates
+the complete protocol through an explicit oracle/simulated regional-symbol
+channel. It is **not** learned-image experimental success. Track 2 repairs the
+blind natural-image communication channel, initially for only the eight-bit RS
+symbol. V1/V2 and the current COCO results remain failed baselines.
+
+Run the deterministic protocol demo with `python scripts/demo_oracle_protocol.py`.
+Run all local V3 gates with `python scripts/run_prerequisites_v3.py`; a COCO pilot
+is prohibited unless its report sets `coco_pilot_permitted` to true.
 
 ## Install
 

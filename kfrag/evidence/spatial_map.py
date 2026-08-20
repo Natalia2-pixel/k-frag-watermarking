@@ -5,6 +5,9 @@ def protocol_evidence_map(candidates,accepted,rejected,conflicts):
     for i in conflicts: result[i]="duplicate_or_conflicting"
     for candidate,reason in rejected:
         if candidate.packet is not None and result[candidate.packet.index]=="missing_or_unobserved": result[candidate.packet.index]=reason
+        elif candidate.observed:
+            y=min(3,max(0,int(candidate.location[1]*4))); x=min(3,max(0,int(candidate.location[0]*4)))
+            result[y*4+x]="undecodable"
     return [result[i:i+4] for i in range(0,16,4)]
 
 def experimental_map(protocol_map,ground_truth=None,manipulation_probabilities=None):

@@ -14,6 +14,6 @@ def verify_candidates(candidates,key,namespace,tag_bits=32):
     accepted={}; conflicts=set()
     for index,items in grouped.items():
         distinct={(x.packet.symbol,x.packet.authentication_tag) for x in items}
-        if len(distinct)>1: conflicts.add(index); rejected.extend((x,"duplicate_or_conflicting") for x in items)
+        if len(items)>1: conflicts.add(index); rejected.extend((x,"duplicate_or_conflicting") for x in items)
         else: accepted[index]=max(items,key=lambda x:x.confidence)
     return accepted,rejected,conflicts

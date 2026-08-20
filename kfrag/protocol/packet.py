@@ -15,15 +15,23 @@ class FragmentPacket:
         if not 0 <= self.index < 16 or not 0 <= self.symbol < 256: raise ValueError("invalid fragment fields")
         if not isinstance(self.authentication_tag, bytes) or not self.authentication_tag: raise ValueError("authentication_tag must be bytes")
     def to_bytes(self) -> bytes:
-        """Packed representation with a zero padding nibble; wire payload is 44 bits."""
-        return bytes((self.index, self.symbol)) + self.authentication_tag
+        """Pack the 44-bit packet into six bytes (the final low nibble is padding)."""
+        value = self.index
+        value = (value << 8) | self.symbol
+        value = (value << (8 * len(self.authentication_tag))) | int.from_bytes(self.authentication_tag, "big")
+        return (value << 4).to_bytes(6, "big")
     def to_bits(self) -> tuple[int,...]:
         return tuple((self.index >> shift)&1 for shift in range(3,-1,-1)) + tuple((byte >> shift)&1 for byte in bytes((self.symbol,))+self.authentication_tag for shift in range(7,-1,-1))
     @classmethod
     def from_bytes(cls, raw: bytes, tag_bits: int = 32) -> "FragmentPacket":
-        if not isinstance(raw, bytes) or len(raw) != 2 + tag_bits//8: raise ValueError("invalid packet length")
-        if raw[0] > 15: raise ValueError("non-zero packet padding/version nibble")
-        return cls(raw[0], raw[1], raw[2:])
+        if tag_bits != 32: raise ValueError("packed wire format currently requires a 32-bit tag")
+        if not isinstance(raw, bytes) or len(raw) != 6: raise ValueError("invalid packet length")
+        value=int.from_bytes(raw,"big")
+        if value & 0xF: raise ValueError("non-zero packet padding nibble")
+        value >>= 4
+        authentication_tag=(value & 0xFFFFFFFF).to_bytes(4,"big"); value >>= 32
+        symbol=value & 0xFF; index=value >> 8
+        return cls(index,symbol,authentication_tag)
     @classmethod
     def from_bits(cls, bits, tag_bits: int = 32) -> "FragmentPacket":
         values=list(bits)
