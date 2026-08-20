@@ -28,11 +28,11 @@ secrets/
  
 # Datasets and experiment outputs 
 /data/ 
+/artifacts/
 /checkpoints/
-outputs/ 
+/outputs/ 
 runs/ 
 wandb/ 
 *.pt 
 *.pth 
 *.ckpt
-/outputs/kfrag/
