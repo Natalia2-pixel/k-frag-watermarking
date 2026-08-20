@@ -39,6 +39,8 @@ class RegionalLearnedEncoder(nn.Module):
     def __init__(self,stage_b:NaturalChannelV2,image_size=64):
         super().__init__();self.router=RegionalCarrierRouter(stage_b,image_size);self.encoder=stage_b.encoder
     def forward(self,image,bits,amplitude,active_mask=None):
+        if image.ndim!=4 or tuple(image.shape[1:])!=(3,self.router.image_size,self.router.image_size):raise ValueError(f"image must have shape [B,3,{self.router.image_size},{self.router.image_size}]")
+        if bits.ndim!=4 or tuple(bits.shape[1:])!=(4,4,8) or len(image)!=len(bits):raise ValueError("bits must have shape [B,4,4,8] with matching batch")
         carrier=self.router(bits,active_mask);out=self.encoder.forward_features(image,carrier,amplitude);out["regional_carrier_features"]=carrier;return out
 
 class BlindRegionalDecoder(nn.Module):
@@ -48,7 +50,7 @@ class BlindRegionalDecoder(nn.Module):
         self.regional_features=nn.Sequential(nn.Conv2d(7,16,3,padding=1),nn.SiLU(),nn.Conv2d(16,32,3,stride=2,padding=1),nn.GroupNorm(8,32),nn.SiLU(),nn.Conv2d(32,32,3,padding=1),nn.SiLU())
         self.regional_output=nn.Linear(32,8);nn.init.zeros_(self.regional_output.weight);nn.init.zeros_(self.regional_output.bias)
     def forward(self,questioned_image):
-        if questioned_image.ndim!=4 or questioned_image.shape[1]!=3:raise ValueError("decoder accepts only questioned RGB image")
+        if questioned_image.ndim!=4 or tuple(questioned_image.shape[1:])!=(3,self.image_size,self.image_size):raise ValueError(f"decoder accepts only questioned RGB image [B,3,{self.image_size},{self.image_size}]")
         b=len(questioned_image);x=questioned_image.reshape(b,3,4,self.cell_size,4,self.cell_size).permute(0,2,4,1,3,5).reshape(b*16,3,self.cell_size,self.cell_size)
         hp=self.decoder.highpass(x);base=self.router.cell_bases*self.router.window;base=base-base.mean((-2,-1),keepdim=True);base=base/base.square().mean((-2,-1),keepdim=True).sqrt().clamp_min(1e-6)
         hp_bases=self.decoder.highpass(base[:,None].expand(-1,3,-1,-1));hp_bases=hp_bases/hp_bases.square().mean((-2,-1),keepdim=True).sqrt().clamp_min(1e-6)
@@ -62,4 +64,6 @@ class RegionalChannelV1(nn.Module):
     def __init__(self,stage_b:NaturalChannelV2,image_size=64):
         super().__init__();self.encoder=RegionalLearnedEncoder(stage_b,image_size);self.decoder=BlindRegionalDecoder(stage_b,self.encoder.router,image_size)
     def forward(self,image,bits,amplitude,active_mask=None):
+        if image.ndim!=4 or tuple(image.shape[1:])!=(3,self.encoder.router.image_size,self.encoder.router.image_size):raise ValueError(f"image must have shape [B,3,{self.encoder.router.image_size},{self.encoder.router.image_size}]")
+        if bits.ndim!=4 or tuple(bits.shape[1:])!=(4,4,8) or len(image)!=len(bits):raise ValueError("bits must have shape [B,4,4,8] with matching batch")
         out=self.encoder(image,bits,amplitude,active_mask);out["regional_logits"]=self.decoder(out["watermarked_image"]);return out

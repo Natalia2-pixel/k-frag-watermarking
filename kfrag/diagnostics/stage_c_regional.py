@@ -9,7 +9,8 @@ from kfrag.data import CocoImageDataset
 from kfrag.models.natural_channel_v2 import NaturalChannelV2,ACTIVE_BIT_NAMES
 from kfrag.models.regional_channel_v1 import RegionalChannelV1
 from kfrag.training.natural_channel_v2 import deterministic_split,clip_gradients
-from kfrag.training.regional_channel_v1 import fresh_regional_bits,active_region_mask,regional_metrics,regional_losses,stage_c_gates,save_stage_c
+from kfrag.training.regional_channel_v1 import (fresh_regional_bits,active_region_mask,regional_metrics,regional_losses,stage_c_gates,save_stage_c,
+ load_stage_c_population,preprocess_stage_c_image,validate_model_batch,validate_preprocessing_spec)
 
 def sha256(path):
     h=hashlib.sha256();
@@ -17,11 +18,11 @@ def sha256(path):
         for chunk in iter(lambda:f.read(1<<20),b""):h.update(chunk)
     return h.hexdigest().upper()
 
-def verify_parent(path,report_path,expected_hash,size=64,width=16):
+def verify_parent(path,report_path,expected_hash,size=64,width=16,expected_preprocessing=None):
     path=Path(path);report=json.loads(Path(report_path).read_text());actual=sha256(path);checkpoint=torch.load(path,map_location="cpu",weights_only=False);model=NaturalChannelV2(size,width)
     checks={"exists":path.is_file() and path.stat().st_size>0,"sha256":actual==expected_hash.upper(),"stage_b_v2_passed":report.get("stage_b_v2_passed") is True,"stage_c_permitted":report.get("stage_c_permitted") is True,
       "analytical_weight_zero":report["learned_only_metrics"]["analytical_weight"]==0,"learned_weight_one":report["learned_only_metrics"]["learned_weight"]==1,"architecture":checkpoint.get("architecture_version")==model.architecture_version,
-      "preprocessing":checkpoint.get("preprocessing")==checkpoint.get("configuration",{}).get("preprocessing"),"active_bits":tuple(checkpoint.get("active_bit_mapping",()))==ACTIVE_BIT_NAMES}
+      "preprocessing":checkpoint.get("preprocessing")==checkpoint.get("configuration",{}).get("preprocessing") and (expected_preprocessing is None or checkpoint.get("preprocessing")==dict(expected_preprocessing)),"active_bits":tuple(checkpoint.get("active_bit_mapping",()))==ACTIVE_BIT_NAMES}
     expected=model.state_dict();saved=checkpoint.get("model_state",{});checks["tensors"]=set(saved)==set(expected) and all(saved[k].shape==expected[k].shape and saved[k].dtype==expected[k].dtype and torch.isfinite(saved[k]).all() for k in expected)
     forbidden=json.dumps({k:v for k,v in checkpoint.items() if k not in ("model_state","optimizer_state")}).lower();checks["no_prohibited_fields"]="authentication_secret" not in forbidden and "expected_validation_payload" not in forbidden
     if not all(checks.values()):return {"passed":False,"checks":checks,"sha256":actual},None,None
@@ -36,6 +37,7 @@ def _ssim(x,y):
     return float((((2*mx*my+c1)*(2*cov+c2))/((mx.square()+my.square()+c1)*(vx+vy+c2))).mean())
 
 def evaluate_final(model,images,bits,amplitude,generator,leakage_threshold):
+    validate_model_batch(images,bits,model.encoder.router.image_size)
     model.eval();
     with torch.no_grad():out=model(images,bits,amplitude);logits=out["regional_logits"]
     metrics=regional_metrics(logits,bits);shuffled=regional_metrics(logits,torch.roll(bits,1,0));spatial=regional_metrics(logits,torch.roll(bits,1,1));random_targets=fresh_regional_bits(len(images),generator);original_logits=model.decoder(images);original=regional_metrics(original_logits,random_targets)
@@ -61,11 +63,11 @@ def _masked_gate(logits,bits,mask):
     correct=logits.ge(0).eq(bits.bool());selected=correct[mask[...,None].expand_as(correct)].reshape(-1,8);return {"active_bit_accuracy":float(selected.float().mean()),"exact_symbol_accuracy":float(selected.all(1).float().mean()),"minimum_bit_accuracy":float(selected.float().mean(0).min())}
 
 def run_stage_c(config:Mapping[str,Any]):
-    output=Path(config.get("output_directory","outputs/stage_c_regional/local_prerequisite"));output.mkdir(parents=True,exist_ok=True);verification,parent,parent_checkpoint=verify_parent(config["stage_b_checkpoint"],config["stage_b_report"],config["stage_b_sha256"],int(config.get("image_size",64)),int(config.get("width",16)))
+    output=Path(config.get("output_directory","outputs/stage_c_regional/local_prerequisite"));output.mkdir(parents=True,exist_ok=True);size=int(config.get("image_size",64));validate_preprocessing_spec(config["preprocessing"],size);verification,parent,parent_checkpoint=verify_parent(config["stage_b_checkpoint"],config["stage_b_report"],config["stage_b_sha256"],size,int(config.get("width",16)),config["preprocessing"])
     if not verification["passed"]:
         report={"scientific_status":"blocked_by_stage_b_checkpoint","stage_d_permitted":False,"checkpoint_verification":verification};(output/"report.json").write_text(json.dumps(report,indent=2)+"\n");return report
     seed=int(config.get("seed",2026));random.seed(seed);torch.manual_seed(seed);generator=torch.Generator().manual_seed(seed+1);dataset=CocoImageDataset(config["data_root"]);ids=[dataset[i]["relative_path"] for i in range(len(dataset))];split=deterministic_split(ids,int(config.get("train_images",32)),int(config.get("validation_images",16)),seed)
-    lookup={dataset[i]["relative_path"]:dataset[i]["image"] for i in range(len(dataset))};size=int(config.get("image_size",64));resize=lambda x:F.interpolate(x[None],(size,size),mode="bilinear",align_corners=False,antialias=True)[0];train=torch.stack([resize(lookup[x]) for x in split["train"]]);validation=torch.stack([resize(lookup[x]) for x in split["validation"]])
+    train=load_stage_c_population(dataset,split["train"],config["preprocessing"],size);validation=load_stage_c_population(dataset,split["validation"],config["preprocessing"],size)
     model=RegionalChannelV1(parent,size);params=list(dict.fromkeys(model.parameters()));optimizer=torch.optim.AdamW(params,lr=float(config.get("learning_rate",1e-3)),weight_decay=float(config.get("weight_decay",1e-4)));scheduler=torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,max(1,5*int(config.get("maximum_steps",100))))
     amplitude=float(config.get("amplitude",.02));batch=int(config.get("batch_size",4));minimum=int(config.get("minimum_steps",20));maximum=int(config.get("maximum_steps",100));every=int(config.get("evaluate_every",10));patience=int(config.get("patience",10));history=[];curriculum={};blocked=None;global_step=0
     for count in (1,2,4,8,16):
@@ -75,11 +77,12 @@ def run_stage_c(config:Mapping[str,Any]):
             if count==1:
                 mask=torch.zeros(batch,16,dtype=torch.bool);mask[torch.arange(batch),(global_step*batch+torch.arange(batch))%16]=True;mask=mask.reshape(batch,4,4)
             else:mask=active_region_mask(batch,count,generator)
-            out=model(image,bits,amplitude,mask);losses=regional_losses(model,image,bits,out,mask,{**config["losses"],"amplitude":amplitude});optimizer.zero_grad(set_to_none=True);before=[p.detach().clone() for p in params];losses["total"].backward()
+            validate_model_batch(image,bits,size);out=model(image,bits,amplitude,mask);losses=regional_losses(model,image,bits,out,mask,{**config["losses"],"amplitude":amplitude});optimizer.zero_grad(set_to_none=True);before=[p.detach().clone() for p in params];losses["total"].backward()
             if not torch.isfinite(losses["total"]) or any(p.grad is not None and not torch.isfinite(p.grad).all() for p in params):raise FloatingPointError("non-finite Stage-C optimization")
             gb,ga=clip_gradients(params,1.0);optimizer.step();scheduler.step();update=math.sqrt(sum(float((p.detach()-old).square().sum()) for p,old in zip(params,before)))
             if local%every==0:
                 ebits=fresh_regional_bits(len(validation),generator);emask=active_region_mask(len(validation),count,generator)
+                validate_model_batch(validation,ebits,size)
                 with torch.no_grad():eo=model(validation,ebits,amplitude,emask);last=_masked_gate(eo["regional_logits"],ebits,emask)
                 score=last["active_bit_accuracy"]+last["exact_symbol_accuracy"];history.append({"region_count":count,"global_step":global_step,"level_step":local,"gradient_norm_before":gb,"gradient_norm_after":ga,"update_norm":update,**last})
                 if score>best_score:best_score=score;best={k:v.detach().clone() for k,v in model.state_dict().items()};stale=0
@@ -90,7 +93,7 @@ def run_stage_c(config:Mapping[str,Any]):
                 if local>=minimum and stale>=patience:break
         model.load_state_dict(best);curriculum[str(count)]={**(last or {}),"passed":success>=2,"passed_step":global_step if success>=2 else None,"level_step":local}
         if success<2:blocked=count;break
-    eval_bits=fresh_regional_bits(64,generator);eval_images=validation.repeat(4,1,1,1);metrics=evaluate_final(model,eval_images,eval_bits,amplitude,generator,float(config.get("cross_region_leakage_threshold",.10)))
+    eval_bits=fresh_regional_bits(64,generator);eval_images=preprocess_stage_c_image(validation.repeat(4,1,1,1),config["preprocessing"],size);validate_model_batch(eval_images,eval_bits,size);metrics=evaluate_final(model,eval_images,eval_bits,amplitude,generator,float(config.get("cross_region_leakage_threshold",.10)))
     gates=stage_c_gates(metrics);passed=blocked is None and all(gates.values());status="passed_stage_c_regional_repair_pilot" if passed else ("blocked_by_single_region_routing" if blocked==1 else "blocked_by_progressive_region_count" if blocked else "blocked_by_stage_c_gate")
     metrics.update({"gate_results":gates,"scientific_status":status});save_stage_c(output,model,optimizer,scheduler,config,split,blocked or 16,metrics,verification["sha256"],passed)
     report={"schema_version":"stage_c_regional_report.0","checkpoint_verification":verification,"architecture_version":model.architecture_version,"curriculum":curriculum,"first_failing_region_count":blocked,"metrics":metrics,"gate_results":gates,"stage_c_passed":passed,"stage_d_permitted":False,"scientific_status":status}
