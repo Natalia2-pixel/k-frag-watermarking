@@ -72,6 +72,12 @@ class ContentConditionedResidualEncoder(nn.Module):
         if image.ndim != 4 or image.shape[1] != 3:
             raise ValueError("image must have shape [B,3,H,W]")
         carrier = self.carrier(bits)
+        return self.forward_features(image, carrier, amplitude)
+
+    def forward_features(self, image: torch.Tensor, carrier: torch.Tensor, amplitude: float) -> dict[str, torch.Tensor]:
+        """Encode already-routed eight-channel carrier features (shared by Stage C)."""
+        if image.ndim != 4 or image.shape[1] != 3 or carrier.ndim != 4 or carrier.shape[1] != 8:
+            raise ValueError("image and carrier must have shapes [B,3,H,W] and [B,8,H,W]")
         if carrier.shape[-2:] != image.shape[-2:]:
             carrier = F.interpolate(carrier, image.shape[-2:], mode="bilinear", align_corners=False)
         xi, xp = self.image_stem(image), self.payload_stem(carrier)
