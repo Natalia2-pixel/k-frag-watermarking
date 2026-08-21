@@ -1,0 +1,22 @@
+stage_c_checkpoint: artifacts/stage_c_kaggle_final_evidence/kaggle_fidelity_repair_v1/best.pt
+stage_c_report: artifacts/stage_c_kaggle_final_evidence/kaggle_fidelity_repair_v1/report.json
+stage_c_sha256: 110165FE3DDF9D1832905ECC3C4090CFAC93D5CE1EB41E825C3F0B8A202387C1
+stage_c_expected_size: 2759150
+stage_b_checkpoint: artifacts/stage_b_v2_kaggle_evidence/transition_repair_kaggle/best.pt
+output_directory: outputs/stage_d_complete_packet/12bit_transition_repair
+synthetic_image_count: 48
+train_images: 32
+validation_images: 16
+final_evaluation_samples: 32
+image_size: 64
+width: 16
+seed: 2027
+batch_size: 8
+minimum_steps_per_level: 50
+maximum_steps_per_level: 300
+evaluate_every: 25
+learning_rate: 0.001
+distillation_weight: 1.0
+transition_index_gate: 0.995
+transplant_tolerance: 0.0
+preprocessing: {numeric_range: [0.0, 1.0], dtype: float32, channel_order: RGB, resize: [64, 64], interpolation: bilinear, antialias: true, normalization: none}
