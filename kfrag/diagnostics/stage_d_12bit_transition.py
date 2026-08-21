@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Mapping,Any
 import torch
 from torch.nn import functional as F
+from kfrag.data import CocoImageDataset
 from kfrag.diagnostics.stage_c_regional import SyntheticStageCDataset,_ssim
 from kfrag.diagnostics.stage_d_complete_packet import verify_stage_c_parent
 from kfrag.models.stage_d_12bit_transition_v1 import StageD12BitTransitionV1,RS_SLICE
@@ -44,7 +45,9 @@ def run_transition_repair(config:Mapping[str,Any]):
     output=Path(config["output_directory"]);output.mkdir(parents=True,exist_ok=True);verification,parent=verify_stage_c_parent(config)
     if not verification["passed"]:
         report={"scientific_status":"blocked_by_stage_c_checkpoint","stage_e_permitted":False,"checkpoint_verification":verification};(output/"report.json").write_text(json.dumps(report,indent=2)+"\n");return report
-    seed=int(config.get("seed",2027));random.seed(seed);torch.manual_seed(seed);generator=torch.Generator().manual_seed(seed+1);key=ephemeral_key();dataset=SyntheticStageCDataset(int(config["synthetic_image_count"]));ids=[dataset[i]["relative_path"] for i in range(len(dataset))];split=deterministic_split(ids,int(config["train_images"]),int(config["validation_images"]),seed)
+    seed=int(config.get("seed",2027));random.seed(seed);torch.manual_seed(seed);generator=torch.Generator().manual_seed(seed+1);key=ephemeral_key()
+    synthetic_count=int(config.get("synthetic_image_count",0));dataset=SyntheticStageCDataset(synthetic_count) if synthetic_count else CocoImageDataset(config["data_root"])
+    ids=[dataset[i]["relative_path"] for i in range(len(dataset))];split=deterministic_split(ids,int(config["train_images"]),int(config["validation_images"]),seed);overlap=sorted(set(split["train"])&set(split["validation"]))
     train=load_stage_c_population(dataset,split["train"],config["preprocessing"],64);validation=load_stage_c_population(dataset,split["validation"],config["preprocessing"],64);model=StageD12BitTransitionV1(parent)
     audit_bits,_=fresh_packet_batch(2,key,generator);audit=transplant_audit(model,validation[:2],audit_bits,float(config.get("transplant_tolerance",0)))
     if not audit["passed"]:
@@ -68,4 +71,4 @@ def run_transition_repair(config:Mapping[str,Any]):
     eval_images,population=build_evaluation_population(validation,int(config.get("final_evaluation_samples",32)));eval_images=preprocess_stage_c_image(eval_images,config["preprocessing"],64);eval_bits,_=fresh_packet_batch(len(eval_images),key,generator);metrics=_evaluate(model,eval_images,eval_bits,4,generator);gates=repair_gates(metrics);passed=blocked is None and all(gates.values());status="passed_stage_d_12_bit_transition_repair" if passed else "blocked_by_12_bit_transition_level" if blocked else "blocked_by_12_bit_repair_gate";metrics.update({"gate_results":gates,"scientific_status":status})
     safe={k:v for k,v in config.items() if "key" not in k.lower()};checkpoint={"schema_version":"stage_d_12bit_transition.0","architecture_version":model.architecture_version,"stage_c_parent_sha256":verification["sha256"],"configuration":safe,"preprocessing":config["preprocessing"],"active_mapping":{"index":[0,4],"rs_symbol":[4,12]},"model_state":model.state_dict(),"optimizer_state":optimizer.state_dict(),"scheduler_state":scheduler.state_dict(),"split_manifest":split,"metrics":metrics,"scientific_status":status,"stage_e_permitted":False};torch.save(checkpoint,output/"last.pt")
     if passed:torch.save(checkpoint,output/"best.pt")
-    report={"schema_version":"stage_d_12bit_transition_report.0","checkpoint_verification":verification,"transplant_audit":audit,"curriculum":curriculum,"first_failing_level":blocked,"evaluation_population":population,"history":history,"metrics":metrics,"gate_results":gates,"stage_d_12bit_passed":passed,"stage_e_permitted":False,"scientific_status":status};(output/"report.json").write_text(json.dumps(report,indent=2)+"\n");return report
+    report={"schema_version":"stage_d_12bit_transition_report.0","checkpoint_verification":verification,"transplant_audit":audit,"curriculum":curriculum,"first_failing_level":blocked,"evaluation_population":population,"data_split":{"train_count":len(split["train"]),"validation_count":len(split["validation"]),"train_validation_overlap_count":len(overlap),"train_validation_overlap":overlap},"history":history,"metrics":metrics,"gate_results":gates,"stage_d_12bit_passed":passed,"stage_e_permitted":False,"scientific_status":status};(output/"report.json").write_text(json.dumps(report,indent=2)+"\n");return report

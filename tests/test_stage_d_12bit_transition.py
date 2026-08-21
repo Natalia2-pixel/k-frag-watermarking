@@ -1,4 +1,6 @@
 import torch
+import yaml
+from pathlib import Path
 from kfrag.models.natural_channel_v2 import NaturalChannelV2
 from kfrag.models.regional_channel_v1 import RegionalChannelV1
 from kfrag.models.stage_d_12bit_transition_v1 import StageD12BitTransitionV1
@@ -30,3 +32,8 @@ def test_each_new_index_bit_changes_only_its_carrier_contribution():
     for j in range(4):
         changed=bits.clone();changed[:,0,0,j]=1
         delta=m.index_carrier(changed,4)-m.index_carrier(bits,4);assert delta.abs().sum()>0
+
+def test_kaggle_config_is_real_coco_and_stops_at_12_bits():
+    config=yaml.safe_load(Path("configs/stage_d_12bit_transition_kaggle.yaml").read_text())
+    assert config["synthetic_image_count"]==0 and config["train_images"]==128 and config["validation_images"]==64 and config["final_evaluation_samples"]==256
+    assert "tag" not in config and config["preprocessing"]["resize"]==[64,64]
