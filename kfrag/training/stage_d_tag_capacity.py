@@ -18,3 +18,9 @@ def capacity_gates(m):
       "regions":min(m["per_region_accuracy"])>=.90,"bits":min(m["per_bit_accuracy"])>=.90,"shuffled_margin":m["correct_minus_shuffled_margin"]>=.40,"spatial_margin":m["correct_minus_spatial_margin"]>=.40,
       "original":.45<=m["original_randomized_field_accuracy"]<=.55,"psnr":m["psnr"]>=35,"ssim":m["ssim"]>=.95,"saturation":m["residual_saturation_fraction"]<=.001,
       "analytical_zero":m["analytical_contribution"]==0,"blind":m["blind_decoder"],"disjoint":m["disjoint_images"]}
+
+def balanced_bit_loss(logits,bits,active_count,loss_ema,decay=.9,maximum_weight=3.0):
+    """Balance bits using only current training BCE statistics."""
+    per_element=F.binary_cross_entropy_with_logits(logits[...,:active_count],bits[...,:active_count],reduction="none");per_bit=per_element.mean((0,1,2))
+    updated=float(decay)*loss_ema+(1-float(decay))*per_bit.detach();weights=(updated/updated.mean().clamp_min(1e-8)).square().clamp(.5,float(maximum_weight));weights=weights/weights.mean()
+    return (per_bit*weights).mean(),updated,weights.detach()
