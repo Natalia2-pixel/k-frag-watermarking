@@ -4,7 +4,7 @@ from pathlib import Path
 from kfrag.models.natural_channel_v2 import NaturalChannelV2
 from kfrag.models.regional_channel_v1 import RegionalChannelV1
 from kfrag.models.stage_d_12bit_transition_v1 import StageD12BitTransitionV1
-from kfrag.training.stage_d_12bit_transition import active_mapping,transition_loss
+from kfrag.training.stage_d_12bit_transition import active_mapping,transition_loss,select_best_gate_evaluation
 
 def model():return StageD12BitTransitionV1(RegionalChannelV1(NaturalChannelV2(64,8),64))
 
@@ -37,3 +37,16 @@ def test_kaggle_config_is_real_coco_and_stops_at_12_bits():
     config=yaml.safe_load(Path("configs/stage_d_12bit_transition_kaggle.yaml").read_text())
     assert config["synthetic_image_count"]==0 and config["train_images"]==128 and config["validation_images"]==64 and config["final_evaluation_samples"]==256
     assert "tag" not in config and config["preprocessing"]["resize"]==[64,64]
+
+def _passing_metrics(index=.99):
+    return {"overall_active_bit_accuracy":.98,"index_bit_accuracy":index,"rs_bit_accuracy":.975,"per_region_accuracy":[.96]*16,"per_active_bit_accuracy":[.95]*9,
+      "correct_minus_shuffled_margin":.46,"correct_minus_spatial_margin":.44,"original_image_randomized_field_accuracy":.50,"psnr":39,"ssim":.998,
+      "residual_saturation_fraction":0,"analytical_contribution":0,"blind_decoder":True,"disjoint_images":True}
+
+def test_gate_aware_selection_retains_early_index_peak_after_degradation():
+    early=_passing_metrics(.9931640625);late=_passing_metrics(.88671875);late["overall_active_bit_accuracy"]=.94
+    selected=select_best_gate_evaluation([early,late]);assert selected["index"]==0;assert selected["metrics"]["index_bit_accuracy"]==.9931640625
+
+def test_no_passing_checkpoint_is_promoted_when_any_mandatory_gate_fails():
+    saturated=_passing_metrics();saturated["residual_saturation_fraction"]=.002
+    assert select_best_gate_evaluation([saturated]) is None

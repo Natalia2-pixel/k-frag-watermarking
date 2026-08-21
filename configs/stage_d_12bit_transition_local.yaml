@@ -15,8 +15,11 @@ batch_size: 8
 minimum_steps_per_level: 50
 maximum_steps_per_level: 300
 evaluate_every: 25
-learning_rate: 0.001
+learning_rate: 0.0003
+weight_decay: 0.0001
+index_loss_weight: 2.0
+success_evaluations: 2
+patience_evaluations: 10
 distillation_weight: 1.0
-transition_index_gate: 0.995
 transplant_tolerance: 0.0
 preprocessing: {numeric_range: [0.0, 1.0], dtype: float32, channel_order: RGB, resize: [64, 64], interpolation: bilinear, antialias: true, normalization: none}
