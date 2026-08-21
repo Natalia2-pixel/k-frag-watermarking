@@ -1,0 +1,5 @@
+schema_version: '1.0'
+experiment_name: authentication_v1
+protocol_version: 1
+tag_bits: 32
+minimum_valid_tag_acceptance: 0.99

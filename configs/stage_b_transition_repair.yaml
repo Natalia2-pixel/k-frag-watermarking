@@ -1,0 +1,34 @@
+seed: 2026
+data_root: data/raw/coco_val2017_100
+phase1_checkpoint: outputs/stage_b_natural_v2/phase1_repair/last.pt
+output_directory: outputs/stage_b_natural_v2/transition_repair
+image_size: 64
+width: 16
+batch_size: 16
+target_amplitude: 0.02
+maximum_steps_per_level: 500
+minimum_steps_per_level: 50
+evaluate_every: 25
+patience_evaluations: 10
+encoder_learning_rate: 0.001
+decoder_learning_rate: 0.0001
+decoder_unfreeze_weight: 0.25
+weight_decay: 0.0001
+transition_accuracy: 0.95
+transition_exact: 0.85
+transition_margin: 0.40
+spatial_weight: 1.0
+highpass_weight: 1.0
+sign_weight: 0.25
+logit_weight: 0.25
+communication_weight: 1.0
+amplitude_match_weight: 2.0
+saturation_weight: 5.0
+preprocessing:
+  numeric_range: [0.0, 1.0]
+  dtype: float32
+  channel_order: RGB
+  resize: [64, 64]
+  interpolation: bilinear
+  antialias: true
+  normalization: none

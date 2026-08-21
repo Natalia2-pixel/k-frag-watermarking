@@ -28,8 +28,9 @@ secrets/
  
 # Datasets and experiment outputs 
 /data/ 
-checkpoints/ 
-outputs/ 
+/artifacts/
+/checkpoints/
+/outputs/ 
 runs/ 
 wandb/ 
 *.pt 

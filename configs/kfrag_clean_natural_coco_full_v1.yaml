@@ -1,0 +1,25 @@
+schema_version: '1.0'
+experiment_name: kfrag_clean_natural_coco_full_v1
+phase: natural_image_communication
+output_root: outputs/kfrag
+seed: 2026
+image_size: 256
+max_train_images: 118287
+max_val_images: 5000
+steps: 120000
+validation_interval: 1000
+batch_size: 16
+num_workers: 8
+width: 32
+learning_rate: 0.001
+residual_alpha: 0.05
+fidelity_weight: 0.1
+preprocessing: rgb_plus_high_pass
+active_channels: [4, 5, 6, 7, 8, 9, 10, 11]
+features:
+  natural_image_communication: true
+  hmac: false
+  reed_solomon_reconstruction: false
+  attacks: false
+  synchronization: false
+gates: {active_bit_accuracy: 0.995, exact_symbol_accuracy: 0.96, shuffled_margin: 0.45}

@@ -1,0 +1,14 @@
+seed: 2026
+data_root: data/raw/coco_val2017_100
+output_directory: outputs/stage_b_natural_v2/phase1_repair
+image_size: 64
+width: 16
+batch_size: 16
+decoder_learning_rate: 0.003
+weight_decay: 0.0001
+minimum_phase1_steps: 100
+maximum_phase1_steps: 1000
+evaluate_every: 25
+patience_evaluations: 40
+initial_phase1_amplitude: 0.06
+target_amplitude: 0.02

@@ -1,0 +1,42 @@
+seed: 2026
+stage_b_checkpoint: artifacts/stage_b_v2_kaggle_evidence/transition_repair_kaggle/best.pt
+stage_b_report: artifacts/stage_b_v2_kaggle_evidence/transition_repair_kaggle/report.json
+stage_b_sha256: DB75B18D96E4398F28D7748003AD4FDF1B4849CDDAF574F0044D0888D2C61773
+data_root: data/raw/coco_val2017_100
+output_directory: outputs/stage_c_regional/local_prerequisite_batch_repair
+train_images: 32
+validation_images: 16
+final_evaluation_samples: 64
+image_size: 64
+width: 16
+batch_size: 4
+amplitude: 0.018
+learning_rate: 0.001
+weight_decay: 0.0001
+minimum_steps: 20
+maximum_steps: 100
+evaluate_every: 10
+patience: 10
+curriculum_bit_gate: 0.90
+curriculum_symbol_gate: 0.75
+cross_region_leakage_threshold: 0.10
+losses:
+  communication_weight: 1.0
+  fidelity_weight: 0.2
+  structural_weight: 0.25
+  energy_weight: 0.05
+  saturation_weight: 0.2
+  saturation_start: 0.95
+  bit_balance_weight: 0.02
+  region_balance_weight: 0.02
+  mask_collapse_weight: 0.1
+  mask_min: 0.30
+  original_confidence_weight: 0.01
+preprocessing:
+  numeric_range: [0.0, 1.0]
+  dtype: float32
+  channel_order: RGB
+  resize: [64, 64]
+  interpolation: bilinear
+  antialias: true
+  normalization: none
