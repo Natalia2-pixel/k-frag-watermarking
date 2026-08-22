@@ -1,0 +1,43 @@
+data_root: data/raw/coco_val2017_full
+output_directory: outputs/blind_crop_threshold_recovery_v1/local_coco_repaired
+committed_report: docs/evidence/blind_crop_threshold_recovery_v1_report.json
+figure_directory: docs/evidence/blind_crop_threshold_recovery_v1_figures
+selected_candidate_checkpoint: outputs/soft_authenticated_fragment_decoder_v1/local_fixture/selected_step450_non_promoted_candidate.pt
+selected_candidate_sha256: C89EB69B84766B83E36449AB9B72AAD5C52683991CBF45521FEE5D79041FCA9A
+soft_decoder_report: outputs/soft_authenticated_fragment_decoder_v2/local_fixture/report.json
+stage_d_12bit_checkpoint: artifacts/stage_d_12bit_coco_evidence/best.pt
+stage_d_12bit_report: artifacts/stage_d_12bit_coco_evidence/report.json
+stage_d_12bit_sha256: 37B312A8FCCB93F23D5A519BB51EDFCA105A962BD9C4ECA24C395826C91BCC0A
+stage_c_checkpoint: artifacts/stage_c_kaggle_final_evidence/kaggle_fidelity_repair_v1/best.pt
+stage_c_report: artifacts/stage_c_kaggle_final_evidence/kaggle_fidelity_repair_v1/report.json
+stage_c_sha256: 110165FE3DDF9D1832905ECC3C4090CFAC93D5CE1EB41E825C3F0B8A202387C1
+stage_c_expected_size: 2759150
+stage_b_checkpoint: artifacts/stage_b_v2_kaggle_evidence/transition_repair_kaggle/best.pt
+population_counts: {decoder_development: 8, selection_validation: 8, locked_final: 8}
+seed: 2080
+allocation_version: stratified_population_v1
+image_size: 64
+width: 16
+retained_areas: [1.0, 0.9, 0.75, 0.6, 0.5, 0.4, 0.25]
+crop_modes: [grid_aligned_resize, grid_aligned_pad, non_grid_resize, non_grid_pad, random_resize, random_pad, varied_aspect_resize, varied_aspect_pad, boundary_resize, boundary_pad]
+compound_area: 0.75
+compound_conditions: [jpeg75, jpeg50, mild_resize, mild_colour, regional_overlay, regional_replacement]
+search:
+  scales: [1.0, 0.9, 0.75, 0.6, 0.5, 0.4, 0.25]
+  aspect_ratios: [1.0]
+  offsets: [[0.0,0.0],[1.0,1.0],[0.5,0.5]]
+  regional_top_k: 4
+  token_beam_limit: 256
+  hmac_attempt_limit: 4096
+  total_search_budget: 8192
+  hypothesis_decode_limit: 1
+  runtime_limit_ms: 1000
+preprocessing: {numeric_range: [0.0, 1.0], dtype: float32, channel_order: RGB, resize: [64,64], interpolation: bilinear, antialias: true, normalization: none}
+gates:
+  clean_authenticated_acceptance: 0.90
+  grid_aware_12_of_16_acceptance: 0.75
+  eligible_blind_crop_acceptance: 0.75
+  insufficient_evidence_rejection: 0.99
+  missing_region_f1: 0.90
+  search_budget_exhaustion: 0.01
+  p95_runtime_ms: 1000
