@@ -17,6 +17,12 @@ STANDARD_BENIGN=("clean_repeat","jpeg_q95","jpeg_q85","jpeg_q75","jpeg_q60","web
 EXTREME_BENIGN=("jpeg_q40","resize_025")
 MALICIOUS=("replacement_full","splice_010","splice_025","splice_050","splice_075","overlay_010","overlay_025","overlay_050","overlay_075","occlusion_010","occlusion_025","occlusion_050","occlusion_075","same_image_relocation","mixed_source_collage","visually_similar_replacement","same_source_replacement")
 
+MINIMUM_REPRODUCTION_IMAGES = 1000
+
+
+class DataPopulationError(RuntimeError):
+    """Raised before scientific calculations when unseen COCO data are insufficient."""
+
 def _sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest().upper()
 def _json_default(value):
     if isinstance(value,np.generic):return value.item()
@@ -28,13 +34,17 @@ def load_frozen_thresholds(path,prior_report):
     if not all(checks.values()):raise RuntimeError(f"frozen digest prerequisite failed: {checks}")
     return frozen,checks
 def select_unseen_population(dataset,prior_report,count,seed):
-    prior=json.loads(Path(prior_report).read_text())["population_manifest"];prior_ids={Path(x).name for values in prior["identifiers"].values() for x in values};prior_hashes={x.lower() for x in prior["sha256"].values()};order=list(range(len(dataset)));random.Random(seed).shuffle(order);selected=[]
+    if count < MINIMUM_REPRODUCTION_IMAGES:raise DataPopulationError(f"configured reproduction population {count} is below the mandatory minimum of {MINIMUM_REPRODUCTION_IMAGES} unseen COCO images")
+    prior=json.loads(Path(prior_report).read_text())["population_manifest"];prior_ids={Path(x).name for values in prior["identifiers"].values() for x in values};prior_hashes={x.lower() for x in prior["sha256"].values()};order=list(range(len(dataset)));random.Random(seed).shuffle(order);unseen=[]
     for index in order:
         path=dataset.image_paths[index];identifier=path.relative_to(dataset.image_directory).as_posix();digest=_sha(path).lower()
-        if path.name not in prior_ids and digest not in prior_hashes:selected.append({"dataset_index":index,"identifier":identifier,"sha256":digest})
-        if len(selected)==count:break
-    if len(selected)<count:raise RuntimeError("fewer than 1,000 unseen COCO images remain after exclusions")
-    return selected,{"prior_identifier_count":len(prior_ids),"prior_hash_count":len(prior_hashes),"identifier_overlap":0,"sha256_overlap":0}
+        if path.name not in prior_ids and digest not in prior_hashes:unseen.append({"dataset_index":index,"identifier":identifier,"sha256":digest})
+    if len(unseen)<count:raise DataPopulationError(f"only {len(unseen)} unseen COCO images are available after excluding {len(prior_ids)} prior identifiers and {len(prior_hashes)} prior SHA-256 hashes; {count} are required")
+    selected=unseen[:count];selected_names={Path(x["identifier"]).name for x in selected};selected_hashes={x["sha256"] for x in selected}
+    preflight={"available_unseen_coco_image_count":len(unseen),"excluded_prior_image_count":len(prior_ids),"excluded_prior_identifier_count":len(prior_ids),"excluded_prior_sha256_count":len(prior_hashes),"selected_reproduction_count":len(selected),"identifier_overlap":len(selected_names&prior_ids),"sha256_overlap":len(selected_hashes&prior_hashes)}
+    preflight["selected_identifiers_and_sha256_disjoint"]=preflight["identifier_overlap"]==0 and preflight["sha256_overlap"]==0
+    if not preflight["selected_identifiers_and_sha256_disjoint"]:raise DataPopulationError(f"selected reproduction population overlaps prior evidence: {preflight}")
+    return selected,preflight
 def _codec(image,kind,quality):
     buffer=io.BytesIO();TF.to_pil_image(image).save(buffer,format=kind,quality=quality);buffer.seek(0);return TF.pil_to_tensor(Image.open(buffer).convert("RGB")).float()/255
 def _resize(image,factor):
@@ -92,6 +102,11 @@ def _row_for_image(index,identifier,image,donor,similar,thresholds,webp,key):
         for name,digest in digests.items():
             start=time.perf_counter();values=_digest_values(digest,observed);runtime=(time.perf_counter()-start)*1000;distances=[digest.distance(a,b) for a,b in zip(references[name],values)];states=classify_distances(distances,[True]*16,True,thresholds[name]["valid_max"],thresholds[name]["manipulated_min"]);rows[name][transform]={"distances":distances,"truth":truth.tolist(),"states":states,"verification_ms":runtime}
     return {"identifier":identifier,"generation_ms":generation,"registry_authenticated":registry_authenticated,"digests":rows}
+def write_population_preflight(config,preflight):
+    output=Path(config["output_directory"]);output.mkdir(parents=True,exist_ok=True)
+    path=output/"population_preflight.json";path.write_text(json.dumps(preflight,indent=2)+"\n")
+    print("Stage-Digest reproduction population preflight:",json.dumps(preflight,sort_keys=True))
+    return path
 def _fingerprint(config,selected,frozen):return hashlib.sha256(json.dumps({"config":config,"selected":selected,"frozen":frozen},sort_keys=True).encode()).hexdigest()
 def run_shards(config,dataset,selected,frozen):
     output=Path(config["output_directory"]);shards=output/"shards";shards.mkdir(parents=True,exist_ok=True);fingerprint=_fingerprint(config,selected,frozen);size=int(config["shard_size"]);webp=bool(pil_features.check("webp"));rows=[];resumed=0;peak_rss=0;key=hashlib.sha256(f"large-scale-registry:{config['seed']}".encode()).digest()
@@ -151,7 +166,7 @@ def _paired_difference_ci(rows,a,b,transforms,iterations,seed):
         differences.append(recalls[1]-recalls[0])
     return {"mean":mean(differences),"image_clustered_bootstrap_95_ci":_ci(differences,np.random.default_rng(seed),iterations)}
 def run_large_scale_reproduction(config):
-    started=time.perf_counter();tracemalloc.start();frozen,threshold_checks=load_frozen_thresholds(config["frozen_thresholds"],config["prior_report"]);dataset=CocoImageDataset(config["data_root"]);selected,exclusion=select_unseen_population(dataset,config["prior_report"],int(config["population_size"]),int(config["seed"]));rows,shards=run_shards(config,dataset,selected,frozen);summaries={name:summarize(rows,name,int(config["bootstrap_iterations"]),int(config["seed"])+i) for i,name in enumerate(("dct_phash","combined_digest"))};gates={};extreme=set(config["extreme_stress_conditions"])
+    started=time.perf_counter();tracemalloc.start();frozen,threshold_checks=load_frozen_thresholds(config["frozen_thresholds"],config["prior_report"]);dataset=CocoImageDataset(config["data_root"]);selected,exclusion=select_unseen_population(dataset,config["prior_report"],int(config["population_size"]),int(config["seed"]));write_population_preflight(config,exclusion);rows,shards=run_shards(config,dataset,selected,frozen);summaries={name:summarize(rows,name,int(config["bootstrap_iterations"]),int(config["seed"])+i) for i,name in enumerate(("dct_phash","combined_digest"))};gates={};extreme=set(config["extreme_stress_conditions"])
     for name,summary in summaries.items():
         standard=[summary[x]["macro_by_image"]["false_manipulation_rate"] for x in STANDARD_BENIGN if x in summary and x not in extreme];malicious=[summary[x]["macro_by_image"]["recall"] for x in MALICIOUS];runtime=mean(row["digests"][name][transform]["verification_ms"] for row in rows for transform in row["digests"][name]);gate={"mean_benign_fmr":mean(standard)<=config["gates"]["mean_benign_false_manipulation"],"worst_standard_benign_fmr":max(standard)<=config["gates"]["worst_standard_benign_false_manipulation"],"aggregate_malicious_recall":mean(malicious)>=config["gates"]["aggregate_malicious_recall"],"splice_025":summary["splice_025"]["macro_by_image"]["recall"]>=config["gates"]["splice_025_recall"],"overlay_025":summary["overlay_025"]["macro_by_image"]["recall"]>=config["gates"]["overlay_025_recall"],"clean_repeatability":summary["clean_repeat"]["region_level"]["false_manipulation_rate"]==config["gates"]["clean_repeatability_failures"],"runtime":runtime<config["gates"]["verification_runtime_ms"],"registry_authentication":all(row["registry_authenticated"][name] for row in rows)};gates[name]={"results":gate,"passed":all(gate.values()),"mean_standard_benign_fmr":mean(standard),"worst_standard_benign_fmr":max(standard),"aggregate_malicious_recall":mean(malicious),"verification_runtime_ms":runtime}
     improvement=_paired_difference_ci(rows,"dct_phash","combined_digest",("splice_025","overlay_025"),int(config["bootstrap_iterations"]),int(config["seed"])+99);selected_candidate=None

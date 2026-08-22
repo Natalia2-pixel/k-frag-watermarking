@@ -5024,10 +5024,14 @@
       }
     ],
     "exclusion": {
-      "prior_identifier_count": 100,
-      "prior_hash_count": 100,
+      "available_unseen_coco_image_count": 4900,
+      "excluded_prior_image_count": 100,
+      "excluded_prior_identifier_count": 100,
+      "excluded_prior_sha256_count": 100,
+      "selected_reproduction_count": 1000,
       "identifier_overlap": 0,
-      "sha256_overlap": 0
+      "sha256_overlap": 0,
+      "selected_identifiers_and_sha256_disjoint": true
     },
     "preprocessing": {
       "numeric_range": [
@@ -9792,5 +9796,15 @@
   "scientific_status": "blocked_by_large_scale_regional_digest_gates",
   "neural_stage_passed": false,
   "stage_e_permitted": false,
-  "novelty_claimed": false
+  "novelty_claimed": false,
+  "population_preflight": {
+    "available_unseen_coco_image_count": 4900,
+    "excluded_prior_image_count": 100,
+    "excluded_prior_identifier_count": 100,
+    "excluded_prior_sha256_count": 100,
+    "selected_reproduction_count": 1000,
+    "identifier_overlap": 0,
+    "sha256_overlap": 0,
+    "selected_identifiers_and_sha256_disjoint": true
+  }
 }

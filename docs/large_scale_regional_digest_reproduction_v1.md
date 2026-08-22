@@ -15,3 +15,8 @@ Each 50-image shard is saved with a fingerprint over configuration, population a
 Predeclared gates are mean standard benign FMR ≤0.02, worst standard benign FMR ≤0.05, aggregate malicious recall ≥0.90, 25% splice and overlay recall ≥0.85, zero clean failures and verification below 100 ms/image. Combined is selected only if all gates pass and its paired image-clustered small-area recall improvement CI is above zero. Otherwise DCT may be selected only if it passes. No failing gate is retuned.
 
 No watermark model, neural checkpoint or soft decoder is executed or modified. `neural_stage_passed=false` and `stage_e_permitted=false`; no novelty is claimed.
+
+
+## Mandatory population preflight
+
+Before any digest, transformation, collision, or statistical calculation, the executable hashes the complete available COCO population and excludes every prior calibration, validation, and locked-test image by both identifier and SHA-256. It aborts with DataPopulationError if the configured reproduction count is below 1,000, fewer than the requested unseen images remain, or either overlap is nonzero. It writes and prints population_preflight.json containing the available unseen count, excluded prior count, selected count, both overlap counts, and the combined disjointness assertion.

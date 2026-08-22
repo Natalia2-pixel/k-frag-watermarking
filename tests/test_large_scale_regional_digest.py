@@ -2,6 +2,7 @@ import inspect,json
 from pathlib import Path
 import numpy as np
 import torch
+import pytest
 from kfrag.diagnostics.large_scale_regional_digest import *
 from kfrag.diagnostics import large_scale_regional_digest as large
 
@@ -23,3 +24,13 @@ def test_candidate_selection_requires_complete_gate_pass():
     config=json.loads(json.dumps({"gates":{"mean_benign_false_manipulation":.02,"worst_standard_benign_false_manipulation":.05,"aggregate_malicious_recall":.9,"splice_025_recall":.85,"overlay_025_recall":.85,"clean_repeatability_failures":0,"verification_runtime_ms":100}}));assert config["gates"]["splice_025_recall"]==.85
 def test_global_identity_and_crop_claims_remain_separate():
     source=inspect.getsource(run_large_scale_reproduction);assert "trusted prerequisite" in source and '"crop_synchronization_validated":False' in source
+
+def test_population_preflight_rejects_below_mandatory_count_before_dataset_access():
+    with pytest.raises(DataPopulationError,match="below the mandatory minimum"):
+        select_unseen_population(object(),"does-not-need-to-exist.json",999,1)
+
+def test_population_preflight_precedes_scientific_calculation_and_reports_disjointness():
+    source=inspect.getsource(run_large_scale_reproduction)
+    assert source.index("write_population_preflight") < source.index("run_shards")
+    assert "available_unseen_coco_image_count" in inspect.getsource(select_unseen_population)
+    assert "selected_identifiers_and_sha256_disjoint" in inspect.getsource(select_unseen_population)
