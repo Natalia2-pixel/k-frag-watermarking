@@ -9772,6 +9772,14 @@
     "registry_bytes_per_image": {
       "dct_phash": 640,
       "combined_digest": 960
+    },
+    "digest_generation_mean_ms": {
+      "dct_phash": 12.991178500466049,
+      "combined_digest": 21.065677102771588
+    },
+    "verification_mean_ms": {
+      "dct_phash": 12.848035000047982,
+      "combined_digest": 21.4071191750829
     }
   },
   "selection": {
