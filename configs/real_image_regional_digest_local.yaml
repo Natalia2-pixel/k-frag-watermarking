@@ -1,0 +1,11 @@
+data_root: data/raw/coco_val2017_100
+output_directory: outputs/real_image_regional_digest_feasibility_v1/local_coco
+seed: 2051
+calibration_images: 40
+selection_images: 30
+final_test_images: 30
+qualification:
+  maximum_benign_false_manipulation: 0.05
+  maximum_malicious_missed_manipulation: 0.25
+  minimum_f1: 0.75
+
