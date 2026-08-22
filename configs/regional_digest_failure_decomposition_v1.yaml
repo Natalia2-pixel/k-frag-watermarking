@@ -1,0 +1,9 @@
+reproduction_report: docs/evidence/large_scale_regional_digest_reproduction_v1_report.json
+shard_directory: outputs/large_scale_regional_digest_reproduction_v1/local_coco/shards
+data_root: data/raw/coco_val2017_full
+output_report: docs/evidence/regional_digest_failure_decomposition_v1_report.json
+bootstrap_iterations: 1000
+seed: 2062
+expected_shards: 20
+expected_images: 1000
+expected_manifest_hash: efeb27f17035d1c5035bb7bf0c6f414af0ad6cad6042f5c8d259a6820c4fd285

@@ -1,0 +1,2456 @@
+{
+  "schema_version": "regional_digest_failure_decomposition_v1.0",
+  "analysis_type": "read-only frozen-evidence decomposition",
+  "evidence": {
+    "shard_count": 20,
+    "image_count": 1000,
+    "manifest_hash": "efeb27f17035d1c5035bb7bf0c6f414af0ad6cad6042f5c8d259a6820c4fd285",
+    "hashes_before": {
+      "report_sha256": "e94ca38489321b8804f7b4b19576f000ca24c3bf53635705e55c1aa9cd1b00c8",
+      "shard_sha256": {
+        "shard_00000_00050.json": "6f8b5481cb06e64c992c0cb2c83ef4d5ceafe3af407f1f696839706ecee9eec9",
+        "shard_00050_00100.json": "ddd3a6b37a0d847d955284a66bd9ef15791029206f5216da8d01e454f13ab370",
+        "shard_00100_00150.json": "e22df84d6b390c57293531097117b6be65fbf50c76e531682d279c3f3571a776",
+        "shard_00150_00200.json": "98b4422ac8f21b08b642270680d50532a730c55e3696d024f0d75917e0897556",
+        "shard_00200_00250.json": "8f03d8036bed8181fa5d64a18acf9225ea7c0c0f015b8177b128d15f34c38924",
+        "shard_00250_00300.json": "59f9ad36466dd8998e190725c440e61c4d6fc631de6134ff73c2749e2ea54131",
+        "shard_00300_00350.json": "bec25f5f083e0ceef914c36f952f94a03ef4322b6820feed98725d826aa70ced",
+        "shard_00350_00400.json": "0057d831dcd4525bc135284ebd69d62c2217a0831b5c89a1564449f098c57cea",
+        "shard_00400_00450.json": "3fd89b421b670ab974596e049d99aa8cf144fcec000ae9b9cea43d0404bd2b99",
+        "shard_00450_00500.json": "535545b3febf420167fb0e0f838fb01c879802f77d61943c7b1a26b0c538528b",
+        "shard_00500_00550.json": "ff06c19dfd9f45ab23bdaa9c1932658a17e5621b8289883be55542b2d71852ae",
+        "shard_00550_00600.json": "e0bd8c997c2718570fd2b43b7bb9cfed550ad297e809ac85f928ad04872bc406",
+        "shard_00600_00650.json": "779bac19c47e69df4b16168bdae4330a1ec58f0bbf795ab7c803ddd1a8fd2584",
+        "shard_00650_00700.json": "3c29dbe5047719d9b7e725a47a1fad0766711b25310b196196c1b7bec4436e21",
+        "shard_00700_00750.json": "7e574e23affdd3317a81cae168a3686b4c96bb01eb21f8d228bb2ca41771026c",
+        "shard_00750_00800.json": "1c297704bcc5b5f3888fbb0cca298adb35446283e3859e2e4e4caa568edccff3",
+        "shard_00800_00850.json": "c0d2c857dfcb98fab67fd442b08678e39b058dbae01ff025691d94b722996e13",
+        "shard_00850_00900.json": "1d8e4d7a1ead8ba9f52911a77c7c9009f64e0530bf522867eb12eabd23ddce61",
+        "shard_00900_00950.json": "6c8b8dfd345b4b50f707a97010faa05f774bf4ec015f4392cdb932cd031a2c1c",
+        "shard_00950_01000.json": "75c6d6776eb8a09838d8e255d9076221e6e2657759d6e06eb954fc36cc9d5db5"
+      }
+    },
+    "hashes_after": {
+      "report_sha256": "e94ca38489321b8804f7b4b19576f000ca24c3bf53635705e55c1aa9cd1b00c8",
+      "shard_sha256": {
+        "shard_00000_00050.json": "6f8b5481cb06e64c992c0cb2c83ef4d5ceafe3af407f1f696839706ecee9eec9",
+        "shard_00050_00100.json": "ddd3a6b37a0d847d955284a66bd9ef15791029206f5216da8d01e454f13ab370",
+        "shard_00100_00150.json": "e22df84d6b390c57293531097117b6be65fbf50c76e531682d279c3f3571a776",
+        "shard_00150_00200.json": "98b4422ac8f21b08b642270680d50532a730c55e3696d024f0d75917e0897556",
+        "shard_00200_00250.json": "8f03d8036bed8181fa5d64a18acf9225ea7c0c0f015b8177b128d15f34c38924",
+        "shard_00250_00300.json": "59f9ad36466dd8998e190725c440e61c4d6fc631de6134ff73c2749e2ea54131",
+        "shard_00300_00350.json": "bec25f5f083e0ceef914c36f952f94a03ef4322b6820feed98725d826aa70ced",
+        "shard_00350_00400.json": "0057d831dcd4525bc135284ebd69d62c2217a0831b5c89a1564449f098c57cea",
+        "shard_00400_00450.json": "3fd89b421b670ab974596e049d99aa8cf144fcec000ae9b9cea43d0404bd2b99",
+        "shard_00450_00500.json": "535545b3febf420167fb0e0f838fb01c879802f77d61943c7b1a26b0c538528b",
+        "shard_00500_00550.json": "ff06c19dfd9f45ab23bdaa9c1932658a17e5621b8289883be55542b2d71852ae",
+        "shard_00550_00600.json": "e0bd8c997c2718570fd2b43b7bb9cfed550ad297e809ac85f928ad04872bc406",
+        "shard_00600_00650.json": "779bac19c47e69df4b16168bdae4330a1ec58f0bbf795ab7c803ddd1a8fd2584",
+        "shard_00650_00700.json": "3c29dbe5047719d9b7e725a47a1fad0766711b25310b196196c1b7bec4436e21",
+        "shard_00700_00750.json": "7e574e23affdd3317a81cae168a3686b4c96bb01eb21f8d228bb2ca41771026c",
+        "shard_00750_00800.json": "1c297704bcc5b5f3888fbb0cca298adb35446283e3859e2e4e4caa568edccff3",
+        "shard_00800_00850.json": "c0d2c857dfcb98fab67fd442b08678e39b058dbae01ff025691d94b722996e13",
+        "shard_00850_00900.json": "1d8e4d7a1ead8ba9f52911a77c7c9009f64e0530bf522867eb12eabd23ddce61",
+        "shard_00900_00950.json": "6c8b8dfd345b4b50f707a97010faa05f774bf4ec015f4392cdb932cd031a2c1c",
+        "shard_00950_01000.json": "75c6d6776eb8a09838d8e255d9076221e6e2657759d6e06eb954fc36cc9d5db5"
+      }
+    },
+    "evidence_unchanged": true
+  },
+  "population_preflight": {
+    "available_unseen_coco_image_count": 4900,
+    "excluded_prior_image_count": 100,
+    "excluded_prior_identifier_count": 100,
+    "excluded_prior_sha256_count": 100,
+    "selected_reproduction_count": 1000,
+    "identifier_overlap": 0,
+    "sha256_overlap": 0,
+    "selected_identifiers_and_sha256_disjoint": true
+  },
+  "decomposition": {
+    "dct_phash": {
+      "official_aggregate_recall": 0.8098235294117647,
+      "aggregate_recall_gate": 0.9,
+      "aggregate_gate_deficit": 0.0901764705882353,
+      "official_aggregate_missed_rate": 0.19017647058823528,
+      "actual_missed_altered_region_observations": 3233,
+      "actual_uncertain_altered_region_observations": 2070,
+      "transforms": {
+        "replacement_full": {
+          "attack_family": "unrelated_replacement",
+          "alteration_area": 1.0,
+          "source_relation": "different_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8098235294117647,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "splice_010": {
+          "attack_family": "splice",
+          "alteration_area": 0.1,
+          "source_relation": "different_source",
+          "recall": 0.622,
+          "recall_image_clustered_95_ci": [
+            0.592225,
+            0.653325
+          ],
+          "missed_manipulation_rate": 0.378,
+          "missed_image_clustered_95_ci": [
+            0.354,
+            0.40577500000000005
+          ],
+          "uncertain_rate_on_altered_regions": 0.351,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 378,
+          "actual_uncertain_altered_region_observations": 351,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.16956521739130434,
+          "contribution_to_aggregate_missed_rate": 0.022235294117647058,
+          "counterfactual_aggregate_recall_if_perfect": 0.8320588235294117,
+          "share_of_aggregate_missed_manipulations": 0.11691927002783792,
+          "share_of_aggregate_gate_deficit": 0.24657534246575338,
+          "share_of_actual_missed_altered_regions": 0.11691927002783792,
+          "share_of_actual_uncertain_altered_regions": 0.16956521739130434
+        },
+        "splice_025": {
+          "attack_family": "splice",
+          "alteration_area": 0.25,
+          "source_relation": "different_source",
+          "recall": 0.933,
+          "recall_image_clustered_95_ci": [
+            0.9162250000000001,
+            0.947
+          ],
+          "missed_manipulation_rate": 0.067,
+          "missed_image_clustered_95_ci": [
+            0.052,
+            0.084
+          ],
+          "uncertain_rate_on_altered_regions": 0.064,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 67,
+          "actual_uncertain_altered_region_observations": 64,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.03091787439613527,
+          "contribution_to_aggregate_missed_rate": 0.003941176470588235,
+          "counterfactual_aggregate_recall_if_perfect": 0.813764705882353,
+          "share_of_aggregate_missed_manipulations": 0.020723785957315187,
+          "share_of_aggregate_gate_deficit": 0.04370515329419439,
+          "share_of_actual_missed_altered_regions": 0.020723785957315187,
+          "share_of_actual_uncertain_altered_regions": 0.030917874396135265
+        },
+        "splice_050": {
+          "attack_family": "splice",
+          "alteration_area": 0.5,
+          "source_relation": "different_source",
+          "recall": 0.994,
+          "recall_image_clustered_95_ci": [
+            0.989,
+            0.998
+          ],
+          "missed_manipulation_rate": 0.006,
+          "missed_image_clustered_95_ci": [
+            0.0012250000000000006,
+            0.011
+          ],
+          "uncertain_rate_on_altered_regions": 0.004,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 6,
+          "actual_uncertain_altered_region_observations": 4,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0019323671497584543,
+          "contribution_to_aggregate_missed_rate": 0.00035294117647058826,
+          "counterfactual_aggregate_recall_if_perfect": 0.8101764705882353,
+          "share_of_aggregate_missed_manipulations": 0.0018558614290133002,
+          "share_of_aggregate_gate_deficit": 0.003913894324853229,
+          "share_of_actual_missed_altered_regions": 0.0018558614290133002,
+          "share_of_actual_uncertain_altered_regions": 0.001932367149758454
+        },
+        "splice_075": {
+          "attack_family": "splice",
+          "alteration_area": 0.75,
+          "source_relation": "different_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8098235294117647,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "overlay_010": {
+          "attack_family": "overlay",
+          "alteration_area": 0.1,
+          "source_relation": "different_source",
+          "recall": 0.367,
+          "recall_image_clustered_95_ci": [
+            0.341225,
+            0.39577500000000004
+          ],
+          "missed_manipulation_rate": 0.633,
+          "missed_image_clustered_95_ci": [
+            0.604225,
+            0.661775
+          ],
+          "uncertain_rate_on_altered_regions": 0.533,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 633,
+          "actual_uncertain_altered_region_observations": 533,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.25748792270531407,
+          "contribution_to_aggregate_missed_rate": 0.03723529411764706,
+          "counterfactual_aggregate_recall_if_perfect": 0.8470588235294118,
+          "share_of_aggregate_missed_manipulations": 0.1957933807609032,
+          "share_of_aggregate_gate_deficit": 0.41291585127201563,
+          "share_of_actual_missed_altered_regions": 0.1957933807609032,
+          "share_of_actual_uncertain_altered_regions": 0.257487922705314
+        },
+        "overlay_025": {
+          "attack_family": "overlay",
+          "alteration_area": 0.25,
+          "source_relation": "different_source",
+          "recall": 0.6859999999999999,
+          "recall_image_clustered_95_ci": [
+            0.651225,
+            0.716
+          ],
+          "missed_manipulation_rate": 0.314,
+          "missed_image_clustered_95_ci": [
+            0.28445,
+            0.33932500000000004
+          ],
+          "uncertain_rate_on_altered_regions": 0.303,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 314,
+          "actual_uncertain_altered_region_observations": 303,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.1463768115942029,
+          "contribution_to_aggregate_missed_rate": 0.018470588235294117,
+          "counterfactual_aggregate_recall_if_perfect": 0.8282941176470588,
+          "share_of_aggregate_missed_manipulations": 0.09712341478502938,
+          "share_of_aggregate_gate_deficit": 0.20482713633398564,
+          "share_of_actual_missed_altered_regions": 0.09712341478502938,
+          "share_of_actual_uncertain_altered_regions": 0.1463768115942029
+        },
+        "overlay_050": {
+          "attack_family": "overlay",
+          "alteration_area": 0.5,
+          "source_relation": "different_source",
+          "recall": 0.911,
+          "recall_image_clustered_95_ci": [
+            0.896225,
+            0.927775
+          ],
+          "missed_manipulation_rate": 0.089,
+          "missed_image_clustered_95_ci": [
+            0.07022500000000001,
+            0.109
+          ],
+          "uncertain_rate_on_altered_regions": 0.086,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 89,
+          "actual_uncertain_altered_region_observations": 86,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.04154589371980676,
+          "contribution_to_aggregate_missed_rate": 0.0052352941176470585,
+          "counterfactual_aggregate_recall_if_perfect": 0.8150588235294117,
+          "share_of_aggregate_missed_manipulations": 0.02752861119703062,
+          "share_of_aggregate_gate_deficit": 0.05805609915198955,
+          "share_of_actual_missed_altered_regions": 0.027528611197030622,
+          "share_of_actual_uncertain_altered_regions": 0.04154589371980676
+        },
+        "overlay_075": {
+          "attack_family": "overlay",
+          "alteration_area": 0.75,
+          "source_relation": "different_source",
+          "recall": 0.965,
+          "recall_image_clustered_95_ci": [
+            0.953,
+            0.97755
+          ],
+          "missed_manipulation_rate": 0.035,
+          "missed_image_clustered_95_ci": [
+            0.024,
+            0.046
+          ],
+          "uncertain_rate_on_altered_regions": 0.035,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 35,
+          "actual_uncertain_altered_region_observations": 35,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.016908212560386476,
+          "contribution_to_aggregate_missed_rate": 0.002058823529411765,
+          "counterfactual_aggregate_recall_if_perfect": 0.8118823529411765,
+          "share_of_aggregate_missed_manipulations": 0.01082585833591092,
+          "share_of_aggregate_gate_deficit": 0.0228310502283105,
+          "share_of_actual_missed_altered_regions": 0.010825858335910918,
+          "share_of_actual_uncertain_altered_regions": 0.016908212560386472
+        },
+        "occlusion_010": {
+          "attack_family": "occlusion",
+          "alteration_area": 0.1,
+          "source_relation": "different_source",
+          "recall": 0.483,
+          "recall_image_clustered_95_ci": [
+            0.446225,
+            0.511
+          ],
+          "missed_manipulation_rate": 0.517,
+          "missed_image_clustered_95_ci": [
+            0.485,
+            0.543
+          ],
+          "uncertain_rate_on_altered_regions": 0.483,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 517,
+          "actual_uncertain_altered_region_observations": 483,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.23333333333333334,
+          "contribution_to_aggregate_missed_rate": 0.030411764705882353,
+          "counterfactual_aggregate_recall_if_perfect": 0.8402352941176471,
+          "share_of_aggregate_missed_manipulations": 0.1599133931333127,
+          "share_of_aggregate_gate_deficit": 0.33724722765818654,
+          "share_of_actual_missed_altered_regions": 0.1599133931333127,
+          "share_of_actual_uncertain_altered_regions": 0.23333333333333334
+        },
+        "occlusion_025": {
+          "attack_family": "occlusion",
+          "alteration_area": 0.25,
+          "source_relation": "different_source",
+          "recall": 0.7989999999999999,
+          "recall_image_clustered_95_ci": [
+            0.775225,
+            0.8227749999999999
+          ],
+          "missed_manipulation_rate": 0.201,
+          "missed_image_clustered_95_ci": [
+            0.177,
+            0.22487500000000005
+          ],
+          "uncertain_rate_on_altered_regions": 0.198,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 201,
+          "actual_uncertain_altered_region_observations": 198,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0956521739130435,
+          "contribution_to_aggregate_missed_rate": 0.011823529411764707,
+          "counterfactual_aggregate_recall_if_perfect": 0.8216470588235294,
+          "share_of_aggregate_missed_manipulations": 0.06217135787194556,
+          "share_of_aggregate_gate_deficit": 0.13111545988258316,
+          "share_of_actual_missed_altered_regions": 0.06217135787194556,
+          "share_of_actual_uncertain_altered_regions": 0.09565217391304348
+        },
+        "occlusion_050": {
+          "attack_family": "occlusion",
+          "alteration_area": 0.5,
+          "source_relation": "different_source",
+          "recall": 0.987,
+          "recall_image_clustered_95_ci": [
+            0.979,
+            0.993
+          ],
+          "missed_manipulation_rate": 0.013,
+          "missed_image_clustered_95_ci": [
+            0.008,
+            0.021
+          ],
+          "uncertain_rate_on_altered_regions": 0.013,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 13,
+          "actual_uncertain_altered_region_observations": 13,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.006280193236714976,
+          "contribution_to_aggregate_missed_rate": 0.0007647058823529411,
+          "counterfactual_aggregate_recall_if_perfect": 0.8105882352941176,
+          "share_of_aggregate_missed_manipulations": 0.004021033096195484,
+          "share_of_aggregate_gate_deficit": 0.008480104370515327,
+          "share_of_actual_missed_altered_regions": 0.004021033096195484,
+          "share_of_actual_uncertain_altered_regions": 0.006280193236714976
+        },
+        "occlusion_075": {
+          "attack_family": "occlusion",
+          "alteration_area": 0.75,
+          "source_relation": "different_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8098235294117647,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "same_image_relocation": {
+          "attack_family": "relocation",
+          "alteration_area": 1.0,
+          "source_relation": "same_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8098235294117647,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "mixed_source_collage": {
+          "attack_family": "collage",
+          "alteration_area": 0.25,
+          "source_relation": "different_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 4000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8098235294117647,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "visually_similar_replacement": {
+          "attack_family": "visually_similar_replacement",
+          "alteration_area": 1.0,
+          "source_relation": "mixed_audit_required",
+          "recall": 0.020000000000000018,
+          "recall_image_clustered_95_ci": [
+            0.011,
+            0.029
+          ],
+          "missed_manipulation_rate": 0.98,
+          "missed_image_clustered_95_ci": [
+            0.97,
+            0.987775
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 980,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.05764705882352941,
+          "counterfactual_aggregate_recall_if_perfect": 0.8674705882352941,
+          "share_of_aggregate_missed_manipulations": 0.3031240334055057,
+          "share_of_aggregate_gate_deficit": 0.639269406392694,
+          "share_of_actual_missed_altered_regions": 0.3031240334055057,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "same_source_replacement": {
+          "attack_family": "same_source_replacement",
+          "alteration_area": 1.0,
+          "source_relation": "same_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8098235294117647,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        }
+      },
+      "families": {
+        "unrelated_replacement": {
+          "transforms": [
+            "replacement_full"
+          ],
+          "recall": {
+            "image_macro": 1.0,
+            "image_clustered_95_ci": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "actual_missed_altered_region_observations": 0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "actual_uncertain_altered_region_observations": 0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "splice": {
+          "transforms": [
+            "splice_010",
+            "splice_025",
+            "splice_050",
+            "splice_075"
+          ],
+          "recall": {
+            "image_macro": 0.88725,
+            "image_clustered_95_ci": [
+              0.87775,
+              0.897
+            ]
+          },
+          "missed": {
+            "image_macro": 0.11275,
+            "image_clustered_95_ci": [
+              0.103,
+              0.12325
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.10475,
+            "image_clustered_95_ci": [
+              0.096,
+              0.114
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.02652941176470588,
+          "share_of_aggregate_missed_manipulations": 0.1394989174141664,
+          "share_of_aggregate_gate_deficit": 0.29419439008480097,
+          "actual_missed_altered_region_observations": 451,
+          "share_of_actual_missed_altered_regions": 0.1394989174141664,
+          "actual_uncertain_altered_region_observations": 419,
+          "share_of_actual_uncertain_altered_regions": 0.20241545893719806
+        },
+        "overlay": {
+          "transforms": [
+            "overlay_010",
+            "overlay_025",
+            "overlay_050",
+            "overlay_075"
+          ],
+          "recall": {
+            "image_macro": 0.73225,
+            "image_clustered_95_ci": [
+              0.71649375,
+              0.74800625
+            ]
+          },
+          "missed": {
+            "image_macro": 0.26775,
+            "image_clustered_95_ci": [
+              0.25175,
+              0.28275
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.23925,
+            "image_clustered_95_ci": [
+              0.22475,
+              0.253
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.063,
+          "share_of_aggregate_missed_manipulations": 0.3312712650788741,
+          "share_of_aggregate_gate_deficit": 0.6986301369863013,
+          "actual_missed_altered_region_observations": 1071,
+          "share_of_actual_missed_altered_regions": 0.3312712650788741,
+          "actual_uncertain_altered_region_observations": 957,
+          "share_of_actual_uncertain_altered_regions": 0.4623188405797102
+        },
+        "occlusion": {
+          "transforms": [
+            "occlusion_010",
+            "occlusion_025",
+            "occlusion_050",
+            "occlusion_075"
+          ],
+          "recall": {
+            "image_macro": 0.81725,
+            "image_clustered_95_ci": [
+              0.80549375,
+              0.82875625
+            ]
+          },
+          "missed": {
+            "image_macro": 0.18275,
+            "image_clustered_95_ci": [
+              0.17149375,
+              0.19475
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.1735,
+            "image_clustered_95_ci": [
+              0.16275,
+              0.18425624999999998
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.043000000000000003,
+          "share_of_aggregate_missed_manipulations": 0.22610578410145377,
+          "share_of_aggregate_gate_deficit": 0.47684279191128504,
+          "actual_missed_altered_region_observations": 731,
+          "share_of_actual_missed_altered_regions": 0.22610578410145377,
+          "actual_uncertain_altered_region_observations": 694,
+          "share_of_actual_uncertain_altered_regions": 0.3352657004830918
+        },
+        "relocation": {
+          "transforms": [
+            "same_image_relocation"
+          ],
+          "recall": {
+            "image_macro": 1.0,
+            "image_clustered_95_ci": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "actual_missed_altered_region_observations": 0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "actual_uncertain_altered_region_observations": 0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "collage": {
+          "transforms": [
+            "mixed_source_collage"
+          ],
+          "recall": {
+            "image_macro": 1.0,
+            "image_clustered_95_ci": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "actual_missed_altered_region_observations": 0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "actual_uncertain_altered_region_observations": 0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "visually_similar_replacement": {
+          "transforms": [
+            "visually_similar_replacement"
+          ],
+          "recall": {
+            "image_macro": 0.02,
+            "image_clustered_95_ci": [
+              0.012,
+              0.029
+            ]
+          },
+          "missed": {
+            "image_macro": 0.98,
+            "image_clustered_95_ci": [
+              0.97,
+              0.988
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.05764705882352941,
+          "share_of_aggregate_missed_manipulations": 0.3031240334055057,
+          "share_of_aggregate_gate_deficit": 0.639269406392694,
+          "actual_missed_altered_region_observations": 980,
+          "share_of_actual_missed_altered_regions": 0.3031240334055057,
+          "actual_uncertain_altered_region_observations": 0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "same_source_replacement": {
+          "transforms": [
+            "same_source_replacement"
+          ],
+          "recall": {
+            "image_macro": 1.0,
+            "image_clustered_95_ci": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "actual_missed_altered_region_observations": 0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "actual_uncertain_altered_region_observations": 0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        }
+      },
+      "area_decomposition": {
+        "splice": {
+          "010": {
+            "attack_family": "splice",
+            "alteration_area": 0.1,
+            "source_relation": "different_source",
+            "recall": 0.622,
+            "recall_image_clustered_95_ci": [
+              0.592225,
+              0.653325
+            ],
+            "missed_manipulation_rate": 0.378,
+            "missed_image_clustered_95_ci": [
+              0.354,
+              0.40577500000000005
+            ],
+            "uncertain_rate_on_altered_regions": 0.351,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 378,
+            "actual_uncertain_altered_region_observations": 351,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.16956521739130434,
+            "contribution_to_aggregate_missed_rate": 0.022235294117647058,
+            "counterfactual_aggregate_recall_if_perfect": 0.8320588235294117,
+            "share_of_aggregate_missed_manipulations": 0.11691927002783792,
+            "share_of_aggregate_gate_deficit": 0.24657534246575338,
+            "share_of_actual_missed_altered_regions": 0.11691927002783792,
+            "share_of_actual_uncertain_altered_regions": 0.16956521739130434
+          },
+          "025": {
+            "attack_family": "splice",
+            "alteration_area": 0.25,
+            "source_relation": "different_source",
+            "recall": 0.933,
+            "recall_image_clustered_95_ci": [
+              0.9162250000000001,
+              0.947
+            ],
+            "missed_manipulation_rate": 0.067,
+            "missed_image_clustered_95_ci": [
+              0.052,
+              0.084
+            ],
+            "uncertain_rate_on_altered_regions": 0.064,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 67,
+            "actual_uncertain_altered_region_observations": 64,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.03091787439613527,
+            "contribution_to_aggregate_missed_rate": 0.003941176470588235,
+            "counterfactual_aggregate_recall_if_perfect": 0.813764705882353,
+            "share_of_aggregate_missed_manipulations": 0.020723785957315187,
+            "share_of_aggregate_gate_deficit": 0.04370515329419439,
+            "share_of_actual_missed_altered_regions": 0.020723785957315187,
+            "share_of_actual_uncertain_altered_regions": 0.030917874396135265
+          },
+          "050": {
+            "attack_family": "splice",
+            "alteration_area": 0.5,
+            "source_relation": "different_source",
+            "recall": 0.994,
+            "recall_image_clustered_95_ci": [
+              0.989,
+              0.998
+            ],
+            "missed_manipulation_rate": 0.006,
+            "missed_image_clustered_95_ci": [
+              0.0012250000000000006,
+              0.011
+            ],
+            "uncertain_rate_on_altered_regions": 0.004,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 6,
+            "actual_uncertain_altered_region_observations": 4,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0019323671497584543,
+            "contribution_to_aggregate_missed_rate": 0.00035294117647058826,
+            "counterfactual_aggregate_recall_if_perfect": 0.8101764705882353,
+            "share_of_aggregate_missed_manipulations": 0.0018558614290133002,
+            "share_of_aggregate_gate_deficit": 0.003913894324853229,
+            "share_of_actual_missed_altered_regions": 0.0018558614290133002,
+            "share_of_actual_uncertain_altered_regions": 0.001932367149758454
+          },
+          "075": {
+            "attack_family": "splice",
+            "alteration_area": 0.75,
+            "source_relation": "different_source",
+            "recall": 1.0,
+            "recall_image_clustered_95_ci": [
+              1.0,
+              1.0
+            ],
+            "missed_manipulation_rate": 0.0,
+            "missed_image_clustered_95_ci": [
+              0.0,
+              0.0
+            ],
+            "uncertain_rate_on_altered_regions": 0.0,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 0,
+            "actual_uncertain_altered_region_observations": 0,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+            "contribution_to_aggregate_missed_rate": 0.0,
+            "counterfactual_aggregate_recall_if_perfect": 0.8098235294117647,
+            "share_of_aggregate_missed_manipulations": 0.0,
+            "share_of_aggregate_gate_deficit": 0.0,
+            "share_of_actual_missed_altered_regions": 0.0,
+            "share_of_actual_uncertain_altered_regions": 0.0
+          }
+        },
+        "overlay": {
+          "010": {
+            "attack_family": "overlay",
+            "alteration_area": 0.1,
+            "source_relation": "different_source",
+            "recall": 0.367,
+            "recall_image_clustered_95_ci": [
+              0.341225,
+              0.39577500000000004
+            ],
+            "missed_manipulation_rate": 0.633,
+            "missed_image_clustered_95_ci": [
+              0.604225,
+              0.661775
+            ],
+            "uncertain_rate_on_altered_regions": 0.533,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 633,
+            "actual_uncertain_altered_region_observations": 533,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.25748792270531407,
+            "contribution_to_aggregate_missed_rate": 0.03723529411764706,
+            "counterfactual_aggregate_recall_if_perfect": 0.8470588235294118,
+            "share_of_aggregate_missed_manipulations": 0.1957933807609032,
+            "share_of_aggregate_gate_deficit": 0.41291585127201563,
+            "share_of_actual_missed_altered_regions": 0.1957933807609032,
+            "share_of_actual_uncertain_altered_regions": 0.257487922705314
+          },
+          "025": {
+            "attack_family": "overlay",
+            "alteration_area": 0.25,
+            "source_relation": "different_source",
+            "recall": 0.6859999999999999,
+            "recall_image_clustered_95_ci": [
+              0.651225,
+              0.716
+            ],
+            "missed_manipulation_rate": 0.314,
+            "missed_image_clustered_95_ci": [
+              0.28445,
+              0.33932500000000004
+            ],
+            "uncertain_rate_on_altered_regions": 0.303,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 314,
+            "actual_uncertain_altered_region_observations": 303,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.1463768115942029,
+            "contribution_to_aggregate_missed_rate": 0.018470588235294117,
+            "counterfactual_aggregate_recall_if_perfect": 0.8282941176470588,
+            "share_of_aggregate_missed_manipulations": 0.09712341478502938,
+            "share_of_aggregate_gate_deficit": 0.20482713633398564,
+            "share_of_actual_missed_altered_regions": 0.09712341478502938,
+            "share_of_actual_uncertain_altered_regions": 0.1463768115942029
+          },
+          "050": {
+            "attack_family": "overlay",
+            "alteration_area": 0.5,
+            "source_relation": "different_source",
+            "recall": 0.911,
+            "recall_image_clustered_95_ci": [
+              0.896225,
+              0.927775
+            ],
+            "missed_manipulation_rate": 0.089,
+            "missed_image_clustered_95_ci": [
+              0.07022500000000001,
+              0.109
+            ],
+            "uncertain_rate_on_altered_regions": 0.086,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 89,
+            "actual_uncertain_altered_region_observations": 86,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.04154589371980676,
+            "contribution_to_aggregate_missed_rate": 0.0052352941176470585,
+            "counterfactual_aggregate_recall_if_perfect": 0.8150588235294117,
+            "share_of_aggregate_missed_manipulations": 0.02752861119703062,
+            "share_of_aggregate_gate_deficit": 0.05805609915198955,
+            "share_of_actual_missed_altered_regions": 0.027528611197030622,
+            "share_of_actual_uncertain_altered_regions": 0.04154589371980676
+          },
+          "075": {
+            "attack_family": "overlay",
+            "alteration_area": 0.75,
+            "source_relation": "different_source",
+            "recall": 0.965,
+            "recall_image_clustered_95_ci": [
+              0.953,
+              0.97755
+            ],
+            "missed_manipulation_rate": 0.035,
+            "missed_image_clustered_95_ci": [
+              0.024,
+              0.046
+            ],
+            "uncertain_rate_on_altered_regions": 0.035,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 35,
+            "actual_uncertain_altered_region_observations": 35,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.016908212560386476,
+            "contribution_to_aggregate_missed_rate": 0.002058823529411765,
+            "counterfactual_aggregate_recall_if_perfect": 0.8118823529411765,
+            "share_of_aggregate_missed_manipulations": 0.01082585833591092,
+            "share_of_aggregate_gate_deficit": 0.0228310502283105,
+            "share_of_actual_missed_altered_regions": 0.010825858335910918,
+            "share_of_actual_uncertain_altered_regions": 0.016908212560386472
+          }
+        },
+        "occlusion": {
+          "010": {
+            "attack_family": "occlusion",
+            "alteration_area": 0.1,
+            "source_relation": "different_source",
+            "recall": 0.483,
+            "recall_image_clustered_95_ci": [
+              0.446225,
+              0.511
+            ],
+            "missed_manipulation_rate": 0.517,
+            "missed_image_clustered_95_ci": [
+              0.485,
+              0.543
+            ],
+            "uncertain_rate_on_altered_regions": 0.483,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 517,
+            "actual_uncertain_altered_region_observations": 483,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.23333333333333334,
+            "contribution_to_aggregate_missed_rate": 0.030411764705882353,
+            "counterfactual_aggregate_recall_if_perfect": 0.8402352941176471,
+            "share_of_aggregate_missed_manipulations": 0.1599133931333127,
+            "share_of_aggregate_gate_deficit": 0.33724722765818654,
+            "share_of_actual_missed_altered_regions": 0.1599133931333127,
+            "share_of_actual_uncertain_altered_regions": 0.23333333333333334
+          },
+          "025": {
+            "attack_family": "occlusion",
+            "alteration_area": 0.25,
+            "source_relation": "different_source",
+            "recall": 0.7989999999999999,
+            "recall_image_clustered_95_ci": [
+              0.775225,
+              0.8227749999999999
+            ],
+            "missed_manipulation_rate": 0.201,
+            "missed_image_clustered_95_ci": [
+              0.177,
+              0.22487500000000005
+            ],
+            "uncertain_rate_on_altered_regions": 0.198,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 201,
+            "actual_uncertain_altered_region_observations": 198,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0956521739130435,
+            "contribution_to_aggregate_missed_rate": 0.011823529411764707,
+            "counterfactual_aggregate_recall_if_perfect": 0.8216470588235294,
+            "share_of_aggregate_missed_manipulations": 0.06217135787194556,
+            "share_of_aggregate_gate_deficit": 0.13111545988258316,
+            "share_of_actual_missed_altered_regions": 0.06217135787194556,
+            "share_of_actual_uncertain_altered_regions": 0.09565217391304348
+          },
+          "050": {
+            "attack_family": "occlusion",
+            "alteration_area": 0.5,
+            "source_relation": "different_source",
+            "recall": 0.987,
+            "recall_image_clustered_95_ci": [
+              0.979,
+              0.993
+            ],
+            "missed_manipulation_rate": 0.013,
+            "missed_image_clustered_95_ci": [
+              0.008,
+              0.021
+            ],
+            "uncertain_rate_on_altered_regions": 0.013,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 13,
+            "actual_uncertain_altered_region_observations": 13,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.006280193236714976,
+            "contribution_to_aggregate_missed_rate": 0.0007647058823529411,
+            "counterfactual_aggregate_recall_if_perfect": 0.8105882352941176,
+            "share_of_aggregate_missed_manipulations": 0.004021033096195484,
+            "share_of_aggregate_gate_deficit": 0.008480104370515327,
+            "share_of_actual_missed_altered_regions": 0.004021033096195484,
+            "share_of_actual_uncertain_altered_regions": 0.006280193236714976
+          },
+          "075": {
+            "attack_family": "occlusion",
+            "alteration_area": 0.75,
+            "source_relation": "different_source",
+            "recall": 1.0,
+            "recall_image_clustered_95_ci": [
+              1.0,
+              1.0
+            ],
+            "missed_manipulation_rate": 0.0,
+            "missed_image_clustered_95_ci": [
+              0.0,
+              0.0
+            ],
+            "uncertain_rate_on_altered_regions": 0.0,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 0,
+            "actual_uncertain_altered_region_observations": 0,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+            "contribution_to_aggregate_missed_rate": 0.0,
+            "counterfactual_aggregate_recall_if_perfect": 0.8098235294117647,
+            "share_of_aggregate_missed_manipulations": 0.0,
+            "share_of_aggregate_gate_deficit": 0.0,
+            "share_of_actual_missed_altered_regions": 0.0,
+            "share_of_actual_uncertain_altered_regions": 0.0
+          }
+        }
+      },
+      "overlay_025_gate": {
+        "required_recall": 0.85,
+        "observed_recall": 0.6859999999999999,
+        "deficit": 0.16400000000000003,
+        "missed_rate": 0.314,
+        "uncertain_rate_on_altered_regions": 0.303
+      }
+    },
+    "combined_digest": {
+      "official_aggregate_recall": 0.8495294117647059,
+      "aggregate_recall_gate": 0.9,
+      "aggregate_gate_deficit": 0.050470588235294156,
+      "official_aggregate_missed_rate": 0.15047058823529413,
+      "actual_missed_altered_region_observations": 2558,
+      "actual_uncertain_altered_region_observations": 1481,
+      "transforms": {
+        "replacement_full": {
+          "attack_family": "unrelated_replacement",
+          "alteration_area": 1.0,
+          "source_relation": "different_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8495294117647059,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "splice_010": {
+          "attack_family": "splice",
+          "alteration_area": 0.1,
+          "source_relation": "different_source",
+          "recall": 0.655,
+          "recall_image_clustered_95_ci": [
+            0.628225,
+            0.681775
+          ],
+          "missed_manipulation_rate": 0.345,
+          "missed_image_clustered_95_ci": [
+            0.319225,
+            0.372775
+          ],
+          "uncertain_rate_on_altered_regions": 0.334,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 345,
+          "actual_uncertain_altered_region_observations": 334,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.22552329507089805,
+          "contribution_to_aggregate_missed_rate": 0.020294117647058824,
+          "counterfactual_aggregate_recall_if_perfect": 0.8698235294117647,
+          "share_of_aggregate_missed_manipulations": 0.13487099296325253,
+          "share_of_aggregate_gate_deficit": 0.4020979020979018,
+          "share_of_actual_missed_altered_regions": 0.13487099296325253,
+          "share_of_actual_uncertain_altered_regions": 0.22552329507089805
+        },
+        "splice_025": {
+          "attack_family": "splice",
+          "alteration_area": 0.25,
+          "source_relation": "different_source",
+          "recall": 0.983,
+          "recall_image_clustered_95_ci": [
+            0.975,
+            0.99
+          ],
+          "missed_manipulation_rate": 0.017,
+          "missed_image_clustered_95_ci": [
+            0.009,
+            0.026
+          ],
+          "uncertain_rate_on_altered_regions": 0.017,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 17,
+          "actual_uncertain_altered_region_observations": 17,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.011478730587440918,
+          "contribution_to_aggregate_missed_rate": 0.001,
+          "counterfactual_aggregate_recall_if_perfect": 0.8505294117647059,
+          "share_of_aggregate_missed_manipulations": 0.006645817044566068,
+          "share_of_aggregate_gate_deficit": 0.0198135198135198,
+          "share_of_actual_missed_altered_regions": 0.006645817044566067,
+          "share_of_actual_uncertain_altered_regions": 0.011478730587440918
+        },
+        "splice_050": {
+          "attack_family": "splice",
+          "alteration_area": 0.5,
+          "source_relation": "different_source",
+          "recall": 0.999,
+          "recall_image_clustered_95_ci": [
+            0.997,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.001,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.003
+          ],
+          "uncertain_rate_on_altered_regions": 0.001,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 1,
+          "actual_uncertain_altered_region_observations": 1,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.000675219446320054,
+          "contribution_to_aggregate_missed_rate": 5.882352941176471e-05,
+          "counterfactual_aggregate_recall_if_perfect": 0.8495882352941176,
+          "share_of_aggregate_missed_manipulations": 0.0003909304143862393,
+          "share_of_aggregate_gate_deficit": 0.0011655011655011646,
+          "share_of_actual_missed_altered_regions": 0.00039093041438623924,
+          "share_of_actual_uncertain_altered_regions": 0.0006752194463200541
+        },
+        "splice_075": {
+          "attack_family": "splice",
+          "alteration_area": 0.75,
+          "source_relation": "different_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8495294117647059,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "overlay_010": {
+          "attack_family": "overlay",
+          "alteration_area": 0.1,
+          "source_relation": "different_source",
+          "recall": 0.345,
+          "recall_image_clustered_95_ci": [
+            0.321,
+            0.375775
+          ],
+          "missed_manipulation_rate": 0.655,
+          "missed_image_clustered_95_ci": [
+            0.626225,
+            0.683775
+          ],
+          "uncertain_rate_on_altered_regions": 0.592,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 655,
+          "actual_uncertain_altered_region_observations": 592,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.3997299122214719,
+          "contribution_to_aggregate_missed_rate": 0.03852941176470588,
+          "counterfactual_aggregate_recall_if_perfect": 0.8880588235294118,
+          "share_of_aggregate_missed_manipulations": 0.2560594214229867,
+          "share_of_aggregate_gate_deficit": 0.7634032634032628,
+          "share_of_actual_missed_altered_regions": 0.2560594214229867,
+          "share_of_actual_uncertain_altered_regions": 0.399729912221472
+        },
+        "overlay_025": {
+          "attack_family": "overlay",
+          "alteration_area": 0.25,
+          "source_relation": "different_source",
+          "recall": 0.834,
+          "recall_image_clustered_95_ci": [
+            0.8102250000000001,
+            0.85555
+          ],
+          "missed_manipulation_rate": 0.166,
+          "missed_image_clustered_95_ci": [
+            0.145,
+            0.19055000000000002
+          ],
+          "uncertain_rate_on_altered_regions": 0.163,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 166,
+          "actual_uncertain_altered_region_observations": 163,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.1100607697501688,
+          "contribution_to_aggregate_missed_rate": 0.009764705882352941,
+          "counterfactual_aggregate_recall_if_perfect": 0.8592941176470588,
+          "share_of_aggregate_missed_manipulations": 0.06489444878811572,
+          "share_of_aggregate_gate_deficit": 0.19347319347319333,
+          "share_of_actual_missed_altered_regions": 0.06489444878811572,
+          "share_of_actual_uncertain_altered_regions": 0.1100607697501688
+        },
+        "overlay_050": {
+          "attack_family": "overlay",
+          "alteration_area": 0.5,
+          "source_relation": "different_source",
+          "recall": 0.988,
+          "recall_image_clustered_95_ci": [
+            0.981,
+            0.994
+          ],
+          "missed_manipulation_rate": 0.012,
+          "missed_image_clustered_95_ci": [
+            0.006,
+            0.018775000000000003
+          ],
+          "uncertain_rate_on_altered_regions": 0.012,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 12,
+          "actual_uncertain_altered_region_observations": 12,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.008102633355840648,
+          "contribution_to_aggregate_missed_rate": 0.0007058823529411765,
+          "counterfactual_aggregate_recall_if_perfect": 0.8502352941176471,
+          "share_of_aggregate_missed_manipulations": 0.004691164972634871,
+          "share_of_aggregate_gate_deficit": 0.013986013986013976,
+          "share_of_actual_missed_altered_regions": 0.004691164972634871,
+          "share_of_actual_uncertain_altered_regions": 0.008102633355840648
+        },
+        "overlay_075": {
+          "attack_family": "overlay",
+          "alteration_area": 0.75,
+          "source_relation": "different_source",
+          "recall": 0.998,
+          "recall_image_clustered_95_ci": [
+            0.995,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.002,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.005775000000000006
+          ],
+          "uncertain_rate_on_altered_regions": 0.002,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 2,
+          "actual_uncertain_altered_region_observations": 2,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.001350438892640108,
+          "contribution_to_aggregate_missed_rate": 0.00011764705882352942,
+          "counterfactual_aggregate_recall_if_perfect": 0.8496470588235294,
+          "share_of_aggregate_missed_manipulations": 0.0007818608287724786,
+          "share_of_aggregate_gate_deficit": 0.0023310023310023293,
+          "share_of_actual_missed_altered_regions": 0.0007818608287724785,
+          "share_of_actual_uncertain_altered_regions": 0.0013504388926401081
+        },
+        "occlusion_010": {
+          "attack_family": "occlusion",
+          "alteration_area": 0.1,
+          "source_relation": "different_source",
+          "recall": 0.646,
+          "recall_image_clustered_95_ci": [
+            0.616,
+            0.671775
+          ],
+          "missed_manipulation_rate": 0.354,
+          "missed_image_clustered_95_ci": [
+            0.323225,
+            0.38377500000000003
+          ],
+          "uncertain_rate_on_altered_regions": 0.334,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 354,
+          "actual_uncertain_altered_region_observations": 334,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.22552329507089805,
+          "contribution_to_aggregate_missed_rate": 0.020823529411764706,
+          "counterfactual_aggregate_recall_if_perfect": 0.8703529411764706,
+          "share_of_aggregate_missed_manipulations": 0.1383893666927287,
+          "share_of_aggregate_gate_deficit": 0.41258741258741227,
+          "share_of_actual_missed_altered_regions": 0.1383893666927287,
+          "share_of_actual_uncertain_altered_regions": 0.22552329507089805
+        },
+        "occlusion_025": {
+          "attack_family": "occlusion",
+          "alteration_area": 0.25,
+          "source_relation": "different_source",
+          "recall": 0.974,
+          "recall_image_clustered_95_ci": [
+            0.964,
+            0.982
+          ],
+          "missed_manipulation_rate": 0.026,
+          "missed_image_clustered_95_ci": [
+            0.017,
+            0.035775
+          ],
+          "uncertain_rate_on_altered_regions": 0.026,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 26,
+          "actual_uncertain_altered_region_observations": 26,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.017555705604321403,
+          "contribution_to_aggregate_missed_rate": 0.0015294117647058822,
+          "counterfactual_aggregate_recall_if_perfect": 0.8510588235294118,
+          "share_of_aggregate_missed_manipulations": 0.010164190774042221,
+          "share_of_aggregate_gate_deficit": 0.030303030303030276,
+          "share_of_actual_missed_altered_regions": 0.010164190774042221,
+          "share_of_actual_uncertain_altered_regions": 0.017555705604321403
+        },
+        "occlusion_050": {
+          "attack_family": "occlusion",
+          "alteration_area": 0.5,
+          "source_relation": "different_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8495294117647059,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "occlusion_075": {
+          "attack_family": "occlusion",
+          "alteration_area": 0.75,
+          "source_relation": "different_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8495294117647059,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "same_image_relocation": {
+          "attack_family": "relocation",
+          "alteration_area": 1.0,
+          "source_relation": "same_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8495294117647059,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "mixed_source_collage": {
+          "attack_family": "collage",
+          "alteration_area": 0.25,
+          "source_relation": "different_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 4000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8495294117647059,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "visually_similar_replacement": {
+          "attack_family": "visually_similar_replacement",
+          "alteration_area": 1.0,
+          "source_relation": "mixed_audit_required",
+          "recall": 0.020000000000000018,
+          "recall_image_clustered_95_ci": [
+            0.011225,
+            0.03
+          ],
+          "missed_manipulation_rate": 0.98,
+          "missed_image_clustered_95_ci": [
+            0.971,
+            0.987775
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 980,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.05764705882352941,
+          "counterfactual_aggregate_recall_if_perfect": 0.9071764705882353,
+          "share_of_aggregate_missed_manipulations": 0.3831118060985145,
+          "share_of_aggregate_gate_deficit": 1.1421911421911413,
+          "share_of_actual_missed_altered_regions": 0.3831118060985145,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "same_source_replacement": {
+          "attack_family": "same_source_replacement",
+          "alteration_area": 1.0,
+          "source_relation": "same_source",
+          "recall": 1.0,
+          "recall_image_clustered_95_ci": [
+            1.0,
+            1.0
+          ],
+          "missed_manipulation_rate": 0.0,
+          "missed_image_clustered_95_ci": [
+            0.0,
+            0.0
+          ],
+          "uncertain_rate_on_altered_regions": 0.0,
+          "actual_altered_region_observations": 1000,
+          "actual_missed_altered_region_observations": 0,
+          "actual_uncertain_altered_region_observations": 0,
+          "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "counterfactual_aggregate_recall_if_perfect": 0.8495294117647059,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        }
+      },
+      "families": {
+        "unrelated_replacement": {
+          "transforms": [
+            "replacement_full"
+          ],
+          "recall": {
+            "image_macro": 1.0,
+            "image_clustered_95_ci": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "actual_missed_altered_region_observations": 0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "actual_uncertain_altered_region_observations": 0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "splice": {
+          "transforms": [
+            "splice_010",
+            "splice_025",
+            "splice_050",
+            "splice_075"
+          ],
+          "recall": {
+            "image_macro": 0.90925,
+            "image_clustered_95_ci": [
+              0.901,
+              0.9175
+            ]
+          },
+          "missed": {
+            "image_macro": 0.09075,
+            "image_clustered_95_ci": [
+              0.0825,
+              0.09925625
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.088,
+            "image_clustered_95_ci": [
+              0.07975,
+              0.09575
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.02135294117647059,
+          "share_of_aggregate_missed_manipulations": 0.14190774042220483,
+          "share_of_aggregate_gate_deficit": 0.4230769230769228,
+          "actual_missed_altered_region_observations": 363,
+          "share_of_actual_missed_altered_regions": 0.14190774042220483,
+          "actual_uncertain_altered_region_observations": 352,
+          "share_of_actual_uncertain_altered_regions": 0.237677245104659
+        },
+        "overlay": {
+          "transforms": [
+            "overlay_010",
+            "overlay_025",
+            "overlay_050",
+            "overlay_075"
+          ],
+          "recall": {
+            "image_macro": 0.79125,
+            "image_clustered_95_ci": [
+              0.78,
+              0.80250625
+            ]
+          },
+          "missed": {
+            "image_macro": 0.20875,
+            "image_clustered_95_ci": [
+              0.1975,
+              0.21975
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.19225,
+            "image_clustered_95_ci": [
+              0.18175,
+              0.20275
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.04911764705882353,
+          "share_of_aggregate_missed_manipulations": 0.3264268960125098,
+          "share_of_aggregate_gate_deficit": 0.9731934731934725,
+          "actual_missed_altered_region_observations": 835,
+          "share_of_actual_missed_altered_regions": 0.3264268960125098,
+          "actual_uncertain_altered_region_observations": 769,
+          "share_of_actual_uncertain_altered_regions": 0.5192437542201215
+        },
+        "occlusion": {
+          "transforms": [
+            "occlusion_010",
+            "occlusion_025",
+            "occlusion_050",
+            "occlusion_075"
+          ],
+          "recall": {
+            "image_macro": 0.905,
+            "image_clustered_95_ci": [
+              0.8967437500000001,
+              0.91325
+            ]
+          },
+          "missed": {
+            "image_macro": 0.095,
+            "image_clustered_95_ci": [
+              0.08674375,
+              0.1035
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.09,
+            "image_clustered_95_ci": [
+              0.08175,
+              0.098
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.02235294117647059,
+          "share_of_aggregate_missed_manipulations": 0.1485535574667709,
+          "share_of_aggregate_gate_deficit": 0.44289044289044255,
+          "actual_missed_altered_region_observations": 380,
+          "share_of_actual_missed_altered_regions": 0.1485535574667709,
+          "actual_uncertain_altered_region_observations": 360,
+          "share_of_actual_uncertain_altered_regions": 0.24307900067521945
+        },
+        "relocation": {
+          "transforms": [
+            "same_image_relocation"
+          ],
+          "recall": {
+            "image_macro": 1.0,
+            "image_clustered_95_ci": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "actual_missed_altered_region_observations": 0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "actual_uncertain_altered_region_observations": 0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "collage": {
+          "transforms": [
+            "mixed_source_collage"
+          ],
+          "recall": {
+            "image_macro": 1.0,
+            "image_clustered_95_ci": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "actual_missed_altered_region_observations": 0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "actual_uncertain_altered_region_observations": 0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "visually_similar_replacement": {
+          "transforms": [
+            "visually_similar_replacement"
+          ],
+          "recall": {
+            "image_macro": 0.02,
+            "image_clustered_95_ci": [
+              0.012,
+              0.029
+            ]
+          },
+          "missed": {
+            "image_macro": 0.98,
+            "image_clustered_95_ci": [
+              0.971,
+              0.989
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.05764705882352941,
+          "share_of_aggregate_missed_manipulations": 0.3831118060985145,
+          "share_of_aggregate_gate_deficit": 1.1421911421911413,
+          "actual_missed_altered_region_observations": 980,
+          "share_of_actual_missed_altered_regions": 0.3831118060985145,
+          "actual_uncertain_altered_region_observations": 0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        },
+        "same_source_replacement": {
+          "transforms": [
+            "same_source_replacement"
+          ],
+          "recall": {
+            "image_macro": 1.0,
+            "image_clustered_95_ci": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "uncertain_on_altered_regions": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "contribution_to_aggregate_missed_rate": 0.0,
+          "share_of_aggregate_missed_manipulations": 0.0,
+          "share_of_aggregate_gate_deficit": 0.0,
+          "actual_missed_altered_region_observations": 0,
+          "share_of_actual_missed_altered_regions": 0.0,
+          "actual_uncertain_altered_region_observations": 0,
+          "share_of_actual_uncertain_altered_regions": 0.0
+        }
+      },
+      "area_decomposition": {
+        "splice": {
+          "010": {
+            "attack_family": "splice",
+            "alteration_area": 0.1,
+            "source_relation": "different_source",
+            "recall": 0.655,
+            "recall_image_clustered_95_ci": [
+              0.628225,
+              0.681775
+            ],
+            "missed_manipulation_rate": 0.345,
+            "missed_image_clustered_95_ci": [
+              0.319225,
+              0.372775
+            ],
+            "uncertain_rate_on_altered_regions": 0.334,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 345,
+            "actual_uncertain_altered_region_observations": 334,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.22552329507089805,
+            "contribution_to_aggregate_missed_rate": 0.020294117647058824,
+            "counterfactual_aggregate_recall_if_perfect": 0.8698235294117647,
+            "share_of_aggregate_missed_manipulations": 0.13487099296325253,
+            "share_of_aggregate_gate_deficit": 0.4020979020979018,
+            "share_of_actual_missed_altered_regions": 0.13487099296325253,
+            "share_of_actual_uncertain_altered_regions": 0.22552329507089805
+          },
+          "025": {
+            "attack_family": "splice",
+            "alteration_area": 0.25,
+            "source_relation": "different_source",
+            "recall": 0.983,
+            "recall_image_clustered_95_ci": [
+              0.975,
+              0.99
+            ],
+            "missed_manipulation_rate": 0.017,
+            "missed_image_clustered_95_ci": [
+              0.009,
+              0.026
+            ],
+            "uncertain_rate_on_altered_regions": 0.017,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 17,
+            "actual_uncertain_altered_region_observations": 17,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.011478730587440918,
+            "contribution_to_aggregate_missed_rate": 0.001,
+            "counterfactual_aggregate_recall_if_perfect": 0.8505294117647059,
+            "share_of_aggregate_missed_manipulations": 0.006645817044566068,
+            "share_of_aggregate_gate_deficit": 0.0198135198135198,
+            "share_of_actual_missed_altered_regions": 0.006645817044566067,
+            "share_of_actual_uncertain_altered_regions": 0.011478730587440918
+          },
+          "050": {
+            "attack_family": "splice",
+            "alteration_area": 0.5,
+            "source_relation": "different_source",
+            "recall": 0.999,
+            "recall_image_clustered_95_ci": [
+              0.997,
+              1.0
+            ],
+            "missed_manipulation_rate": 0.001,
+            "missed_image_clustered_95_ci": [
+              0.0,
+              0.003
+            ],
+            "uncertain_rate_on_altered_regions": 0.001,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 1,
+            "actual_uncertain_altered_region_observations": 1,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.000675219446320054,
+            "contribution_to_aggregate_missed_rate": 5.882352941176471e-05,
+            "counterfactual_aggregate_recall_if_perfect": 0.8495882352941176,
+            "share_of_aggregate_missed_manipulations": 0.0003909304143862393,
+            "share_of_aggregate_gate_deficit": 0.0011655011655011646,
+            "share_of_actual_missed_altered_regions": 0.00039093041438623924,
+            "share_of_actual_uncertain_altered_regions": 0.0006752194463200541
+          },
+          "075": {
+            "attack_family": "splice",
+            "alteration_area": 0.75,
+            "source_relation": "different_source",
+            "recall": 1.0,
+            "recall_image_clustered_95_ci": [
+              1.0,
+              1.0
+            ],
+            "missed_manipulation_rate": 0.0,
+            "missed_image_clustered_95_ci": [
+              0.0,
+              0.0
+            ],
+            "uncertain_rate_on_altered_regions": 0.0,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 0,
+            "actual_uncertain_altered_region_observations": 0,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+            "contribution_to_aggregate_missed_rate": 0.0,
+            "counterfactual_aggregate_recall_if_perfect": 0.8495294117647059,
+            "share_of_aggregate_missed_manipulations": 0.0,
+            "share_of_aggregate_gate_deficit": 0.0,
+            "share_of_actual_missed_altered_regions": 0.0,
+            "share_of_actual_uncertain_altered_regions": 0.0
+          }
+        },
+        "overlay": {
+          "010": {
+            "attack_family": "overlay",
+            "alteration_area": 0.1,
+            "source_relation": "different_source",
+            "recall": 0.345,
+            "recall_image_clustered_95_ci": [
+              0.321,
+              0.375775
+            ],
+            "missed_manipulation_rate": 0.655,
+            "missed_image_clustered_95_ci": [
+              0.626225,
+              0.683775
+            ],
+            "uncertain_rate_on_altered_regions": 0.592,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 655,
+            "actual_uncertain_altered_region_observations": 592,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.3997299122214719,
+            "contribution_to_aggregate_missed_rate": 0.03852941176470588,
+            "counterfactual_aggregate_recall_if_perfect": 0.8880588235294118,
+            "share_of_aggregate_missed_manipulations": 0.2560594214229867,
+            "share_of_aggregate_gate_deficit": 0.7634032634032628,
+            "share_of_actual_missed_altered_regions": 0.2560594214229867,
+            "share_of_actual_uncertain_altered_regions": 0.399729912221472
+          },
+          "025": {
+            "attack_family": "overlay",
+            "alteration_area": 0.25,
+            "source_relation": "different_source",
+            "recall": 0.834,
+            "recall_image_clustered_95_ci": [
+              0.8102250000000001,
+              0.85555
+            ],
+            "missed_manipulation_rate": 0.166,
+            "missed_image_clustered_95_ci": [
+              0.145,
+              0.19055000000000002
+            ],
+            "uncertain_rate_on_altered_regions": 0.163,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 166,
+            "actual_uncertain_altered_region_observations": 163,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.1100607697501688,
+            "contribution_to_aggregate_missed_rate": 0.009764705882352941,
+            "counterfactual_aggregate_recall_if_perfect": 0.8592941176470588,
+            "share_of_aggregate_missed_manipulations": 0.06489444878811572,
+            "share_of_aggregate_gate_deficit": 0.19347319347319333,
+            "share_of_actual_missed_altered_regions": 0.06489444878811572,
+            "share_of_actual_uncertain_altered_regions": 0.1100607697501688
+          },
+          "050": {
+            "attack_family": "overlay",
+            "alteration_area": 0.5,
+            "source_relation": "different_source",
+            "recall": 0.988,
+            "recall_image_clustered_95_ci": [
+              0.981,
+              0.994
+            ],
+            "missed_manipulation_rate": 0.012,
+            "missed_image_clustered_95_ci": [
+              0.006,
+              0.018775000000000003
+            ],
+            "uncertain_rate_on_altered_regions": 0.012,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 12,
+            "actual_uncertain_altered_region_observations": 12,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.008102633355840648,
+            "contribution_to_aggregate_missed_rate": 0.0007058823529411765,
+            "counterfactual_aggregate_recall_if_perfect": 0.8502352941176471,
+            "share_of_aggregate_missed_manipulations": 0.004691164972634871,
+            "share_of_aggregate_gate_deficit": 0.013986013986013976,
+            "share_of_actual_missed_altered_regions": 0.004691164972634871,
+            "share_of_actual_uncertain_altered_regions": 0.008102633355840648
+          },
+          "075": {
+            "attack_family": "overlay",
+            "alteration_area": 0.75,
+            "source_relation": "different_source",
+            "recall": 0.998,
+            "recall_image_clustered_95_ci": [
+              0.995,
+              1.0
+            ],
+            "missed_manipulation_rate": 0.002,
+            "missed_image_clustered_95_ci": [
+              0.0,
+              0.005775000000000006
+            ],
+            "uncertain_rate_on_altered_regions": 0.002,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 2,
+            "actual_uncertain_altered_region_observations": 2,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.001350438892640108,
+            "contribution_to_aggregate_missed_rate": 0.00011764705882352942,
+            "counterfactual_aggregate_recall_if_perfect": 0.8496470588235294,
+            "share_of_aggregate_missed_manipulations": 0.0007818608287724786,
+            "share_of_aggregate_gate_deficit": 0.0023310023310023293,
+            "share_of_actual_missed_altered_regions": 0.0007818608287724785,
+            "share_of_actual_uncertain_altered_regions": 0.0013504388926401081
+          }
+        },
+        "occlusion": {
+          "010": {
+            "attack_family": "occlusion",
+            "alteration_area": 0.1,
+            "source_relation": "different_source",
+            "recall": 0.646,
+            "recall_image_clustered_95_ci": [
+              0.616,
+              0.671775
+            ],
+            "missed_manipulation_rate": 0.354,
+            "missed_image_clustered_95_ci": [
+              0.323225,
+              0.38377500000000003
+            ],
+            "uncertain_rate_on_altered_regions": 0.334,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 354,
+            "actual_uncertain_altered_region_observations": 334,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.22552329507089805,
+            "contribution_to_aggregate_missed_rate": 0.020823529411764706,
+            "counterfactual_aggregate_recall_if_perfect": 0.8703529411764706,
+            "share_of_aggregate_missed_manipulations": 0.1383893666927287,
+            "share_of_aggregate_gate_deficit": 0.41258741258741227,
+            "share_of_actual_missed_altered_regions": 0.1383893666927287,
+            "share_of_actual_uncertain_altered_regions": 0.22552329507089805
+          },
+          "025": {
+            "attack_family": "occlusion",
+            "alteration_area": 0.25,
+            "source_relation": "different_source",
+            "recall": 0.974,
+            "recall_image_clustered_95_ci": [
+              0.964,
+              0.982
+            ],
+            "missed_manipulation_rate": 0.026,
+            "missed_image_clustered_95_ci": [
+              0.017,
+              0.035775
+            ],
+            "uncertain_rate_on_altered_regions": 0.026,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 26,
+            "actual_uncertain_altered_region_observations": 26,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.017555705604321403,
+            "contribution_to_aggregate_missed_rate": 0.0015294117647058822,
+            "counterfactual_aggregate_recall_if_perfect": 0.8510588235294118,
+            "share_of_aggregate_missed_manipulations": 0.010164190774042221,
+            "share_of_aggregate_gate_deficit": 0.030303030303030276,
+            "share_of_actual_missed_altered_regions": 0.010164190774042221,
+            "share_of_actual_uncertain_altered_regions": 0.017555705604321403
+          },
+          "050": {
+            "attack_family": "occlusion",
+            "alteration_area": 0.5,
+            "source_relation": "different_source",
+            "recall": 1.0,
+            "recall_image_clustered_95_ci": [
+              1.0,
+              1.0
+            ],
+            "missed_manipulation_rate": 0.0,
+            "missed_image_clustered_95_ci": [
+              0.0,
+              0.0
+            ],
+            "uncertain_rate_on_altered_regions": 0.0,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 0,
+            "actual_uncertain_altered_region_observations": 0,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+            "contribution_to_aggregate_missed_rate": 0.0,
+            "counterfactual_aggregate_recall_if_perfect": 0.8495294117647059,
+            "share_of_aggregate_missed_manipulations": 0.0,
+            "share_of_aggregate_gate_deficit": 0.0,
+            "share_of_actual_missed_altered_regions": 0.0,
+            "share_of_actual_uncertain_altered_regions": 0.0
+          },
+          "075": {
+            "attack_family": "occlusion",
+            "alteration_area": 0.75,
+            "source_relation": "different_source",
+            "recall": 1.0,
+            "recall_image_clustered_95_ci": [
+              1.0,
+              1.0
+            ],
+            "missed_manipulation_rate": 0.0,
+            "missed_image_clustered_95_ci": [
+              0.0,
+              0.0
+            ],
+            "uncertain_rate_on_altered_regions": 0.0,
+            "actual_altered_region_observations": 1000,
+            "actual_missed_altered_region_observations": 0,
+            "actual_uncertain_altered_region_observations": 0,
+            "uncertain_contribution_to_all_attack_macro_uncertainty": 0.0,
+            "contribution_to_aggregate_missed_rate": 0.0,
+            "counterfactual_aggregate_recall_if_perfect": 0.8495294117647059,
+            "share_of_aggregate_missed_manipulations": 0.0,
+            "share_of_aggregate_gate_deficit": 0.0,
+            "share_of_actual_missed_altered_regions": 0.0,
+            "share_of_actual_uncertain_altered_regions": 0.0
+          }
+        }
+      },
+      "overlay_025_gate": {
+        "required_recall": 0.85,
+        "observed_recall": 0.834,
+        "deficit": 0.016000000000000014,
+        "missed_rate": 0.166,
+        "uncertain_rate_on_altered_regions": 0.163
+      }
+    }
+  },
+  "visually_similar_generator_audit": {
+    "selection_definition": "Within each 50-image shard, nearest Euclidean mean-RGB regional vector among the 50 source images plus a one-image-shifted duplicate donor list; only the same pool position was excluded, not duplicate underlying identifiers.",
+    "records": 1000,
+    "same_identifier_count": 980,
+    "different_identifier_count": 20,
+    "different_sha256_count": 20,
+    "pixel_exact_equal_count": 980,
+    "genuinely_different_image_and_content_count": 20,
+    "mean_rgb_similarity_distribution": {
+      "all": {
+        "count": 1000,
+        "mean": 0.0005776601936668158,
+        "minimum": 0.0,
+        "q05": 0.0,
+        "median": 0.0,
+        "q95": 0.0,
+        "maximum": 0.13669666647911072
+      },
+      "duplicate_source": {
+        "count": 980,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "q05": 0.0,
+        "median": 0.0,
+        "q95": 0.0,
+        "maximum": 0.0
+      },
+      "genuinely_different": {
+        "count": 20,
+        "mean": 0.028883009683340788,
+        "minimum": 0.007907791063189507,
+        "q05": 0.009721171949058771,
+        "median": 0.02014388795942068,
+        "q95": 0.05912252366542822,
+        "maximum": 0.13669666647911072
+      }
+    },
+    "pixel_mae_distribution": {
+      "all": {
+        "count": 1000,
+        "mean": 0.003996003482490778,
+        "minimum": 0.0,
+        "q05": 0.0,
+        "median": 0.0,
+        "q95": 0.0,
+        "maximum": 0.3625437021255493
+      },
+      "duplicate_source": {
+        "count": 980,
+        "mean": 0.0,
+        "minimum": 0.0,
+        "q05": 0.0,
+        "median": 0.0,
+        "q95": 0.0,
+        "maximum": 0.0
+      },
+      "genuinely_different": {
+        "count": 20,
+        "mean": 0.1998001741245389,
+        "minimum": 0.040947649627923965,
+        "q05": 0.08114492725580931,
+        "median": 0.20584343373775482,
+        "q95": 0.2895246535539628,
+        "maximum": 0.3625437021255493
+      }
+    },
+    "digest_outcomes_by_source_relation": {
+      "dct_phash": {
+        "duplicate_source": {
+          "count": 980,
+          "recall": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "missed_rate": 1.0,
+          "uncertain_rate": 0.0
+        },
+        "genuinely_different": {
+          "count": 20,
+          "recall": {
+            "image_macro": 1.0,
+            "image_clustered_95_ci": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed_rate": 0.0,
+          "uncertain_rate": 0.0
+        }
+      },
+      "combined_digest": {
+        "duplicate_source": {
+          "count": 980,
+          "recall": {
+            "image_macro": 0.0,
+            "image_clustered_95_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "missed_rate": 1.0,
+          "uncertain_rate": 0.0
+        },
+        "genuinely_different": {
+          "count": 20,
+          "recall": {
+            "image_macro": 1.0,
+            "image_clustered_95_ci": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed_rate": 0.0,
+          "uncertain_rate": 0.0
+        }
+      }
+    },
+    "representative_numeric_examples": [
+      {
+        "source_identifier": "val2017/000000127263.jpg",
+        "source_region": 7,
+        "selected_identifier": "val2017/000000127263.jpg",
+        "selected_region": 7,
+        "same_identifier": true,
+        "different_sha256": false,
+        "mean_rgb_euclidean": 0.0,
+        "pixel_mae": 0.0,
+        "pixel_exact_equal": true
+      },
+      {
+        "source_identifier": "val2017/000000464522.jpg",
+        "source_region": 14,
+        "selected_identifier": "val2017/000000464522.jpg",
+        "selected_region": 14,
+        "same_identifier": true,
+        "different_sha256": false,
+        "mean_rgb_euclidean": 0.0,
+        "pixel_mae": 0.0,
+        "pixel_exact_equal": true
+      },
+      {
+        "source_identifier": "val2017/000000370711.jpg",
+        "source_region": 5,
+        "selected_identifier": "val2017/000000370711.jpg",
+        "selected_region": 5,
+        "same_identifier": true,
+        "different_sha256": false,
+        "mean_rgb_euclidean": 0.0,
+        "pixel_mae": 0.0,
+        "pixel_exact_equal": true
+      },
+      {
+        "source_identifier": "val2017/000000488385.jpg",
+        "source_region": 0,
+        "selected_identifier": "val2017/000000356125.jpg",
+        "selected_region": 6,
+        "same_identifier": false,
+        "different_sha256": true,
+        "mean_rgb_euclidean": 0.021459657698869705,
+        "pixel_mae": 0.2021806687116623,
+        "pixel_exact_equal": false
+      },
+      {
+        "source_identifier": "val2017/000000335427.jpg",
+        "source_region": 14,
+        "selected_identifier": "val2017/000000474854.jpg",
+        "selected_region": 4,
+        "same_identifier": false,
+        "different_sha256": true,
+        "mean_rgb_euclidean": 0.019544921815395355,
+        "pixel_mae": 0.11354515701532364,
+        "pixel_exact_equal": false
+      },
+      {
+        "source_identifier": "val2017/000000422886.jpg",
+        "source_region": 12,
+        "selected_identifier": "val2017/000000246522.jpg",
+        "selected_region": 14,
+        "same_identifier": false,
+        "different_sha256": true,
+        "mean_rgb_euclidean": 0.04915652051568031,
+        "pixel_mae": 0.040947649627923965,
+        "pixel_exact_equal": false
+      }
+    ],
+    "conclusion": "The generator did not reliably create visually similar cross-image replacements; duplicate source images in the shifted donor pool made most nominal replacements pixel-identical. This is a generator-validity defect in that attack condition, not digest evidence of semantic robustness."
+  },
+  "integrity_objectives": {
+    "exact_content_integrity": {
+      "dct_phash": "unsupported: lossy digest and benign-tolerance thresholds intentionally ignore many pixel changes",
+      "combined_digest": "unsupported: lossy digest and benign-tolerance thresholds intentionally ignore many pixel changes"
+    },
+    "perceptual_integrity": {
+      "dct_phash": "partially supported: benign gates pass, but small overlays and the invalid visually-similar condition prevent the frozen reproduction gates",
+      "combined_digest": "partially supported and stronger on 25% splice/overlay, but still fails aggregate and overlay gates"
+    },
+    "semantic_integrity": {
+      "dct_phash": "unsupported: no object, text, identity, or layout representation",
+      "combined_digest": "unsupported: low-frequency hash/statistics do not establish semantic change sensitivity"
+    }
+  },
+  "mechanism_comparison": {
+    "robust_plus_fragile_dual_digest": {
+      "benign_robustness": "robust branch tolerates declared benign processing; fragile branch deliberately does not",
+      "similar_replacement_sensitivity": "potentially high for pixel changes, but fragile alarms conflate benign processing",
+      "registry_storage": "two digests per region; likely tens of bytes/region",
+      "runtime": "low to moderate",
+      "external_requirement": "authenticated registry digest pairs; no original pixels at verification",
+      "adversarial_weaknesses": "fragile false alarms, robust collisions, digest transplantation",
+      "fixed_20bit_packet": "compatible only through registry lookup; not by embedding both digests",
+      "crop_sync": "required for fixed-region comparison"
+    },
+    "canonicalized_cryptographic_hashing": {
+      "benign_robustness": "only to transformations perfectly removed by canonicalization",
+      "similar_replacement_sensitivity": "cryptographically strong after stable canonicalization",
+      "registry_storage": "at least 16-32 bytes/region",
+      "runtime": "low",
+      "external_requirement": "authenticated canonical hashes; deterministic canonicalizer",
+      "adversarial_weaknesses": "canonicalization instability or equivalence-class attacks",
+      "fixed_20bit_packet": "registry-bound, not carried in 8-bit share",
+      "crop_sync": "required"
+    },
+    "local_deep_feature_similarity": {
+      "benign_robustness": "potentially strong; must be calibrated independently",
+      "similar_replacement_sensitivity": "potentially better for semantic differences, uncertain for lookalikes",
+      "registry_storage": "compressed embeddings commonly tens to hundreds of bytes/region",
+      "runtime": "moderate to high",
+      "external_requirement": "registry embeddings/model version; no original pixels",
+      "adversarial_weaknesses": "feature collisions, adversarial examples, model drift",
+      "fixed_20bit_packet": "registry-only compatibility",
+      "crop_sync": "required unless feature mechanism adds localization"
+    },
+    "semi_fragile_learned_signatures": {
+      "benign_robustness": "learnable but requires real transformation validation",
+      "similar_replacement_sensitivity": "potentially tunable",
+      "registry_storage": "signature-dependent",
+      "runtime": "moderate",
+      "external_requirement": "model/version and authenticated expected signature",
+      "adversarial_weaknesses": "training-distribution gaps and adaptive attacks",
+      "fixed_20bit_packet": "unknown; extra neural capacity likely required",
+      "crop_sync": "required unless jointly trained for synchronization"
+    },
+    "object_text_layout_semantic_consistency": {
+      "benign_robustness": "potentially strong for low-level changes",
+      "similar_replacement_sensitivity": "best aligned with semantic objective",
+      "registry_storage": "structured detections/text/layout may be hundreds to thousands of bytes/image",
+      "runtime": "high",
+      "external_requirement": "authenticated registry features and model versions",
+      "adversarial_weaknesses": "detector/OCR failures, semantic collisions, adversarial content",
+      "fixed_20bit_packet": "registry-only compatibility",
+      "crop_sync": "region correspondence or independent registration required"
+    },
+    "registry_multiscale_regional_features": {
+      "benign_robustness": "can combine robust coarse and sensitive fine scales",
+      "similar_replacement_sensitivity": "testable and likely better than current compact digest",
+      "registry_storage": "explicit cost; likely hundreds of bytes/image or more",
+      "runtime": "moderate",
+      "external_requirement": "authenticated multiscale registry features",
+      "adversarial_weaknesses": "feature collisions and scale-dependent evasion",
+      "fixed_20bit_packet": "compatible via authenticated identity lookup",
+      "crop_sync": "required in this fixed-grid pilot"
+    }
+  },
+  "smallest_next_experiment": {
+    "recommendation": "Replace only the invalid visually-similar generator with a cross-image, SHA-distinct, pixel-different selector; predeclare semantic/perceptual similarity strata using registry-stored multiscale regional features, then evaluate current frozen digests plus one local deep-feature baseline on a new disjoint locked population.",
+    "why_smallest": "It directly repairs the measured attack-condition validity defect and tests the current digest-space blind spot without threshold tuning, watermark training, or packet changes.",
+    "prohibitions": "Do not reuse the locked reproduction population for selection, do not tune frozen thresholds, and do not interpret feature similarity as cryptographic authentication."
+  },
+  "scientific_status": "blocked_by_large_scale_regional_digest_gates",
+  "selected_candidate": null,
+  "neural_stage_passed": false,
+  "stage_e_permitted": false,
+  "novelty_claimed": false
+}
