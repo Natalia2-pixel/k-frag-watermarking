@@ -1,0 +1,19 @@
+data_root: data/raw/coco_val2017_full
+prior_report: outputs/real_image_regional_digest_feasibility_v1/local_coco/report.json
+frozen_thresholds: configs/regional_digest_frozen_thresholds_v1.json
+output_directory: outputs/large_scale_regional_digest_reproduction_v1/local_coco
+committed_report: docs/evidence/large_scale_regional_digest_reproduction_v1_report.json
+seed: 2061
+population_size: 1000
+shard_size: 50
+bootstrap_iterations: 250
+preprocessing: {numeric_range: [0.0, 1.0], dtype: float32, channel_order: RGB, resize: [256, 256], interpolation: bilinear, antialias: true, normalization: none}
+extreme_stress_conditions: [jpeg_q40, resize_025]
+gates:
+  mean_benign_false_manipulation: 0.02
+  worst_standard_benign_false_manipulation: 0.05
+  aggregate_malicious_recall: 0.90
+  splice_025_recall: 0.85
+  overlay_025_recall: 0.85
+  clean_repeatability_failures: 0
+  verification_runtime_ms: 100.0

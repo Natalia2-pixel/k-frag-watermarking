@@ -1,0 +1,12 @@
+{
+  "source_commit": "1448a9a4e23f00b0855fa8061b9bec5d75e5d7ae",
+  "implementation_sha256": "C8519DAF8F94B99D9A326955BAAC71D820BB98DC216992FD2DA1F7710F1AAAEE",
+  "dct_phash": {
+    "valid_max": 0.03125,
+    "manipulated_min": 0.15625
+  },
+  "combined_digest": {
+    "valid_max": 0.03840238735079764,
+    "manipulated_min": 0.11301076811845408
+  }
+}
