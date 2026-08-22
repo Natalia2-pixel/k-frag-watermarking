@@ -117,7 +117,7 @@ def run_shards(config,dataset,selected,frozen):
         stop=min(len(selected),start+size);path=shards/f"shard_{start:05d}_{stop:05d}.json"
         if path.is_file():
             payload=json.loads(path.read_text())
-            if payload.get("fingerprint")!=fingerprint:raise RuntimeError("existing shard fingerprint mismatch")
+            if payload.get("fingerprint")!=fingerprint:raise RuntimeError("existing shard manifest-hash verification failed")
             rows.extend(payload["rows"]);resumed+=1;continue
         images=[dataset[item["dataset_index"]]["image"] for item in selected[start:stop]];donors=[dataset[selected[(start+i+1)%len(selected)]["dataset_index"]]["image"] for i in range(len(images))]
         # Similar search is shard-local for transform generation; global exact collision search is separate.

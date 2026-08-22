@@ -10,7 +10,7 @@ Benign processing comprises clean repeatability; JPEG 95/85/75/60/40; WebP 95/80
 
 The four-state rule is unchanged. Valid requires authenticated identity plus digest agreement; missing requires no assigned observation; manipulated requires authenticated identity plus strong contradiction; uncertain covers intermediate evidence. Global authentication is a separately simulated trusted prerequisite. Digest agreement never establishes identity.
 
-Each 50-image shard is saved with a fingerprint over configuration, population and frozen thresholds. Matching shards resume; mismatched shards abort. Runtime, throughput, Python traced memory and process RSS are reported. The exact nearest unrelated digest search covers all reproduction regions and remains an empirical collision control, not adversarial collision proof.
+The completed evidence consists of 20 manifest-hash-verified shards covering 1,000 unseen COCO images. Each 50-image shard stores an experiment manifest hash over configuration, population and frozen thresholds. Manifest-hash verification permits matching shards to resume and makes mismatched shards abort. Runtime, throughput, Python traced memory and process RSS are reported. The exact nearest unrelated digest search covers all reproduction regions and remains an empirical collision control, not adversarial collision proof.
 
 Predeclared gates are mean standard benign FMR ≤0.02, worst standard benign FMR ≤0.05, aggregate malicious recall ≥0.90, 25% splice and overlay recall ≥0.85, zero clean failures and verification below 100 ms/image. Combined is selected only if all gates pass and its paired image-clustered small-area recall improvement CI is above zero. Otherwise DCT may be selected only if it passes. No failing gate is retuned.
 
